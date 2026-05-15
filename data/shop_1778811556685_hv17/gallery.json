@@ -3417,7 +3417,56 @@
       "itemName": "ギター  指サックPKT3-3F",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/mus/mus-02-01-set-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838300514_50y0s7",
+          "filename": "1778838298881_9eeyrz_1_mus-02-01-set-01.jpg",
+          "originalName": "1_mus-02-01-set-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838298881_9eeyrz_1_mus-02-01-set-01.jpg",
+          "sha": "566f8f29470f4da8c12cee9dbecc98e891453132",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838298881_9eeyrz_1_mus-02-01-set-01.jpg",
+          "size": 213550,
+          "uploadedAt": "2026-05-15T09:45:00.514Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838302015_hxxd5m",
+          "filename": "1778838300525_pks1yx_2_mus-02-01-set-02.jpg",
+          "originalName": "2_mus-02-01-set-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838300525_pks1yx_2_mus-02-01-set-02.jpg",
+          "sha": "5bd415f9a4eaae91a0ee60c5465f974fc9eb7f18",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838300525_pks1yx_2_mus-02-01-set-02.jpg",
+          "size": 729577,
+          "uploadedAt": "2026-05-15T09:45:02.015Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838303758_csg0y2",
+          "filename": "1778838302024_brrmxb_3_mus-02-01-set-03.jpg",
+          "originalName": "3_mus-02-01-set-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838302024_brrmxb_3_mus-02-01-set-03.jpg",
+          "sha": "d6d22ecfb92c3949e3e3eef843ca8ccae80dca95",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838302024_brrmxb_3_mus-02-01-set-03.jpg",
+          "size": 533841,
+          "uploadedAt": "2026-05-15T09:45:03.758Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838305133_z648kb",
+          "filename": "1778838303765_3qd04c_4_mus-01-review.jpg",
+          "originalName": "4_mus-01-review.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838303765_3qd04c_4_mus-01-review.jpg",
+          "sha": "1e2dcd94173f1c40ba5ddd96745d5f57576e7cab",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_uylciv/1778838303765_3qd04c_4_mus-01-review.jpg",
+          "size": 185992,
+          "uploadedAt": "2026-05-15T09:45:05.133Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
