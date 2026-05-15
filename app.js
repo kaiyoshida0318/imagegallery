@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.3.4';
+const APP_VERSION = 'v1.3.5';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -43,8 +43,10 @@ let currentProductId = null;     // open product modal target
 let currentImageId = null;       // open image detail target
 let searchQuery = '';
 let filterUnregistered = false;
-let sortKey = 'number';  // デフォルト: 商品番号
-let sortDir = 'asc';     // デフォルト: 昇順
+let sortKey = 'manage';  // デフォルト: 商品管理番号
+let sortDir = 'desc';    // デフォルト: 降順
+const LS_SORT_KEY = 'imagegallery_sort_key_v1';
+const LS_SORT_DIR = 'imagegallery_sort_dir_v1';
 let filterTagIds = new Set();
 let openTagPickerProductId = null;
 let viewMode = 'basic';  // 'basic' (基礎情報) | 'images' (画像全体)
@@ -107,6 +109,15 @@ function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
   currentCategory = localStorage.getItem(LS_CURRENT_CAT) || 'product';
   viewMode = localStorage.getItem(LS_VIEW_MODE) || 'basic';
+  // ソート状態を復元 (なければデフォルト)
+  const savedSortKey = localStorage.getItem(LS_SORT_KEY);
+  const savedSortDir = localStorage.getItem(LS_SORT_DIR);
+  if (savedSortKey !== null) {
+    sortKey = savedSortKey === '' ? null : savedSortKey;
+  }
+  if (savedSortDir) {
+    sortDir = savedSortDir;
+  }
   if (currentShopId && !shops.find(s => s.id === currentShopId)) {
     currentShopId = shops[0]?.id || null;
   } else if (!currentShopId && shops.length) {
@@ -1556,6 +1567,9 @@ function toggleSort(key) {
     sortKey = null;
     sortDir = 'asc';
   }
+  // localStorageに保存
+  localStorage.setItem(LS_SORT_KEY, sortKey === null ? '' : sortKey);
+  localStorage.setItem(LS_SORT_DIR, sortDir);
   render();
 }
 
