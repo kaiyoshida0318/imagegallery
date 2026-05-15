@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.1.1';
+const APP_VERSION = 'v1.1.3';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -94,6 +94,7 @@ function loadCurrentSelections() {
 function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
   document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
+  document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
   document.getElementById('btnImportCsv').addEventListener('click', openCsvImportModal);
   document.getElementById('btnPickCsv').addEventListener('click', (e) => {
     e.stopPropagation();
@@ -237,23 +238,27 @@ async function loadShopData(shopId) {
     const json = JSON.parse(b64decode(data.content.replace(/\n/g, '')));
     const products = Array.isArray(json.products) ? json.products : [];
 
-    // === マイグレーション (v1.0.7) ===
-    // 旧: itemNumber に楽天の商品管理番号 (10000176) が入っていた
-    // 新: itemManageNumber に商品管理番号、itemNumber は店舗の商品番号 (cab-16-02-01)
-    products.forEach(p => {
-      if (!p.itemManageNumber && p.itemNumber) {
-        // itemNumberが数字のみ&itemManageNumberが空なら、それは管理番号
-        if (/^\d+$/.test(p.itemNumber)) {
-          p.itemManageNumber = p.itemNumber;
-          p.itemNumber = '';
+    // === マイグレーション (v1.1.3) ===
+    // itemCodeから取った壊れた管理番号を、itemUrlベースで取り直す
+    const shop = shops.find(s => s.id === shopId);
+    if (shop && shop.shopCode) {
+      products.forEach(p => {
+        if (p.itemUrl) {
+          const correctCode = extractCode(p.itemUrl, shop.shopCode);
+          if (correctCode && correctCode !== p.itemManageNumber) {
+            // 旧itemNumberが正しい値だったケースの救済
+            if (correctCode === p.itemNumber) {
+              p.itemManageNumber = p.itemNumber;
+              p.itemNumber = '';
+            } else {
+              // 純粋に壊れたデータ
+              p._oldManageNumber = p.itemManageNumber;  // バックアップ
+              p.itemManageNumber = correctCode;
+            }
+          }
         }
-      }
-      // itemCodeからitemManageNumberが取れる場合は補完
-      if (!p.itemManageNumber && p.itemCode) {
-        const m = p.itemCode.split(':')[1];
-        if (m && /^\d+$/.test(m)) p.itemManageNumber = m;
-      }
-    });
+      });
+    }
 
     return {
       products,
@@ -350,6 +355,30 @@ async function deleteImageFromGitHub(imageMeta) {
 }
 
 // =====================================================
+// 楽天 IchibaItem Search API の itemUrl から商品管理番号(code)を抽出
+// 通常:        https://item.rakuten.co.jp/{shop}/{code}/
+// アフィリ中継: https://hb.afl.rakuten.co.jp/.../?pc=https%3A%2F%2Fitem.rakuten.co.jp%2F{shop}%2F{code}%2F&...
+// ⚠️ itemCode の ":" 以降は使ってはいけない(壊れたデータが入ることがある)
+// =====================================================
+function extractCode(itemUrl, shopCode) {
+  if (!itemUrl || !shopCode) return null;
+  try {
+    let decoded = itemUrl;
+    if (itemUrl.includes('hb.afl.rakuten.co.jp')) {
+      const u = new URL(itemUrl);
+      const pc = u.searchParams.get('pc');
+      if (pc) decoded = decodeURIComponent(pc);
+    }
+    const shop = String(shopCode).toLowerCase();
+    const m = decoded.toLowerCase().match(
+      new RegExp(`item\\.rakuten\\.co\\.jp/${shop}/([^/?]+)/?`)
+    );
+    if (m) return m[1];
+  } catch (e) { /* フォールスルー */ }
+  return null;
+}
+
+// =====================================================
 // 楽天 RMS 商品API (商品一覧取得)
 // =====================================================
 async function fetchRakutenProducts(shop) {
@@ -380,14 +409,19 @@ async function fetchRakutenProducts(shop) {
         items.forEach(it => {
           const item = it.Item;
           if (!item) return;
-          // itemCodeは "shopCode:商品管理番号" 形式
-          // 例: "yukaiya:10000176" → 商品管理番号は "10000176"
-          const manageNum = item.itemCode.split(':')[1] || '';
+          // ⚠️ itemCodeの":"以降を使うのは禁止。itemUrlから正しい管理番号を取り出す
+          const manageNum = extractCode(item.itemUrl, shop.shopCode);
+          if (!manageNum) {
+            console.warn('[ImageGallery] 管理番号抽出失敗:', item.itemUrl);
+            return;  // スキップ(フォールバック禁止)
+          }
+          // クリーンなURL (アフィリエイト中継を剥がす)
+          const cleanUrl = `https://item.rakuten.co.jp/${shop.shopCode.toLowerCase()}/${manageNum}/`;
           all.push({
-            itemCode: item.itemCode,
-            itemUrl: item.itemUrl,
+            itemCode: item.itemCode,         // 参考保持のみ。管理番号判定には使わない
+            itemUrl: cleanUrl,
             itemName: item.itemName,
-            itemManageNumber: manageNum,  // 楽天の商品管理番号
+            itemManageNumber: manageNum,
             itemPrice: item.itemPrice,
             mediumImageUrl: item.mediumImageUrls?.[0]?.imageUrl || null
           });
@@ -406,6 +440,30 @@ async function fetchRakutenProducts(shop) {
     await new Promise(r => setTimeout(r, 200));
   }
   return all;
+}
+
+async function clearAllProducts() {
+  const shop = getCurrentShop();
+  if (!shop) { toast('ショップが選択されていません', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const count = data.products.length;
+  if (count === 0) { toast('クリア対象の商品がありません', 'error'); return; }
+
+  if (!confirm(`「${shop.name}」の商品データを全てクリアします。\n\n対象: ${count}件の商品(画像紐づけも含む)\n※ 既にアップロードされた画像ファイル自体はGitHub上に残ります\n\n本当に実行しますか?`)) return;
+  if (!confirm(`もう一度確認: ${count}件の商品データを削除します。元に戻せません。続行しますか?`)) return;
+
+  showLoading('商品データをクリア中...');
+  try {
+    data.products = [];
+    await saveShopData(currentShopId, `clear all products (${count} items)`);
+    hideLoading();
+    toast(`${count}件の商品データを削除しました`, 'success');
+    render();
+  } catch (e) {
+    hideLoading();
+    toast('クリア失敗: ' + e.message, 'error');
+  }
 }
 
 async function syncProducts() {
