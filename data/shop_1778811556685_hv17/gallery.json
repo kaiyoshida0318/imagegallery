@@ -1225,7 +1225,56 @@
       "itemName": "ネクタイ5cm 紫 06",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-purple-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836734619_17qnf1",
+          "filename": "1778836732896_qld7ih_1_fas-16-01-purple-1.jpg",
+          "originalName": "1_fas-16-01-purple-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836732896_qld7ih_1_fas-16-01-purple-1.jpg",
+          "sha": "820b9ec59ff55a3e6dd9c2c4dc664018c21c6d90",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836732896_qld7ih_1_fas-16-01-purple-1.jpg",
+          "size": 110991,
+          "uploadedAt": "2026-05-15T09:18:54.619Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836736426_ahl0b8",
+          "filename": "1778836734623_dypr5g_2_fas-16-01-purple-2.jpg",
+          "originalName": "2_fas-16-01-purple-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836734623_dypr5g_2_fas-16-01-purple-2.jpg",
+          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836734623_dypr5g_2_fas-16-01-purple-2.jpg",
+          "size": 88193,
+          "uploadedAt": "2026-05-15T09:18:56.426Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836738089_37ayp1",
+          "filename": "1778836736435_o2tpxg_3_fas-16-01-purple-3.jpg",
+          "originalName": "3_fas-16-01-purple-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836736435_o2tpxg_3_fas-16-01-purple-3.jpg",
+          "sha": "6e3a09a6c9b0388d8cfc5636662d0fb06e9b9570",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836736435_o2tpxg_3_fas-16-01-purple-3.jpg",
+          "size": 59212,
+          "uploadedAt": "2026-05-15T09:18:58.089Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836740525_jly9jn",
+          "filename": "1778836738095_lwd8ji_4_necktie-okuri.jpg",
+          "originalName": "4_necktie-okuri.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836738095_lwd8ji_4_necktie-okuri.jpg",
+          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836738095_lwd8ji_4_necktie-okuri.jpg",
+          "size": 177960,
+          "uploadedAt": "2026-05-15T09:19:00.525Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
