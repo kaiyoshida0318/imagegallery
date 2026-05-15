@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.0.5';
+const APP_VERSION = 'v1.0.6';
 
 // ----- 設定キー -----
 const LS_AUTH = 'imagegallery_auth_v1';
@@ -315,7 +315,7 @@ async function fetchRakutenProducts(shop) {
             itemCode: item.itemCode,         // shopCode:itemUrl
             itemUrl: item.itemUrl,
             itemName: item.itemName,
-            itemNumber: item.itemCode.split(':')[1] || '',  // 商品管理番号 (推定)
+            itemNumber: item.itemCode.split(':')[1] || '',  // 楽天の商品番号 (itemCode後半)
             itemPrice: item.itemPrice,
             mediumImageUrl: item.mediumImageUrls?.[0]?.imageUrl || null
           });
@@ -364,6 +364,7 @@ async function syncProducts() {
         data.products.push({
           id: 'prod_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
           itemCode: it.itemCode,
+          itemManageNumber: '',  // 手動入力(楽天APIでは取得不可)
           itemNumber: it.itemNumber,
           itemUrl: it.itemUrl,
           itemName: it.itemName,
@@ -481,7 +482,8 @@ function renderProductGrid(products) {
     list = list.filter(p =>
       (p.itemName || '').toLowerCase().includes(searchQuery) ||
       (p.itemCode || '').toLowerCase().includes(searchQuery) ||
-      (p.itemNumber || '').toLowerCase().includes(searchQuery)
+      (p.itemNumber || '').toLowerCase().includes(searchQuery) ||
+      (p.itemManageNumber || '').toLowerCase().includes(searchQuery)
     );
   }
   if (filterUnregistered) {
@@ -497,37 +499,66 @@ function renderProductGrid(products) {
     return;
   }
 
-  const html = `<div class="product-grid">${list.map(p => productCardHTML(p)).join('')}</div>`;
+  const html = `
+    <div class="product-table">
+      <div class="product-table-header">
+        <div class="col-manage">商品管理番号</div>
+        <div class="col-number">商品番号</div>
+        <div class="col-name">商品名</div>
+        <div class="col-images">画像</div>
+      </div>
+      ${list.map(p => productRowHTML(p)).join('')}
+    </div>
+  `;
   content.innerHTML = html;
 
-  // bind click
-  content.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('click', () => openProductModal(card.dataset.id));
+  // 編集ボタン
+  content.querySelectorAll('[data-edit-product]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openProductEditForm(btn.dataset.editProduct);
+    });
+  });
+  // 画像追加ボタン
+  content.querySelectorAll('[data-add-img]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openProductModal(btn.dataset.addImg);
+    });
+  });
+  // 画像クリック → 商品モーダル開く
+  content.querySelectorAll('[data-open-product]').forEach(el => {
+    el.addEventListener('click', () => openProductModal(el.dataset.openProduct));
   });
 }
 
-function productCardHTML(p) {
+function productRowHTML(p) {
   const imgCount = (p.images || []).length;
   const isEmpty = imgCount === 0;
-  let thumb;
-  if (isEmpty) {
-    if (p.rakutenThumb) {
-      thumb = `<img src="${escapeHtml(p.rakutenThumb)}" alt="" loading="lazy">`;
-    } else {
-      thumb = '<span class="thumb-placeholder">📷</span>';
-    }
-  } else {
-    thumb = `<img src="${escapeHtml(p.images[0].url)}" alt="" loading="lazy">`;
-  }
-  const badges = isEmpty
-    ? '<span class="badge badge-empty">📷 未登録</span>'
-    : `<span class="badge badge-count">${imgCount}枚</span>`;
-  return `<div class="product-card ${isEmpty ? 'empty' : ''}" data-id="${p.id}">
-    <div class="product-card-thumb">${thumb}</div>
-    <div class="product-card-info">
-      <div class="product-card-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
-      <div class="product-card-code">${escapeHtml(p.itemNumber || p.itemCode || '')}</div>
-      <div class="product-card-badges">${badges}</div>
+  const manage = p.itemManageNumber || '—';
+  const number = p.itemNumber || '—';
+
+  const imgsHTML = (p.images || []).map(img => `
+    <div class="product-row-thumb" data-open-product="${p.id}" title="${escapeHtml(img.filename)}">
+      <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
+    </div>
+  `).join('');
+
+  return `<div class="product-row ${isEmpty ? 'empty' : ''}">
+    <div class="col-manage" data-open-product="${p.id}"><span class="mono">${escapeHtml(manage)}</span></div>
+    <div class="col-number" data-open-product="${p.id}"><span class="mono">${escapeHtml(number)}</span></div>
+    <div class="col-name">
+      <div class="product-row-name" data-open-product="${p.id}" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
+      <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+    </div>
+    <div class="col-images">
+      <div class="product-row-images">
+        <button class="thumb-add" data-add-img="${p.id}" title="画像を追加">
+          <span class="thumb-add-icon">＋</span>
+          ${isEmpty ? '<span class="thumb-add-empty">未登録</span>' : ''}
+        </button>
+        ${imgsHTML}
+      </div>
     </div>
   </div>`;
 }
@@ -580,9 +611,43 @@ function openProductModal(productId) {
   if (!p) return;
 
   document.getElementById('productModalTitle').textContent = p.itemName || '(無題)';
-  document.getElementById('productModalMeta').textContent = `商品管理番号: ${p.itemNumber || '—'}  |  商品コード: ${p.itemCode || '—'}`;
+  document.getElementById('productModalMeta').textContent = `商品管理番号: ${p.itemManageNumber || '—'}  |  商品番号: ${p.itemNumber || '—'}  |  商品コード: ${p.itemCode || '—'}`;
   renderProductImageGrid(p);
   document.getElementById('productModal').style.display = 'flex';
+}
+
+function openProductEditForm(productId) {
+  const data = dataCache[currentShopId];
+  const p = data.products.find(x => x.id === productId);
+  if (!p) return;
+  document.getElementById('productEditId').value = p.id;
+  document.getElementById('productEditManageNumber').value = p.itemManageNumber || '';
+  document.getElementById('productEditNumber').value = p.itemNumber || '';
+  document.getElementById('productEditName').value = p.itemName || '';
+  document.getElementById('productEditItemCode').textContent = p.itemCode || '—';
+  document.getElementById('productEditModal').style.display = 'flex';
+}
+
+async function saveProductEditForm() {
+  const id = document.getElementById('productEditId').value;
+  const data = dataCache[currentShopId];
+  const p = data.products.find(x => x.id === id);
+  if (!p) return;
+  p.itemManageNumber = document.getElementById('productEditManageNumber').value.trim();
+  p.itemNumber = document.getElementById('productEditNumber').value.trim();
+  p.itemName = document.getElementById('productEditName').value.trim();
+
+  showLoading('保存中...');
+  try {
+    await saveShopData(currentShopId, `edit product: ${p.itemName}`);
+    hideLoading();
+    closeModal('productEditModal');
+    toast('保存しました', 'success');
+    render();
+  } catch (e) {
+    hideLoading();
+    toast('保存失敗: ' + e.message, 'error');
+  }
 }
 
 function openMaterialModal(entryId) {
