@@ -738,7 +738,92 @@
       "itemName": "ベビーガード 折りたたみ 5個セット",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/bg/bg-05-ori-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778832711149_fmb8jg",
+          "filename": "1778832709124_37n7h7_01_bg-05-ori-01.jpg",
+          "originalName": "01_bg-05-ori-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832709124_37n7h7_01_bg-05-ori-01.jpg",
+          "sha": "7cf412face3e6570502d761101cea016c33c3668",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832709124_37n7h7_01_bg-05-ori-01.jpg",
+          "size": 240292,
+          "uploadedAt": "2026-05-15T08:11:51.149Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832712873_8q13ot",
+          "filename": "1778832711150_zh0h49_02_bg-05-ori-02.jpg",
+          "originalName": "02_bg-05-ori-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832711150_zh0h49_02_bg-05-ori-02.jpg",
+          "sha": "0b67eea115a05befddb7ea9d0635c7a2751db76a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832711150_zh0h49_02_bg-05-ori-02.jpg",
+          "size": 487348,
+          "uploadedAt": "2026-05-15T08:11:52.874Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832714965_nkee34",
+          "filename": "1778832712874_3qcy10_03_bg-05-ori-03.jpg",
+          "originalName": "03_bg-05-ori-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832712874_3qcy10_03_bg-05-ori-03.jpg",
+          "sha": "965fbc9b8caf6ff0d1abcf72c22105ef6d6d3bcb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832712874_3qcy10_03_bg-05-ori-03.jpg",
+          "size": 350666,
+          "uploadedAt": "2026-05-15T08:11:54.966Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832717224_qarwav",
+          "filename": "1778832714966_qeoehs_04_bg-05-ori-04.jpg",
+          "originalName": "04_bg-05-ori-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832714966_qeoehs_04_bg-05-ori-04.jpg",
+          "sha": "2ad806eff39f848eb10f312aa9e01dc8bc78505f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832714966_qeoehs_04_bg-05-ori-04.jpg",
+          "size": 441149,
+          "uploadedAt": "2026-05-15T08:11:57.224Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832719268_dp4x56",
+          "filename": "1778832717225_o1yiz3_05_bg-05-ori-05.jpg",
+          "originalName": "05_bg-05-ori-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832717225_o1yiz3_05_bg-05-ori-05.jpg",
+          "sha": "357da7ec23f9e88d9ae45a6fb393493645ef7506",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832717225_o1yiz3_05_bg-05-ori-05.jpg",
+          "size": 255457,
+          "uploadedAt": "2026-05-15T08:11:59.268Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832721374_hduvv4",
+          "filename": "1778832719269_zcv1j7_06_bg-05-ori-06.jpg",
+          "originalName": "06_bg-05-ori-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832719269_zcv1j7_06_bg-05-ori-06.jpg",
+          "sha": "915f2e4d6bcc66cf278c3804ae1d9c6a87d76bcc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832719269_zcv1j7_06_bg-05-ori-06.jpg",
+          "size": 291860,
+          "uploadedAt": "2026-05-15T08:12:01.374Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832723716_ruev3v",
+          "filename": "1778832721374_cb9nra_07_bg-05-ori-07.jpg",
+          "originalName": "07_bg-05-ori-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832721374_cb9nra_07_bg-05-ori-07.jpg",
+          "sha": "75e41740ba5352956d8d40433c5d3795f03162b6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_45hc2o/1778832721374_cb9nra_07_bg-05-ori-07.jpg",
+          "size": 408880,
+          "uploadedAt": "2026-05-15T08:12:03.717Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
