@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.2.0';
+const APP_VERSION = 'v1.2.2';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -114,6 +114,10 @@ function bindEvents() {
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
   document.getElementById('btnTagManage').addEventListener('click', openTagManageModal);
   document.getElementById('btnAddTag').addEventListener('click', createTagFromForm);
+  document.getElementById('btnSaveTagEdit').addEventListener('click', saveTagEdit);
+  document.getElementById('tagEditName').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); saveTagEdit(); }
+  });
   document.getElementById('newTagName').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); createTagFromForm(); }
   });
@@ -637,29 +641,64 @@ async function createTagFromForm() {
   }
 }
 
-async function editTag(tagId) {
+let editingTagSelectedColor = 'amber';
+
+function editTag(tagId) {
   const tag = findTag(tagId);
-  if (!tag) return;
-  const newName = prompt('タグ名を変更:', tag.name);
-  if (newName === null) return;
-  const trimmed = newName.trim();
-  if (!trimmed) { toast('タグ名は空にできません', 'error'); return; }
+  if (!tag) { toast('タグが見つかりません', 'error'); return; }
+  document.getElementById('tagEditId').value = tag.id;
+  document.getElementById('tagEditName').value = tag.name;
+  editingTagSelectedColor = tag.color || 'amber';
+  renderTagEditColorPicker();
+  document.getElementById('tagEditModal').style.display = 'flex';
+}
+
+function renderTagEditColorPicker() {
+  const wrap = document.getElementById('tagEditColorPicker');
+  wrap.innerHTML = TAG_COLORS.map(c => `
+    <div class="color-swatch ${c.id === editingTagSelectedColor ? 'selected' : ''}"
+         data-color="${c.id}"
+         style="background:${c.bg};color:${c.fg}"
+         title="${c.id}">●</div>
+  `).join('');
+  wrap.querySelectorAll('.color-swatch').forEach(el => {
+    el.addEventListener('click', () => {
+      editingTagSelectedColor = el.dataset.color;
+      renderTagEditColorPicker();
+    });
+  });
+}
+
+async function saveTagEdit() {
+  const id = document.getElementById('tagEditId').value;
+  const tag = findTag(id);
+  if (!tag) { toast('タグが見つかりません', 'error'); return; }
+  const newName = document.getElementById('tagEditName').value.trim();
+  if (!newName) { toast('タグ名は空にできません', 'error'); return; }
+
   const data = dataCache[currentShopId];
-  if (data.tags.some(t => t.id !== tagId && t.name === trimmed)) {
+  if (data.tags.some(t => t.id !== id && t.name === newName)) {
     toast('同じ名前のタグが既にあります', 'error'); return;
   }
-  const old = tag.name;
-  tag.name = trimmed;
+
+  const oldName = tag.name;
+  const oldColor = tag.color;
+  tag.name = newName;
+  tag.color = editingTagSelectedColor;
+
   showLoading('保存中...');
   try {
-    await saveShopData(currentShopId, `rename tag: ${old} -> ${trimmed}`);
+    await saveShopData(currentShopId, `edit tag: ${oldName} -> ${newName}`);
     hideLoading();
+    closeModal('tagEditModal');
     renderTagManageList();
     renderTagFilterDropdown();
     render();
-    toast('タグ名を更新しました', 'success');
+    toast('タグを更新しました', 'success');
   } catch (e) {
-    tag.name = old;
+    // ロールバック
+    tag.name = oldName;
+    tag.color = oldColor;
     hideLoading();
     toast('保存失敗: ' + e.message, 'error');
   }
@@ -1322,6 +1361,7 @@ function renderProductGrid(products) {
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-name">商品名</div>
         <div class="col-images">画像</div>
+        <div class="col-actions">タグ・操作</div>
       </div>
       ${list.map(p => productRowHTML(p)).join('')}
     </div>
@@ -1429,11 +1469,6 @@ function productRowHTML(p) {
     <div class="col-number" data-open-product="${p.id}">${numberCell}</div>
     <div class="col-name">
       <div class="product-row-name" data-open-product="${p.id}" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
-      <div class="product-row-tags">
-        ${tagChipsHTML}
-        <button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>
-        <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
-      </div>
     </div>
     <div class="col-images">
       <div class="product-row-images">
@@ -1443,6 +1478,13 @@ function productRowHTML(p) {
         </button>
         ${imgsHTML}
       </div>
+    </div>
+    <div class="col-actions">
+      <div class="product-row-tags">
+        ${tagChipsHTML}
+        <button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>
+      </div>
+      <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
     </div>
   </div>`;
 }
