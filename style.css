@@ -768,6 +768,80 @@ body {
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
+
+/* 削除モード: 商品番号 + 画像のみ */
+.product-table-header.mode-delete,
+.product-row.mode-delete {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr);
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* 削除予約マーク */
+.product-row-thumb.delete-mark {
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+}
+.product-row-thumb.delete-mark img {
+  transition: opacity .15s;
+}
+.product-row-thumb.delete-mark:hover img {
+  opacity: 0.8;
+}
+.product-row-thumb.delete-mark.marked img {
+  opacity: 0.35;
+}
+.delete-mark-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(220, 38, 38, 0.25);
+  color: #fff;
+  font-size: 36px;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+/* 削除アクションバー */
+.delete-action-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 1px solid var(--danger);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 500;
+}
+.delete-action-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+.delete-action-icon { font-size: 20px; }
+.delete-action-info strong {
+  color: var(--danger);
+  font-size: 18px;
+  font-weight: 700;
+}
+.delete-action-buttons { display: flex; gap: 8px; }
+
+/* モード切替の危険ボタン */
+.view-mode-btn.view-mode-btn-danger.active {
+  background: var(--danger);
+  color: white;
+}
 .product-row:last-child {
   border-bottom: none;
 }
