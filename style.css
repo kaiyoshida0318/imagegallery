@@ -768,47 +768,6 @@ body {
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
-
-/* 文字+1モード: 行高低め, 画像1枚を小さく */
-.product-table-header.mode-compact,
-.product-row.mode-compact {
-  display: grid;
-  grid-template-columns: 130px 130px minmax(0, 1fr) 60px 140px;
-  align-items: center;
-  border-bottom: 1px solid var(--border-light);
-}
-.product-row.mode-compact { padding: 4px 0; }
-.product-row.mode-compact .product-row-thumb {
-  width: 40px;
-  height: 50px;
-}
-.product-row.mode-compact .thumb-add {
-  width: 40px;
-  height: 50px;
-  border-width: 1px;
-}
-.product-row.mode-compact .thumb-add-icon { font-size: 14px; }
-.product-row.mode-compact .thumb-add-empty { font-size: 8px; }
-.product-row.mode-compact .product-row-name {
-  -webkit-line-clamp: 1;
-}
-.product-row.mode-compact .col-actions {
-  padding-top: 0;
-  padding-bottom: 0;
-  gap: 3px;
-}
-.product-row.mode-compact .product-row-tags {
-  gap: 3px;
-}
-.product-row.mode-compact .tag-chip {
-  font-size: 10px;
-  padding: 1px 6px;
-}
-.product-row.mode-compact .btn-tag-add,
-.product-row.mode-compact .btn-edit-mini {
-  font-size: 10px;
-  padding: 1px 6px;
-}
 .product-row:last-child {
   border-bottom: none;
 }
