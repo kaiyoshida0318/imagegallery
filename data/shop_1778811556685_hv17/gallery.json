@@ -992,7 +992,80 @@
       "itemName": "USB C ポートカバー オス 20個セット",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/bg/bg-10-usbc-osu-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778832950905_jzcsm8",
+          "filename": "1778832948858_pwl8y9_3_bg-10-usbc-osu-03.jpg",
+          "originalName": "3_bg-10-usbc-osu-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832948858_pwl8y9_3_bg-10-usbc-osu-03.jpg",
+          "sha": "f612c2df0b7875b604ab1a399c3860024f88edbb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832948858_pwl8y9_3_bg-10-usbc-osu-03.jpg",
+          "size": 261735,
+          "uploadedAt": "2026-05-15T08:15:50.905Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832952841_pdbm5w",
+          "filename": "1778832950906_2505bf_4_bg-10-usbc-osu-04.jpg",
+          "originalName": "4_bg-10-usbc-osu-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832950906_2505bf_4_bg-10-usbc-osu-04.jpg",
+          "sha": "2420e2cc055c9eb0fe5af3328aa8fc452f8b62b6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832950906_2505bf_4_bg-10-usbc-osu-04.jpg",
+          "size": 405416,
+          "uploadedAt": "2026-05-15T08:15:52.841Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832954725_7m2ww1",
+          "filename": "1778832952841_le7a04_5_bg-10-usbc-osu-05a.jpg",
+          "originalName": "5_bg-10-usbc-osu-05a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832952841_le7a04_5_bg-10-usbc-osu-05a.jpg",
+          "sha": "9e8dad8ece547f7b6ec57c752848df09a5016e7e",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832952841_le7a04_5_bg-10-usbc-osu-05a.jpg",
+          "size": 306860,
+          "uploadedAt": "2026-05-15T08:15:54.726Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832956776_mmywpj",
+          "filename": "1778832954726_3sny20_6_bg-10-usbc-osu-06.jpg",
+          "originalName": "6_bg-10-usbc-osu-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832954726_3sny20_6_bg-10-usbc-osu-06.jpg",
+          "sha": "45cdfba8b4a0c8015b33e370f214d8f809efd118",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832954726_3sny20_6_bg-10-usbc-osu-06.jpg",
+          "size": 590618,
+          "uploadedAt": "2026-05-15T08:15:56.777Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832958056_cboyqt",
+          "filename": "1778832956777_0vzq9c_1_bg-10-usbc-osu-01.jpg",
+          "originalName": "1_bg-10-usbc-osu-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832956777_0vzq9c_1_bg-10-usbc-osu-01.jpg",
+          "sha": "bf6e4d4f4bb8915a720801c3d5f79a7c5a9b58fc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832956777_0vzq9c_1_bg-10-usbc-osu-01.jpg",
+          "size": 118772,
+          "uploadedAt": "2026-05-15T08:15:58.056Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832959900_a4v5nh",
+          "filename": "1778832958056_18klsn_2_bg-10-usbc-osu-02.jpg",
+          "originalName": "2_bg-10-usbc-osu-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832958056_18klsn_2_bg-10-usbc-osu-02.jpg",
+          "sha": "52aca47504ff298b3a5d5d4162856e541cb01d85",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_fzp32q/1778832958056_18klsn_2_bg-10-usbc-osu-02.jpg",
+          "size": 580192,
+          "uploadedAt": "2026-05-15T08:15:59.900Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
