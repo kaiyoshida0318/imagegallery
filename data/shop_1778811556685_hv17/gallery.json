@@ -125,7 +125,68 @@
       "itemName": "凡庸型 20mm ベルトループ",
       "itemPrice": 480,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/bloop-18-01-20.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778833317458_hv01fb",
+          "filename": "1778833316025_5lj2no_2_bloop-18-01-20_1.jpg",
+          "originalName": "2_bloop-18-01-20_1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833316025_5lj2no_2_bloop-18-01-20_1.jpg",
+          "sha": "354e33d29d1e3c8524017a59b0b8072411be1d5f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833316025_5lj2no_2_bloop-18-01-20_1.jpg",
+          "size": 78982,
+          "uploadedAt": "2026-05-15T08:21:57.458Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833318848_enaohn",
+          "filename": "1778833317458_lb7vm5_3_bloop-18-01-20_2.jpg",
+          "originalName": "3_bloop-18-01-20_2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833317458_lb7vm5_3_bloop-18-01-20_2.jpg",
+          "sha": "4afbb53ac87c8dd3814ed453f104e2546ec1616d",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833317458_lb7vm5_3_bloop-18-01-20_2.jpg",
+          "size": 46645,
+          "uploadedAt": "2026-05-15T08:21:58.848Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833320424_i9296w",
+          "filename": "1778833318849_oog111_4_bloop-18-01-20_3.jpg",
+          "originalName": "4_bloop-18-01-20_3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833318849_oog111_4_bloop-18-01-20_3.jpg",
+          "sha": "e1e662aeb895bb194e251adecdfabcec514e0d0a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833318849_oog111_4_bloop-18-01-20_3.jpg",
+          "size": 76980,
+          "uploadedAt": "2026-05-15T08:22:00.425Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833322101_ppk72t",
+          "filename": "1778833320425_za9j5f_5_belt-tool.jpg",
+          "originalName": "5_belt-tool.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833320425_za9j5f_5_belt-tool.jpg",
+          "sha": "4443db5d83be7e8aec9521ca765d0712b2a5f14c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833320425_za9j5f_5_belt-tool.jpg",
+          "size": 124350,
+          "uploadedAt": "2026-05-15T08:22:02.102Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833323704_cjtfkb",
+          "filename": "1778833322102_5xd1zm_1_bloop-18-01-20.jpg",
+          "originalName": "1_bloop-18-01-20.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833322102_5xd1zm_1_bloop-18-01-20.jpg",
+          "sha": "6d86c10f005fb0a448ee4ece3bac4209ad44afe6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_649h9e/1778833322102_5xd1zm_1_bloop-18-01-20.jpg",
+          "size": 109633,
+          "uploadedAt": "2026-05-15T08:22:03.704Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
