@@ -865,14 +865,14 @@ body {
   overflow: hidden;
   border: 1px solid var(--border);
   cursor: pointer;
-  background: var(--bg);
+  background: #fff;
   transition: transform .15s;
 }
 .product-row-thumb:hover { transform: scale(1.05); border-color: var(--primary); }
 .product-row-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
 }
 
@@ -1127,7 +1127,7 @@ body {
 .image-tile:hover { border-color: var(--primary); transform: scale(1.02); }
 .image-tile-thumb {
   aspect-ratio: 1;
-  background: var(--bg);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1136,7 +1136,7 @@ body {
 .image-tile-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .image-tile-info {
   padding: 6px 8px;
@@ -1307,7 +1307,7 @@ body {
 }
 .material-tile-thumb {
   aspect-ratio: 1;
-  background: var(--bg);
+  background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1317,7 +1317,7 @@ body {
 .material-tile-thumb img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
 }
 .material-tile-info { padding: 8px 10px; }
 .material-tile-name {
