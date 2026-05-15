@@ -4628,7 +4628,68 @@
       "itemName": "細ネクタイ　グリーン",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-green-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836705356_nfvvfj",
+          "filename": "1778836703598_o1nzvi_1_fas-16-01-green-1.jpg",
+          "originalName": "1_fas-16-01-green-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836703598_o1nzvi_1_fas-16-01-green-1.jpg",
+          "sha": "cf74884a8241d345fdf6bcc779f157c9495d0015",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836703598_o1nzvi_1_fas-16-01-green-1.jpg",
+          "size": 104558,
+          "uploadedAt": "2026-05-15T09:18:25.356Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836707054_1q5vnd",
+          "filename": "1778836705360_s0izeg_2_fas-16-01-green-2.jpg",
+          "originalName": "2_fas-16-01-green-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836705360_s0izeg_2_fas-16-01-green-2.jpg",
+          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836705360_s0izeg_2_fas-16-01-green-2.jpg",
+          "size": 88193,
+          "uploadedAt": "2026-05-15T09:18:27.054Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836708737_c0xt5g",
+          "filename": "1778836707063_bk7bl1_3_fas-16-01-green-4.jpg",
+          "originalName": "3_fas-16-01-green-4.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836707063_bk7bl1_3_fas-16-01-green-4.jpg",
+          "sha": "45d822f8ce1a7af5697d448d2e5d9ce860d495e8",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836707063_bk7bl1_3_fas-16-01-green-4.jpg",
+          "size": 111423,
+          "uploadedAt": "2026-05-15T09:18:28.737Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836710191_033dch",
+          "filename": "1778836708743_gmlfog_4_fas-16-01-green-3.jpg",
+          "originalName": "4_fas-16-01-green-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836708743_gmlfog_4_fas-16-01-green-3.jpg",
+          "sha": "05ef6103c0fbbf0048ccb5f38c387f6e9ca5a425",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836708743_gmlfog_4_fas-16-01-green-3.jpg",
+          "size": 58469,
+          "uploadedAt": "2026-05-15T09:18:30.191Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836711934_5ohwz8",
+          "filename": "1778836710201_hevwci_5_necktie-okuri.jpg",
+          "originalName": "5_necktie-okuri.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836710201_hevwci_5_necktie-okuri.jpg",
+          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836710201_hevwci_5_necktie-okuri.jpg",
+          "size": 177960,
+          "uploadedAt": "2026-05-15T09:18:31.934Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
