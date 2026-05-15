@@ -7393,7 +7393,80 @@
       "itemName": "精密ピンセット",
       "itemPrice": 1280,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/ih/ih-22-05c-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838524016_xwu124",
+          "filename": "1778838522918_n4dxsh_04_ih-22-05c-01a.jpg",
+          "originalName": "04_ih-22-05c-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838522918_n4dxsh_04_ih-22-05c-01a.jpg",
+          "sha": "fd9179318262134046e23cf88bed94972851f94a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838522918_n4dxsh_04_ih-22-05c-01a.jpg",
+          "size": 104063,
+          "uploadedAt": "2026-05-15T09:48:44.016Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838526138_lzvec3",
+          "filename": "1778838524023_llmdb9_05_ih-22-05b-02.jpg",
+          "originalName": "05_ih-22-05b-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838524023_llmdb9_05_ih-22-05b-02.jpg",
+          "sha": "dd5447a1fd915b7a073f153a32597bd22bdc86f3",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838524023_llmdb9_05_ih-22-05b-02.jpg",
+          "size": 248510,
+          "uploadedAt": "2026-05-15T09:48:46.138Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838528195_cxs0xy",
+          "filename": "1778838526144_gr40q4_06_ih-22-05b-03.jpg",
+          "originalName": "06_ih-22-05b-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838526144_gr40q4_06_ih-22-05b-03.jpg",
+          "sha": "24d8b89e1698c7ef5aa1a5dab4c5bcd8e4e25b3d",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838526144_gr40q4_06_ih-22-05b-03.jpg",
+          "size": 188133,
+          "uploadedAt": "2026-05-15T09:48:48.195Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838529725_fq552y",
+          "filename": "1778838528201_ejax14_07_ih-22-05b-04.jpg",
+          "originalName": "07_ih-22-05b-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838528201_ejax14_07_ih-22-05b-04.jpg",
+          "sha": "0f913344e0c904e26aa1cf178a93c627d206d5b5",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838528201_ejax14_07_ih-22-05b-04.jpg",
+          "size": 159833,
+          "uploadedAt": "2026-05-15T09:48:49.725Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838531439_xppjnt",
+          "filename": "1778838529732_54a3cg_08_ih-22-05a-05.jpg",
+          "originalName": "08_ih-22-05a-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838529732_54a3cg_08_ih-22-05a-05.jpg",
+          "sha": "28bb8ac4731d5b5f8399a9e4bc457636eadcfd33",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838529732_54a3cg_08_ih-22-05a-05.jpg",
+          "size": 288124,
+          "uploadedAt": "2026-05-15T09:48:51.439Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838533507_rrczqy",
+          "filename": "1778838531448_hupum2_09_ih-22-05a-06.jpg",
+          "originalName": "09_ih-22-05a-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838531448_hupum2_09_ih-22-05a-06.jpg",
+          "sha": "1bf611d1e1276cb4302819d402cb3583b05a7aa2",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9awm8a/1778838531448_hupum2_09_ih-22-05a-06.jpg",
+          "size": 469688,
+          "uploadedAt": "2026-05-15T09:48:53.507Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
