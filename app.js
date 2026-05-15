@@ -2,7 +2,26 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.0.7';
+const APP_VERSION = 'v1.0.9';
+
+// グローバルエラーハンドラ - エラーを画面に表示
+window.addEventListener('error', (e) => {
+  showFatalError(e.message + ' at ' + (e.filename||'') + ':' + (e.lineno||''));
+});
+window.addEventListener('unhandledrejection', (e) => {
+  showFatalError('Promise rejected: ' + (e.reason?.message || e.reason));
+});
+function showFatalError(msg) {
+  console.error('FATAL:', msg);
+  let el = document.getElementById('fatalError');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'fatalError';
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#dc2626;color:white;padding:12px 20px;font-family:monospace;font-size:12px;z-index:99999;white-space:pre-wrap;box-shadow:0 2px 8px rgba(0,0,0,0.3);max-height:50vh;overflow-y:auto;';
+    document.body && document.body.appendChild(el);
+  }
+  el.textContent = '⚠️ ERROR: ' + msg;
+}
 
 // ----- 設定キー -----
 const LS_AUTH = 'imagegallery_auth_v1';
@@ -73,13 +92,32 @@ function loadCurrentSelections() {
 function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
   document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
-  document.getElementById('btnImportCsv').addEventListener('click', () => {
+  document.getElementById('btnImportCsv').addEventListener('click', openCsvImportModal);
+  document.getElementById('btnPickCsv').addEventListener('click', (e) => {
+    e.stopPropagation();
     document.getElementById('csvFileInput').click();
   });
   document.getElementById('csvFileInput').addEventListener('change', (e) => {
     const file = e.target.files[0];
     if (file) handleCsvFile(file);
     e.target.value = '';
+  });
+  // CSV dropzone
+  const csvDz = document.getElementById('csvDropzone');
+  csvDz.addEventListener('click', () => document.getElementById('csvFileInput').click());
+  csvDz.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    csvDz.classList.add('dragover');
+  });
+  csvDz.addEventListener('dragleave', () => csvDz.classList.remove('dragover'));
+  csvDz.addEventListener('drop', (e) => {
+    e.preventDefault();
+    csvDz.classList.remove('dragover');
+    const file = Array.from(e.dataTransfer.files).find(f =>
+      f.name.toLowerCase().endsWith('.csv') || f.type === 'text/csv'
+    );
+    if (file) handleCsvFile(file);
+    else toast('CSVファイルをドロップしてください', 'error');
   });
   document.getElementById('btnConfirmCsvImport').addEventListener('click', confirmCsvImport);
   document.getElementById('btnAddEntry').addEventListener('click', openEntryForm);
@@ -459,11 +497,31 @@ function parseCsv(text) {
   return { headers, rows };
 }
 
+function openCsvImportModal() {
+  const shop = getCurrentShop();
+  if (!shop) { toast('ショップが選択されていません', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) { toast('データ未読み込みです', 'error'); return; }
+
+  // 状態リセット
+  pendingCsvImport = null;
+  document.getElementById('csvImportSummary').innerHTML = '';
+  document.getElementById('csvImportPreview').innerHTML = '';
+  document.getElementById('btnConfirmCsvImport').style.display = 'none';
+  document.getElementById('csvDropzone').style.display = 'flex';
+  document.getElementById('csvImportModal').style.display = 'flex';
+}
+
 async function handleCsvFile(file) {
   const shop = getCurrentShop();
   if (!shop) { toast('ショップが選択されていません', 'error'); return; }
   const data = dataCache[currentShopId];
   if (!data) { toast('データ未読み込みです', 'error'); return; }
+
+  // CSVモーダルが閉じていれば開く
+  if (document.getElementById('csvImportModal').style.display === 'none') {
+    openCsvImportModal();
+  }
 
   try {
     const text = await file.text();
@@ -532,6 +590,11 @@ async function handleCsvFile(file) {
 }
 
 function showCsvImportPreview(result) {
+  // ドロップゾーンを隠してプレビュー表示
+  document.getElementById('csvDropzone').style.display = 'none';
+  const confirmBtn = document.getElementById('btnConfirmCsvImport');
+  confirmBtn.style.display = '';
+
   const summary = document.getElementById('csvImportSummary');
   summary.innerHTML = `
     <div class="csv-stats">
