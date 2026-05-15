@@ -283,7 +283,19 @@ body {
   flex-wrap: wrap;
   gap: 5px;
   align-items: center;
-  margin-top: 2px;
+}
+
+.col-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  padding: 4px 14px;
+  border-left: 1px solid var(--border-light);
+}
+.col-actions .btn-edit-mini {
+  align-self: stretch;
+  text-align: center;
 }
 
 .btn-tag-add {
@@ -631,7 +643,7 @@ body {
 .product-table-header,
 .product-row {
   display: grid;
-  grid-template-columns: 130px 130px 260px minmax(0, 1fr);
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 220px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -699,6 +711,7 @@ body {
 .col-name {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 4px;
   min-width: 0;
 }
