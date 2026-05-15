@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.0.0">
+<link rel="stylesheet" href="style.css?v=1.0.1">
 </head>
 <body>
 
@@ -140,18 +140,14 @@
         <input type="text" id="shopFormCode" placeholder="yukaiya">
       </div>
       <div class="form-row">
-        <label>楽天 Application ID</label>
-        <input type="text" id="shopFormAppId" placeholder="1234567890123456789">
+        <label>楽天 Application ID (UUID形式)</label>
+        <input type="text" id="shopFormAppId" placeholder="25e47e44-78d4-4298-a49e-9e5bb71bba2c">
+        <small class="form-hint">楽天Web Service「アプリ情報の確認」のアプリケーションID</small>
       </div>
       <div class="form-row">
-        <label>License API キー (License Key)</label>
-        <input type="password" id="shopFormLicense" placeholder="sk_..." >
-        <small class="form-hint">商品一覧の取得に使用 (RMS商品API)</small>
-      </div>
-      <div class="form-row">
-        <label>サービスシークレット (Service Secret)</label>
-        <input type="password" id="shopFormSecret" placeholder="SS...">
-        <small class="form-hint">商品一覧の取得に使用 (RMS商品API)</small>
+        <label>Access Key</label>
+        <input type="password" id="shopFormAccessKey" placeholder="アクセスキー">
+        <small class="form-hint">楽天Web Service「アプリ情報の確認」のアクセスキー</small>
       </div>
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeModal('shopFormModal')">キャンセル</button>
@@ -273,6 +269,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.0.0"></script>
+<script src="app.js?v=1.0.1"></script>
 </body>
 </html>
