@@ -1225,56 +1225,7 @@
       "itemName": "ネクタイ5cm 紫 06",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-purple-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836734619_17qnf1",
-          "filename": "1778836732896_qld7ih_1_fas-16-01-purple-1.jpg",
-          "originalName": "1_fas-16-01-purple-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836732896_qld7ih_1_fas-16-01-purple-1.jpg",
-          "sha": "820b9ec59ff55a3e6dd9c2c4dc664018c21c6d90",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836732896_qld7ih_1_fas-16-01-purple-1.jpg",
-          "size": 110991,
-          "uploadedAt": "2026-05-15T09:18:54.619Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836736426_ahl0b8",
-          "filename": "1778836734623_dypr5g_2_fas-16-01-purple-2.jpg",
-          "originalName": "2_fas-16-01-purple-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836734623_dypr5g_2_fas-16-01-purple-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836734623_dypr5g_2_fas-16-01-purple-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:18:56.426Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836738089_37ayp1",
-          "filename": "1778836736435_o2tpxg_3_fas-16-01-purple-3.jpg",
-          "originalName": "3_fas-16-01-purple-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836736435_o2tpxg_3_fas-16-01-purple-3.jpg",
-          "sha": "6e3a09a6c9b0388d8cfc5636662d0fb06e9b9570",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836736435_o2tpxg_3_fas-16-01-purple-3.jpg",
-          "size": 59212,
-          "uploadedAt": "2026-05-15T09:18:58.089Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836740525_jly9jn",
-          "filename": "1778836738095_lwd8ji_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836738095_lwd8ji_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_533ngf/1778836738095_lwd8ji_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:19:00.525Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -1286,200 +1237,7 @@
       "itemName": "フェルト 30cm*21cm",
       "itemPrice": 1280,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/felt/fel-22-01-01-1280a.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836839863_qd3c7d",
-          "filename": "1778836838036_m65lzo_01_fel-22-01-3set-01.jpg",
-          "originalName": "01_fel-22-01-3set-01.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836838036_m65lzo_01_fel-22-01-3set-01.jpg",
-          "sha": "25977dccd50a4a53ebf633724bc541dbe00c2193",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836838036_m65lzo_01_fel-22-01-3set-01.jpg",
-          "size": 160928,
-          "uploadedAt": "2026-05-15T09:20:39.863Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836841291_lecz9x",
-          "filename": "1778836839869_7l1bxa_02_fel-22-01-3set-02.jpg",
-          "originalName": "02_fel-22-01-3set-02.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836839869_7l1bxa_02_fel-22-01-3set-02.jpg",
-          "sha": "057abb128ec521d76cd43f7ff25b548741974c1a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836839869_7l1bxa_02_fel-22-01-3set-02.jpg",
-          "size": 131335,
-          "uploadedAt": "2026-05-15T09:20:41.291Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836843230_m1x0wq",
-          "filename": "1778836841304_btiq8b_03_fel-22-01-3set-03.jpg",
-          "originalName": "03_fel-22-01-3set-03.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836841304_btiq8b_03_fel-22-01-3set-03.jpg",
-          "sha": "db3ca78ef7f3df94ca94b59efa76a89b557bdcef",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836841304_btiq8b_03_fel-22-01-3set-03.jpg",
-          "size": 259590,
-          "uploadedAt": "2026-05-15T09:20:43.230Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836845015_gcx0fn",
-          "filename": "1778836843242_23vmv2_04_saikyo.jpg",
-          "originalName": "04_saikyo.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836843242_23vmv2_04_saikyo.jpg",
-          "sha": "7f894528c1d1dadb8837daa8ab25935df632a22a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836843242_23vmv2_04_saikyo.jpg",
-          "size": 216689,
-          "uploadedAt": "2026-05-15T09:20:45.015Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836847030_jb8xyn",
-          "filename": "1778836845028_gsx3kz_05_fel-22-01-01-1280a.jpg",
-          "originalName": "05_fel-22-01-01-1280a.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836845028_gsx3kz_05_fel-22-01-01-1280a.jpg",
-          "sha": "3e4c3d5e632d05a7567b276a099d499cc74024c6",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836845028_gsx3kz_05_fel-22-01-01-1280a.jpg",
-          "size": 145616,
-          "uploadedAt": "2026-05-15T09:20:47.030Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836849205_eplv9b",
-          "filename": "1778836847045_m0pz1r_06_fel-22-01-02.jpg",
-          "originalName": "06_fel-22-01-02.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836847045_m0pz1r_06_fel-22-01-02.jpg",
-          "sha": "76294da0f73273c8733da51e53c81cac18656b41",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836847045_m0pz1r_06_fel-22-01-02.jpg",
-          "size": 211990,
-          "uploadedAt": "2026-05-15T09:20:49.205Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836850994_98r9kd",
-          "filename": "1778836849216_c7lxhs_07_fel-22-01-03.jpg",
-          "originalName": "07_fel-22-01-03.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836849216_c7lxhs_07_fel-22-01-03.jpg",
-          "sha": "b4cb26a92f590e782a89f288b724478fc7867438",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836849216_c7lxhs_07_fel-22-01-03.jpg",
-          "size": 139007,
-          "uploadedAt": "2026-05-15T09:20:50.994Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836852746_gj8arg",
-          "filename": "1778836851001_7b2s6u_08_fel-22-01-04.jpg",
-          "originalName": "08_fel-22-01-04.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836851001_7b2s6u_08_fel-22-01-04.jpg",
-          "sha": "d9fecd5df309d74cc46fc9f93b5370062f6bad47",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836851001_7b2s6u_08_fel-22-01-04.jpg",
-          "size": 146341,
-          "uploadedAt": "2026-05-15T09:20:52.746Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836854500_31w6bu",
-          "filename": "1778836852753_0l2uka_09_fel-22-01-05.jpg",
-          "originalName": "09_fel-22-01-05.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836852753_0l2uka_09_fel-22-01-05.jpg",
-          "sha": "f42a4730543f36948daa2d2ccabd7892fda0cba4",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836852753_0l2uka_09_fel-22-01-05.jpg",
-          "size": 121449,
-          "uploadedAt": "2026-05-15T09:20:54.500Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836856019_w0u2me",
-          "filename": "1778836854507_fml4ew_10_fel-22-01a-06.jpg",
-          "originalName": "10_fel-22-01a-06.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836854507_fml4ew_10_fel-22-01a-06.jpg",
-          "sha": "4010e81d02d74c89a92196ce2b1913c0f1bcbddf",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836854507_fml4ew_10_fel-22-01a-06.jpg",
-          "size": 223743,
-          "uploadedAt": "2026-05-15T09:20:56.019Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836857714_01es2k",
-          "filename": "1778836856025_28va4p_11_fel-22-01-07.jpg",
-          "originalName": "11_fel-22-01-07.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836856025_28va4p_11_fel-22-01-07.jpg",
-          "sha": "c3847d276986a82eea10401cec55d280af7128c2",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836856025_28va4p_11_fel-22-01-07.jpg",
-          "size": 121333,
-          "uploadedAt": "2026-05-15T09:20:57.714Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836859571_ogad35",
-          "filename": "1778836857721_gqdxf4_12_fel-22-01-08.jpg",
-          "originalName": "12_fel-22-01-08.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836857721_gqdxf4_12_fel-22-01-08.jpg",
-          "sha": "45ecefc2aea5abc1b628f0a52a99fdc17adcb881",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836857721_gqdxf4_12_fel-22-01-08.jpg",
-          "size": 188108,
-          "uploadedAt": "2026-05-15T09:20:59.571Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836861504_ki0w0h",
-          "filename": "1778836859577_n4nlj7_13_pre-mat-new.jpg",
-          "originalName": "13_pre-mat-new.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836859577_n4nlj7_13_pre-mat-new.jpg",
-          "sha": "81d15cdfe9db5d87c1bcedbe514451353d64f4cb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836859577_n4nlj7_13_pre-mat-new.jpg",
-          "size": 158325,
-          "uploadedAt": "2026-05-15T09:21:01.504Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836863814_tiwzu6",
-          "filename": "1778836861516_ocen49_14_new-coupon.jpg",
-          "originalName": "14_new-coupon.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836861516_ocen49_14_new-coupon.jpg",
-          "sha": "7e5ac6aaba46d21a50e662fb1097fa328b3007bb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836861516_ocen49_14_new-coupon.jpg",
-          "size": 855878,
-          "uploadedAt": "2026-05-15T09:21:03.814Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836866103_f30m6x",
-          "filename": "1778836863820_hgfmbx_15_kanren-fel-gif.gif",
-          "originalName": "15_kanren-fel-gif.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836863820_hgfmbx_15_kanren-fel-gif.gif",
-          "sha": "bc5a68e30b754d285cc19befb695748bf3de7a13",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836863820_hgfmbx_15_kanren-fel-gif.gif",
-          "size": 295146,
-          "uploadedAt": "2026-05-15T09:21:06.103Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836867981_89bqdk",
-          "filename": "1778836866111_hszinr_16_zensyohin-gif.gif",
-          "originalName": "16_zensyohin-gif.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836866111_hszinr_16_zensyohin-gif.gif",
-          "sha": "a80487d10459e7045f47b5c8b950fe92f4bf3b93",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_09bjdd/1778836866111_hszinr_16_zensyohin-gif.gif",
-          "size": 255529,
-          "uploadedAt": "2026-05-15T09:21:07.981Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -1491,44 +1249,7 @@
       "itemName": "蝶ネクタイ 黄色 011",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-yellow-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836823221_8bmmoh",
-          "filename": "1778836821466_16auhy_1_fas-16-02-yellow-1.jpg",
-          "originalName": "1_fas-16-02-yellow-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836821466_16auhy_1_fas-16-02-yellow-1.jpg",
-          "sha": "9db365c159e31ff9fb8507461b2881ef46334396",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836821466_16auhy_1_fas-16-02-yellow-1.jpg",
-          "size": 40532,
-          "uploadedAt": "2026-05-15T09:20:23.221Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836825019_h93r9i",
-          "filename": "1778836823223_szousv_2_fas-16-02-yellow-2.jpg",
-          "originalName": "2_fas-16-02-yellow-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836823223_szousv_2_fas-16-02-yellow-2.jpg",
-          "sha": "24cafe10085928bca264c7724049f4e4b840e609",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836823223_szousv_2_fas-16-02-yellow-2.jpg",
-          "size": 51303,
-          "uploadedAt": "2026-05-15T09:20:25.019Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836827056_wbr50a",
-          "filename": "1778836825026_tpiei9_3_fas-16-02-yellow-3.jpg",
-          "originalName": "3_fas-16-02-yellow-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836825026_tpiei9_3_fas-16-02-yellow-3.jpg",
-          "sha": "e2d17fdc46cd4a33c7122fa99e27fff415105df5",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836825026_tpiei9_3_fas-16-02-yellow-3.jpg",
-          "size": 64911,
-          "uploadedAt": "2026-05-15T09:20:27.056Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -1564,56 +1285,7 @@
       "itemName": "ネクタイ5cm オレンジ 24",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-orange-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836830788_hit3ed",
-          "filename": "1778836829031_znd5ju_1_fas-16-01-orange-1.jpg",
-          "originalName": "1_fas-16-01-orange-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836829031_znd5ju_1_fas-16-01-orange-1.jpg",
-          "sha": "4d43ce1698e68b7c609d858f94f9da8e5e741d80",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836829031_znd5ju_1_fas-16-01-orange-1.jpg",
-          "size": 107363,
-          "uploadedAt": "2026-05-15T09:20:30.788Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836832409_nwszni",
-          "filename": "1778836830798_793vxn_2_fas-16-01-orange-2.jpg",
-          "originalName": "2_fas-16-01-orange-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836830798_793vxn_2_fas-16-01-orange-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836830798_793vxn_2_fas-16-01-orange-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:20:32.409Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836834116_2cwni9",
-          "filename": "1778836832416_pjxoqr_3_fas-16-01-orange-3.jpg",
-          "originalName": "3_fas-16-01-orange-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836832416_pjxoqr_3_fas-16-01-orange-3.jpg",
-          "sha": "31149f2eb133bfd546de73f875a03f363f59f6c3",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836832416_pjxoqr_3_fas-16-01-orange-3.jpg",
-          "size": 60166,
-          "uploadedAt": "2026-05-15T09:20:34.116Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836836095_l6d0ci",
-          "filename": "1778836834127_hs081c_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836834127_hs081c_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_t6qzdu/1778836834127_hs081c_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:20:36.095Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -1637,44 +1309,7 @@
       "itemName": "蝶ネクタイ えんじ",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-red-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836773059_t2ibre",
-          "filename": "1778836771597_j3wec1_1_fas-16-02-red-1.jpg",
-          "originalName": "1_fas-16-02-red-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836771597_j3wec1_1_fas-16-02-red-1.jpg",
-          "sha": "dff452247fdca1f54fee088a99664150e28d9494",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836771597_j3wec1_1_fas-16-02-red-1.jpg",
-          "size": 55536,
-          "uploadedAt": "2026-05-15T09:19:33.059Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836774538_95avzt",
-          "filename": "1778836773064_7stfd6_2_fas-16-02-w_1.jpg",
-          "originalName": "2_fas-16-02-w_1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836773064_7stfd6_2_fas-16-02-w_1.jpg",
-          "sha": "5240d5bc31ca87fffdfde278b050a0b743cc86f6",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836773064_7stfd6_2_fas-16-02-w_1.jpg",
-          "size": 65358,
-          "uploadedAt": "2026-05-15T09:19:34.538Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836776041_e61hbl",
-          "filename": "1778836774548_hru9ds_3_fas-16-02-red-3.jpg",
-          "originalName": "3_fas-16-02-red-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836774548_hru9ds_3_fas-16-02-red-3.jpg",
-          "sha": "cf6dcf8d7f9f783349f27caa31c40e9885849300",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836774548_hru9ds_3_fas-16-02-red-3.jpg",
-          "size": 70214,
-          "uploadedAt": "2026-05-15T09:19:36.041Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -3211,44 +2846,7 @@
       "itemName": "蝶ネクタイ オレンジ",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-orange-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836802001_lfhpx1",
-          "filename": "1778836800346_f94or2_1_fas-16-02-orange-1.jpg",
-          "originalName": "1_fas-16-02-orange-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836800346_f94or2_1_fas-16-02-orange-1.jpg",
-          "sha": "ce4eeed1186c1ffc92ffdde9ecaa58bfb53ecf85",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836800346_f94or2_1_fas-16-02-orange-1.jpg",
-          "size": 46136,
-          "uploadedAt": "2026-05-15T09:20:02.001Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836803550_z2n6q6",
-          "filename": "1778836802010_0tcz3x_2_fas-16-02-orange-2.jpg",
-          "originalName": "2_fas-16-02-orange-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836802010_0tcz3x_2_fas-16-02-orange-2.jpg",
-          "sha": "4834a4aece2becc8fe645344153264b76dfc4e7a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836802010_0tcz3x_2_fas-16-02-orange-2.jpg",
-          "size": 52351,
-          "uploadedAt": "2026-05-15T09:20:03.550Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836805011_wtwqbe",
-          "filename": "1778836803554_7feb7q_3_fas-16-02-orange-3.jpg",
-          "originalName": "3_fas-16-02-orange-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836803554_7feb7q_3_fas-16-02-orange-3.jpg",
-          "sha": "18b099cb657bddccadb689fc961610f719482179",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836803554_7feb7q_3_fas-16-02-orange-3.jpg",
-          "size": 67276,
-          "uploadedAt": "2026-05-15T09:20:05.011Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -3272,56 +2870,7 @@
       "itemName": "ネクタイ5cm 青 18",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-blue-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836680499_5gxxfv",
-          "filename": "1778836679066_jpouz8_1_fas-16-01-blue-1.jpg",
-          "originalName": "1_fas-16-01-blue-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836679066_jpouz8_1_fas-16-01-blue-1.jpg",
-          "sha": "979b2291fcec7da8368d986374ff2f18f58dce96",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836679066_jpouz8_1_fas-16-01-blue-1.jpg",
-          "size": 107047,
-          "uploadedAt": "2026-05-15T09:18:00.499Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836682122_ll1vwc",
-          "filename": "1778836680505_ycab5q_2_fas-16-01-blue-2.jpg",
-          "originalName": "2_fas-16-01-blue-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836680505_ycab5q_2_fas-16-01-blue-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836680505_ycab5q_2_fas-16-01-blue-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:18:02.122Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836683923_nbf1a6",
-          "filename": "1778836682129_ldh8ex_3_fas-16-01-blue-3.jpg",
-          "originalName": "3_fas-16-01-blue-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836682129_ldh8ex_3_fas-16-01-blue-3.jpg",
-          "sha": "9103f3e933b12c2ac66b17665d44614fafb4f446",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836682129_ldh8ex_3_fas-16-01-blue-3.jpg",
-          "size": 60577,
-          "uploadedAt": "2026-05-15T09:18:03.923Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836685692_3geyph",
-          "filename": "1778836683937_wbalyq_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836683937_wbalyq_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_op9q2d/1778836683937_wbalyq_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:18:05.692Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -4075,56 +3624,7 @@
       "itemName": "ネクタイ5cm 白 33",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-white-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836754643_woi2ym",
-          "filename": "1778836752596_7f116w_1_fas-16-01-white-1.jpg",
-          "originalName": "1_fas-16-01-white-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836752596_7f116w_1_fas-16-01-white-1.jpg",
-          "sha": "1ac057925968f401d3e3702867fae1a4421f23fb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836752596_7f116w_1_fas-16-01-white-1.jpg",
-          "size": 84863,
-          "uploadedAt": "2026-05-15T09:19:14.643Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836756925_hvesfh",
-          "filename": "1778836754650_yu4vr3_2_fas-16-01-white-2.jpg",
-          "originalName": "2_fas-16-01-white-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836754650_yu4vr3_2_fas-16-01-white-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836754650_yu4vr3_2_fas-16-01-white-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:19:16.925Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836758245_3bv2rp",
-          "filename": "1778836756932_ixushm_3_fas-16-01-white-3.jpg",
-          "originalName": "3_fas-16-01-white-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836756932_ixushm_3_fas-16-01-white-3.jpg",
-          "sha": "0ea72e95f322d44d1b02df11cdf19962938a4b27",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836756932_ixushm_3_fas-16-01-white-3.jpg",
-          "size": 46664,
-          "uploadedAt": "2026-05-15T09:19:18.245Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836760333_iq0mwb",
-          "filename": "1778836758251_9uxy2k_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836758251_9uxy2k_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_i0fdgy/1778836758251_9uxy2k_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:19:20.333Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -4148,56 +3648,7 @@
       "itemName": "ネクタイ5cm 灰 40",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-gray-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836697010_pbss1e",
-          "filename": "1778836695643_vxfwu8_1_fas-16-01-gray-1.jpg",
-          "originalName": "1_fas-16-01-gray-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836695643_vxfwu8_1_fas-16-01-gray-1.jpg",
-          "sha": "bfe7f7e506820cada74d8a164b4a2a69c86dea18",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836695643_vxfwu8_1_fas-16-01-gray-1.jpg",
-          "size": 115169,
-          "uploadedAt": "2026-05-15T09:18:17.010Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836698678_0k8zj9",
-          "filename": "1778836697012_sdk9n2_2_fas-16-01-gray-2.jpg",
-          "originalName": "2_fas-16-01-gray-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836697012_sdk9n2_2_fas-16-01-gray-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836697012_sdk9n2_2_fas-16-01-gray-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:18:18.678Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836700046_v35stp",
-          "filename": "1778836698683_ji91gn_3_fas-16-01-gray-3.jpg",
-          "originalName": "3_fas-16-01-gray-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836698683_ji91gn_3_fas-16-01-gray-3.jpg",
-          "sha": "a85a925f4f6b8732def79ec5d9a4dbb6c1f47426",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836698683_ji91gn_3_fas-16-01-gray-3.jpg",
-          "size": 56683,
-          "uploadedAt": "2026-05-15T09:18:20.046Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836701639_iucs8u",
-          "filename": "1778836700053_9fm4op_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836700053_9fm4op_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_1tql4m/1778836700053_9fm4op_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:18:21.640Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -4233,44 +3684,7 @@
       "itemName": "蝶ネクタイ 紺色",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-navy-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836795776_9nb1sb",
-          "filename": "1778836794254_hp9s0l_1_fas-16-02-navy-1.jpg",
-          "originalName": "1_fas-16-02-navy-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836794254_hp9s0l_1_fas-16-02-navy-1.jpg",
-          "sha": "781e0de923e5223603a8c1f49212d2c501423029",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836794254_hp9s0l_1_fas-16-02-navy-1.jpg",
-          "size": 51401,
-          "uploadedAt": "2026-05-15T09:19:55.777Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836797546_2zwxvf",
-          "filename": "1778836795784_zvrs6a_2_fas-16-02-navy-2.jpg",
-          "originalName": "2_fas-16-02-navy-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836795784_zvrs6a_2_fas-16-02-navy-2.jpg",
-          "sha": "d902ca3d4bf6c902d7ec6f78553abcf719c92112",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836795784_zvrs6a_2_fas-16-02-navy-2.jpg",
-          "size": 59022,
-          "uploadedAt": "2026-05-15T09:19:57.546Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836799019_swktt7",
-          "filename": "1778836797554_qou4bb_3_fas-16-02-navy-3.jpg",
-          "originalName": "3_fas-16-02-navy-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836797554_qou4bb_3_fas-16-02-navy-3.jpg",
-          "sha": "90d5e6806f3f96a899c89272aee3195e01eaabb1",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836797554_qou4bb_3_fas-16-02-navy-3.jpg",
-          "size": 69174,
-          "uploadedAt": "2026-05-15T09:19:59.019Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -4596,200 +4010,7 @@
       "itemName": "キズ防止 テープ フェルト 5cm*200cm",
       "itemPrice": 1280,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/felt/fel-22-02b-01a.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836872266_76r3h1",
-          "filename": "1778836869941_lmpslr_01_fel-22-02-mori-01.jpg",
-          "originalName": "01_fel-22-02-mori-01.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836869941_lmpslr_01_fel-22-02-mori-01.jpg",
-          "sha": "22fef035d03946523dd904feaa3d92b4d7e40a9f",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836869941_lmpslr_01_fel-22-02-mori-01.jpg",
-          "size": 162821,
-          "uploadedAt": "2026-05-15T09:21:12.266Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836874881_fxfdzv",
-          "filename": "1778836872275_msl7p5_02_fel-22-02-mori-02.jpg",
-          "originalName": "02_fel-22-02-mori-02.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836872275_msl7p5_02_fel-22-02-mori-02.jpg",
-          "sha": "e611c1e44d4ae9391655c3112934453d65cd848f",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836872275_msl7p5_02_fel-22-02-mori-02.jpg",
-          "size": 131868,
-          "uploadedAt": "2026-05-15T09:21:14.881Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836876966_k0kv79",
-          "filename": "1778836874893_jjesh7_03_fel-22-02-mori-03.jpg",
-          "originalName": "03_fel-22-02-mori-03.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836874893_jjesh7_03_fel-22-02-mori-03.jpg",
-          "sha": "058ef9a70a8b1f44cba9297061fc026f7dcf8a6e",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836874893_jjesh7_03_fel-22-02-mori-03.jpg",
-          "size": 259547,
-          "uploadedAt": "2026-05-15T09:21:16.966Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836878858_pk628a",
-          "filename": "1778836876979_5zn2e0_04_saikyo.jpg",
-          "originalName": "04_saikyo.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836876979_5zn2e0_04_saikyo.jpg",
-          "sha": "7f894528c1d1dadb8837daa8ab25935df632a22a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836876979_5zn2e0_04_saikyo.jpg",
-          "size": 216689,
-          "uploadedAt": "2026-05-15T09:21:18.858Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836880683_db7uqh",
-          "filename": "1778836878869_u6pfit_05_fel-22-02b-01a.jpg",
-          "originalName": "05_fel-22-02b-01a.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836878869_u6pfit_05_fel-22-02b-01a.jpg",
-          "sha": "6c83f577d61d52f69da9815b468affbadcb49b6c",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836878869_u6pfit_05_fel-22-02b-01a.jpg",
-          "size": 135378,
-          "uploadedAt": "2026-05-15T09:21:20.683Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836883056_cvcxbh",
-          "filename": "1778836880696_o61n6x_06_fel-22-02b-02.jpg",
-          "originalName": "06_fel-22-02b-02.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836880696_o61n6x_06_fel-22-02b-02.jpg",
-          "sha": "a331df5f731342e3bc1946557703df72091c4857",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836880696_o61n6x_06_fel-22-02b-02.jpg",
-          "size": 367825,
-          "uploadedAt": "2026-05-15T09:21:23.056Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836885336_coj3c7",
-          "filename": "1778836883071_mum6g1_07_fel-22-02b-03.jpg",
-          "originalName": "07_fel-22-02b-03.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836883071_mum6g1_07_fel-22-02b-03.jpg",
-          "sha": "c76b311f5da50b794607f694e1db349058024d13",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836883071_mum6g1_07_fel-22-02b-03.jpg",
-          "size": 251493,
-          "uploadedAt": "2026-05-15T09:21:25.336Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836887101_nvwoak",
-          "filename": "1778836885354_8p0b85_08_fel-22-02b-04.jpg",
-          "originalName": "08_fel-22-02b-04.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836885354_8p0b85_08_fel-22-02b-04.jpg",
-          "sha": "474abaa69fc245033e1c74e2024ce14bac924437",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836885354_8p0b85_08_fel-22-02b-04.jpg",
-          "size": 235640,
-          "uploadedAt": "2026-05-15T09:21:27.101Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836889227_06g3r7",
-          "filename": "1778836887111_trzb85_09_fel-22-02b-05.jpg",
-          "originalName": "09_fel-22-02b-05.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836887111_trzb85_09_fel-22-02b-05.jpg",
-          "sha": "8b66ed03c289d373a80d49f13823bff8f7f593f2",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836887111_trzb85_09_fel-22-02b-05.jpg",
-          "size": 243637,
-          "uploadedAt": "2026-05-15T09:21:29.227Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836891850_tjtcme",
-          "filename": "1778836889240_9v9c2o_10_fel-22-02b-06.jpg",
-          "originalName": "10_fel-22-02b-06.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836889240_9v9c2o_10_fel-22-02b-06.jpg",
-          "sha": "3474ec13d9f0ad70bfaf9045d0719ad2e7c3ac7a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836889240_9v9c2o_10_fel-22-02b-06.jpg",
-          "size": 243452,
-          "uploadedAt": "2026-05-15T09:21:31.850Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836893799_48ln5p",
-          "filename": "1778836891864_gc1au4_11_fel-22-02b-07.jpg",
-          "originalName": "11_fel-22-02b-07.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836891864_gc1au4_11_fel-22-02b-07.jpg",
-          "sha": "284fdbbc1fb9cfc011fb1f88082675be19c649ac",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836891864_gc1au4_11_fel-22-02b-07.jpg",
-          "size": 114820,
-          "uploadedAt": "2026-05-15T09:21:33.799Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836895132_waedpx",
-          "filename": "1778836893809_1cyv1x_12_fel-22-02b-08.jpg",
-          "originalName": "12_fel-22-02b-08.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836893809_1cyv1x_12_fel-22-02b-08.jpg",
-          "sha": "65fe57fe8fe6beca01244b623ca461603710ede9",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836893809_1cyv1x_12_fel-22-02b-08.jpg",
-          "size": 133789,
-          "uploadedAt": "2026-05-15T09:21:35.132Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836896847_910q5m",
-          "filename": "1778836895138_haq76l_13_pre-mat-new.jpg",
-          "originalName": "13_pre-mat-new.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836895138_haq76l_13_pre-mat-new.jpg",
-          "sha": "81d15cdfe9db5d87c1bcedbe514451353d64f4cb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836895138_haq76l_13_pre-mat-new.jpg",
-          "size": 158325,
-          "uploadedAt": "2026-05-15T09:21:36.847Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836899583_csqbed",
-          "filename": "1778836896861_9x8p3a_14_new-coupon.jpg",
-          "originalName": "14_new-coupon.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836896861_9x8p3a_14_new-coupon.jpg",
-          "sha": "7e5ac6aaba46d21a50e662fb1097fa328b3007bb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836896861_9x8p3a_14_new-coupon.jpg",
-          "size": 855878,
-          "uploadedAt": "2026-05-15T09:21:39.583Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836901651_9wjwoz",
-          "filename": "1778836899593_2ks6f6_15_kanren-fel-gif.gif",
-          "originalName": "15_kanren-fel-gif.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836899593_2ks6f6_15_kanren-fel-gif.gif",
-          "sha": "bc5a68e30b754d285cc19befb695748bf3de7a13",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836899593_2ks6f6_15_kanren-fel-gif.gif",
-          "size": 295146,
-          "uploadedAt": "2026-05-15T09:21:41.651Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836904012_d4xnam",
-          "filename": "1778836901665_v8vqaq_16_zensyohin-gif.gif",
-          "originalName": "16_zensyohin-gif.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836901665_v8vqaq_16_zensyohin-gif.gif",
-          "sha": "a80487d10459e7045f47b5c8b950fe92f4bf3b93",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zd88xb/1778836901665_v8vqaq_16_zensyohin-gif.gif",
-          "size": 255529,
-          "uploadedAt": "2026-05-15T09:21:44.012Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -5031,56 +4252,7 @@
       "itemName": "蝶ネクタイ 白",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-white2-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836779619_bodrm0",
-          "filename": "1778836777929_39fjpt_1_fas-16-02-white2-1.jpg",
-          "originalName": "1_fas-16-02-white2-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836777929_39fjpt_1_fas-16-02-white2-1.jpg",
-          "sha": "78e1579ecc52ccf3b154fcc4ff5c3b9b9c5f8349",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836777929_39fjpt_1_fas-16-02-white2-1.jpg",
-          "size": 39394,
-          "uploadedAt": "2026-05-15T09:19:39.619Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836781182_nr61nu",
-          "filename": "1778836779628_q2yi78_2_fas-16-02-r_1.jpg",
-          "originalName": "2_fas-16-02-r_1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836779628_q2yi78_2_fas-16-02-r_1.jpg",
-          "sha": "5240d5bc31ca87fffdfde278b050a0b743cc86f6",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836779628_q2yi78_2_fas-16-02-r_1.jpg",
-          "size": 65358,
-          "uploadedAt": "2026-05-15T09:19:41.182Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836782383_3nhzwj",
-          "filename": "1778836781191_pnwbge_3_fas-16-02-r_2.jpg",
-          "originalName": "3_fas-16-02-r_2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836781191_pnwbge_3_fas-16-02-r_2.jpg",
-          "sha": "16f63a7bbd037fe765e03cfab88a1d0f3e01d90e",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836781191_pnwbge_3_fas-16-02-r_2.jpg",
-          "size": 69803,
-          "uploadedAt": "2026-05-15T09:19:42.383Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836784432_zvmh0y",
-          "filename": "1778836782393_7cfvpf_4_chou-okuri.jpg",
-          "originalName": "4_chou-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836782393_7cfvpf_4_chou-okuri.jpg",
-          "sha": "695c0c6cd7d091f5dbc20dac6f63ce268d4f876d",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836782393_7cfvpf_4_chou-okuri.jpg",
-          "size": 170246,
-          "uploadedAt": "2026-05-15T09:19:44.432Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -5152,7 +4324,200 @@
       "itemName": "かかとやすり",
       "itemPrice": 1480,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/ih/ih-21-01-b-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778837232369_wolnwy",
+          "filename": "1778837230678_a8hz7x_05_ih-21-01-b-01a.jpg",
+          "originalName": "05_ih-21-01-b-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837230678_a8hz7x_05_ih-21-01-b-01a.jpg",
+          "sha": "2f5fee57bd97d5e8c69e78dd83e80f0299af4de7",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837230678_a8hz7x_05_ih-21-01-b-01a.jpg",
+          "size": 115485,
+          "uploadedAt": "2026-05-15T09:27:12.369Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837233914_8zwt9r",
+          "filename": "1778837232375_u9lexn_06_ih-21-01-b-02a.jpg",
+          "originalName": "06_ih-21-01-b-02a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837232375_u9lexn_06_ih-21-01-b-02a.jpg",
+          "sha": "9d3f9ab6f847e6727c6a0fa88c4574ba87000d5c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837232375_u9lexn_06_ih-21-01-b-02a.jpg",
+          "size": 84902,
+          "uploadedAt": "2026-05-15T09:27:13.914Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837236040_gkmu6h",
+          "filename": "1778837233924_0srcik_07_ih-21-01-b-03.jpg",
+          "originalName": "07_ih-21-01-b-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837233924_0srcik_07_ih-21-01-b-03.jpg",
+          "sha": "1dd324d65daf681e9e5d0ee5bc1e93377c8f252e",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837233924_0srcik_07_ih-21-01-b-03.jpg",
+          "size": 170603,
+          "uploadedAt": "2026-05-15T09:27:16.040Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837238015_6i5f81",
+          "filename": "1778837236060_tb8gn4_08_ih-21-01-b-04.jpg",
+          "originalName": "08_ih-21-01-b-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837236060_tb8gn4_08_ih-21-01-b-04.jpg",
+          "sha": "d8efc8f4079e6747c060834c0d706edd25b9c0ba",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837236060_tb8gn4_08_ih-21-01-b-04.jpg",
+          "size": 277741,
+          "uploadedAt": "2026-05-15T09:27:18.015Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837239754_khcy2g",
+          "filename": "1778837238023_z4lcih_09_ih-21-01-b-05.webp",
+          "originalName": "09_ih-21-01-b-05.webp",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837238023_z4lcih_09_ih-21-01-b-05.webp",
+          "sha": "eee73553776d39ff684d4adb2a883f39b8d0e5c6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837238023_z4lcih_09_ih-21-01-b-05.webp",
+          "size": 131140,
+          "uploadedAt": "2026-05-15T09:27:19.754Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837241794_uudpjn",
+          "filename": "1778837239774_39i424_10_ih-21-01-c-01b.jpg",
+          "originalName": "10_ih-21-01-c-01b.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837239774_39i424_10_ih-21-01-c-01b.jpg",
+          "sha": "3bc84821a5f9a3db0e06521c0e29f727eeb7b1f9",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837239774_39i424_10_ih-21-01-c-01b.jpg",
+          "size": 118481,
+          "uploadedAt": "2026-05-15T09:27:21.794Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837244044_h3e2nl",
+          "filename": "1778837241807_osdizd_11_ih-21-01-c-02b.jpg",
+          "originalName": "11_ih-21-01-c-02b.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837241807_osdizd_11_ih-21-01-c-02b.jpg",
+          "sha": "17c106dd416c9ac1875da6007b06a773e7d619de",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837241807_osdizd_11_ih-21-01-c-02b.jpg",
+          "size": 255359,
+          "uploadedAt": "2026-05-15T09:27:24.044Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837246070_ad6htn",
+          "filename": "1778837244052_bde9qc_12_ih-21-01-c-03a.jpg",
+          "originalName": "12_ih-21-01-c-03a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837244052_bde9qc_12_ih-21-01-c-03a.jpg",
+          "sha": "ec9152d2995487e948c099fabacca09d2f4301af",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837244052_bde9qc_12_ih-21-01-c-03a.jpg",
+          "size": 256350,
+          "uploadedAt": "2026-05-15T09:27:26.070Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837247891_jxq79f",
+          "filename": "1778837246079_6dmc4s_13_ih-21-01-c-04a.jpg",
+          "originalName": "13_ih-21-01-c-04a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837246079_6dmc4s_13_ih-21-01-c-04a.jpg",
+          "sha": "1b4079597c4241bda40708844ee7d8d9ec735df3",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837246079_6dmc4s_13_ih-21-01-c-04a.jpg",
+          "size": 211147,
+          "uploadedAt": "2026-05-15T09:27:27.891Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837249253_xweerz",
+          "filename": "1778837247898_bjj0me_14_ih-21-01-d-01.jpg",
+          "originalName": "14_ih-21-01-d-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837247898_bjj0me_14_ih-21-01-d-01.jpg",
+          "sha": "5f28ab316d7cd7843a23825fc786847f1df3d0d5",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837247898_bjj0me_14_ih-21-01-d-01.jpg",
+          "size": 129055,
+          "uploadedAt": "2026-05-15T09:27:29.253Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837250937_hvyurn",
+          "filename": "1778837249260_599ero_15_ih-21-01-d-02.jpg",
+          "originalName": "15_ih-21-01-d-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837249260_599ero_15_ih-21-01-d-02.jpg",
+          "sha": "f1106d79b2927ca6d5636c98a6a1a61da3ac72ff",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837249260_599ero_15_ih-21-01-d-02.jpg",
+          "size": 176068,
+          "uploadedAt": "2026-05-15T09:27:30.937Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837252708_fhfgpk",
+          "filename": "1778837250944_f6wotj_16_ih-21-01-pre-yasuri1.jpg",
+          "originalName": "16_ih-21-01-pre-yasuri1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837250944_f6wotj_16_ih-21-01-pre-yasuri1.jpg",
+          "sha": "1203faeca93a793e733db7b3a09619b2de85886a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837250944_f6wotj_16_ih-21-01-pre-yasuri1.jpg",
+          "size": 159404,
+          "uploadedAt": "2026-05-15T09:27:32.708Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837254655_yikwjk",
+          "filename": "1778837252720_gv9cd5_17_fm-story-01.jpg",
+          "originalName": "17_fm-story-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837252720_gv9cd5_17_fm-story-01.jpg",
+          "sha": "43aeb92016844f9dece3bfdd104092a9220e8261",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837252720_gv9cd5_17_fm-story-01.jpg",
+          "size": 594717,
+          "uploadedAt": "2026-05-15T09:27:34.655Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837256829_e38fb2",
+          "filename": "1778837254666_7fa9xm_18_fm-story-02.jpg",
+          "originalName": "18_fm-story-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837254666_7fa9xm_18_fm-story-02.jpg",
+          "sha": "2f028422e1de3d70cb1a9e243ba5bcae38c7f973",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837254666_7fa9xm_18_fm-story-02.jpg",
+          "size": 499171,
+          "uploadedAt": "2026-05-15T09:27:36.829Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837259034_xqjitq",
+          "filename": "1778837256843_um555n_19_fm-story-03.jpg",
+          "originalName": "19_fm-story-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837256843_um555n_19_fm-story-03.jpg",
+          "sha": "ae62ef0214ae0692bd86e6dfd21bcaa7608c35ee",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837256843_um555n_19_fm-story-03.jpg",
+          "size": 447815,
+          "uploadedAt": "2026-05-15T09:27:39.034Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837260998_rf70wm",
+          "filename": "1778837259044_6auf6z_20_fm-story-04.jpg",
+          "originalName": "20_fm-story-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837259044_6auf6z_20_fm-story-04.jpg",
+          "sha": "37d006aca6409edf1c71fa1850f8df136d56e08d",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_steyu0/1778837259044_6auf6z_20_fm-story-04.jpg",
+          "size": 447086,
+          "uploadedAt": "2026-05-15T09:27:40.998Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -5358,68 +4723,7 @@
       "itemName": "細ネクタイ　グリーン",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-green-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836705356_nfvvfj",
-          "filename": "1778836703598_o1nzvi_1_fas-16-01-green-1.jpg",
-          "originalName": "1_fas-16-01-green-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836703598_o1nzvi_1_fas-16-01-green-1.jpg",
-          "sha": "cf74884a8241d345fdf6bcc779f157c9495d0015",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836703598_o1nzvi_1_fas-16-01-green-1.jpg",
-          "size": 104558,
-          "uploadedAt": "2026-05-15T09:18:25.356Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836707054_1q5vnd",
-          "filename": "1778836705360_s0izeg_2_fas-16-01-green-2.jpg",
-          "originalName": "2_fas-16-01-green-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836705360_s0izeg_2_fas-16-01-green-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836705360_s0izeg_2_fas-16-01-green-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:18:27.054Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836708737_c0xt5g",
-          "filename": "1778836707063_bk7bl1_3_fas-16-01-green-4.jpg",
-          "originalName": "3_fas-16-01-green-4.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836707063_bk7bl1_3_fas-16-01-green-4.jpg",
-          "sha": "45d822f8ce1a7af5697d448d2e5d9ce860d495e8",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836707063_bk7bl1_3_fas-16-01-green-4.jpg",
-          "size": 111423,
-          "uploadedAt": "2026-05-15T09:18:28.737Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836710191_033dch",
-          "filename": "1778836708743_gmlfog_4_fas-16-01-green-3.jpg",
-          "originalName": "4_fas-16-01-green-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836708743_gmlfog_4_fas-16-01-green-3.jpg",
-          "sha": "05ef6103c0fbbf0048ccb5f38c387f6e9ca5a425",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836708743_gmlfog_4_fas-16-01-green-3.jpg",
-          "size": 58469,
-          "uploadedAt": "2026-05-15T09:18:30.191Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836711934_5ohwz8",
-          "filename": "1778836710201_hevwci_5_necktie-okuri.jpg",
-          "originalName": "5_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836710201_hevwci_5_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4y7ntc/1778836710201_hevwci_5_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:18:31.934Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -5939,56 +5243,7 @@
       "itemName": "ネクタイ5cm 黄 25",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-yellow-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836764358_ia2ih9",
-          "filename": "1778836762415_cmeona_1_fas-16-01-yellow-1.jpg",
-          "originalName": "1_fas-16-01-yellow-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836762415_cmeona_1_fas-16-01-yellow-1.jpg",
-          "sha": "2c99d1bd42f30eee19a371473c81d0d8141324f6",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836762415_cmeona_1_fas-16-01-yellow-1.jpg",
-          "size": 106089,
-          "uploadedAt": "2026-05-15T09:19:24.358Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836766143_h8rbh7",
-          "filename": "1778836764362_hug3ee_2_fas-16-01-yellow-2.jpg",
-          "originalName": "2_fas-16-01-yellow-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836764362_hug3ee_2_fas-16-01-yellow-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836764362_hug3ee_2_fas-16-01-yellow-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:19:26.143Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836767954_dxricf",
-          "filename": "1778836766151_dltci5_3_fas-16-01-yellow-3.jpg",
-          "originalName": "3_fas-16-01-yellow-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836766151_dltci5_3_fas-16-01-yellow-3.jpg",
-          "sha": "4ac503507293aeeabccf653b2cee299e42a1c24e",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836766151_dltci5_3_fas-16-01-yellow-3.jpg",
-          "size": 58450,
-          "uploadedAt": "2026-05-15T09:19:27.954Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836769692_h8yi3r",
-          "filename": "1778836767966_0ghj3k_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836767966_0ghj3k_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_9i9y9k/1778836767966_0ghj3k_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:19:29.692Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -6036,56 +5291,7 @@
       "itemName": "ネクタイ5cm 赤 09",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-red-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836744569_sflzyp",
-          "filename": "1778836742509_yns9j8_1_fas-16-01-red-1.jpg",
-          "originalName": "1_fas-16-01-red-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836742509_yns9j8_1_fas-16-01-red-1.jpg",
-          "sha": "df6395478602ecb8a7551503bdbd3be89a4ddb4c",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836742509_yns9j8_1_fas-16-01-red-1.jpg",
-          "size": 97959,
-          "uploadedAt": "2026-05-15T09:19:04.569Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836746630_v6x0en",
-          "filename": "1778836744578_qs11bv_2_fas-16-01-red-2.jpg",
-          "originalName": "2_fas-16-01-red-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836744578_qs11bv_2_fas-16-01-red-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836744578_qs11bv_2_fas-16-01-red-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:19:06.630Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836748439_qeuad6",
-          "filename": "1778836746642_v409lf_3_fas-16-01-red-3.jpg",
-          "originalName": "3_fas-16-01-red-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836746642_v409lf_3_fas-16-01-red-3.jpg",
-          "sha": "a25126c1843b2df951f719d2ee56698a21c5c599",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836746642_v409lf_3_fas-16-01-red-3.jpg",
-          "size": 60316,
-          "uploadedAt": "2026-05-15T09:19:08.439Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836750364_gtgul2",
-          "filename": "1778836748445_z54dyd_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836748445_z54dyd_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_6gl7e9/1778836748445_z54dyd_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:19:10.364Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -6290,44 +5496,7 @@
       "itemName": "蝶ネクタイ 赤色",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-red2-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836816270_3z4iu1",
-          "filename": "1778836814563_91ob3i_1_fas-16-02-red2-1.jpg",
-          "originalName": "1_fas-16-02-red2-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836814563_91ob3i_1_fas-16-02-red2-1.jpg",
-          "sha": "0e07bb72fdc74d90b00ef6a1ae17606e484a70bc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836814563_91ob3i_1_fas-16-02-red2-1.jpg",
-          "size": 51725,
-          "uploadedAt": "2026-05-15T09:20:16.270Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836817794_hzc5hp",
-          "filename": "1778836816278_2j9h08_2_fas-16-02-red2-2.jpg",
-          "originalName": "2_fas-16-02-red2-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836816278_2j9h08_2_fas-16-02-red2-2.jpg",
-          "sha": "73de91444d4e1c194e38776a31ede8289c50df36",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836816278_2j9h08_2_fas-16-02-red2-2.jpg",
-          "size": 57975,
-          "uploadedAt": "2026-05-15T09:20:17.794Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836819403_pt5zrw",
-          "filename": "1778836817799_sci40y_3_fas-16-02-red2-3.jpg",
-          "originalName": "3_fas-16-02-red2-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836817799_sci40y_3_fas-16-02-red2-3.jpg",
-          "sha": "cd124ebeeee53b0e641615bce0e9ebba01504d38",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836817799_sci40y_3_fas-16-02-red2-3.jpg",
-          "size": 68811,
-          "uploadedAt": "2026-05-15T09:20:19.403Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -6919,44 +6088,7 @@
       "itemName": "蝶ネクタイ 紫",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-purple-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836809021_un527k",
-          "filename": "1778836806668_alelus_1_fas-16-02-purple-1.jpg",
-          "originalName": "1_fas-16-02-purple-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836806668_alelus_1_fas-16-02-purple-1.jpg",
-          "sha": "175dcf7b58ab8cdee9cfb228ce1760ad719f6348",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836806668_alelus_1_fas-16-02-purple-1.jpg",
-          "size": 50877,
-          "uploadedAt": "2026-05-15T09:20:09.021Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836810529_yc6ggs",
-          "filename": "1778836809033_a5uf40_2_fas-16-02-purple-2.jpg",
-          "originalName": "2_fas-16-02-purple-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836809033_a5uf40_2_fas-16-02-purple-2.jpg",
-          "sha": "93e0a58b06499a7ea86d990694a00d33c588e027",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836809033_a5uf40_2_fas-16-02-purple-2.jpg",
-          "size": 58139,
-          "uploadedAt": "2026-05-15T09:20:10.529Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836812378_0a3i9j",
-          "filename": "1778836810534_hvrl6e_3_fas-16-02-purple-3.jpg",
-          "originalName": "3_fas-16-02-purple-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836810534_hvrl6e_3_fas-16-02-purple-3.jpg",
-          "sha": "e1160931136c7e608ce2a5373e4fcb9b9454cca3",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836810534_hvrl6e_3_fas-16-02-purple-3.jpg",
-          "size": 68656,
-          "uploadedAt": "2026-05-15T09:20:12.378Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -7886,56 +7018,7 @@
       "itemName": "細ネクタイ　ブラウン",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-brown-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836688619_hganjx",
-          "filename": "1778836686836_slpxn2_1_fas-16-01-brown-1.jpg",
-          "originalName": "1_fas-16-01-brown-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836686836_slpxn2_1_fas-16-01-brown-1.jpg",
-          "sha": "657934326ffef8eee3d059bb997b72a4233f7101",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836686836_slpxn2_1_fas-16-01-brown-1.jpg",
-          "size": 99852,
-          "uploadedAt": "2026-05-15T09:18:08.619Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836690409_emhp36",
-          "filename": "1778836688624_dxuw9t_2_fas-16-01-brown-2.jpg",
-          "originalName": "2_fas-16-01-brown-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836688624_dxuw9t_2_fas-16-01-brown-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836688624_dxuw9t_2_fas-16-01-brown-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:18:10.409Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836691863_2zzv71",
-          "filename": "1778836690411_1jhii1_3_fas-16-01-brown-3.jpg",
-          "originalName": "3_fas-16-01-brown-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836690411_1jhii1_3_fas-16-01-brown-3.jpg",
-          "sha": "d3d9d65849446283a574c86965f85b437df5a9cd",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836690411_1jhii1_3_fas-16-01-brown-3.jpg",
-          "size": 54304,
-          "uploadedAt": "2026-05-15T09:18:11.863Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836693810_hkq9ja",
-          "filename": "1778836691870_bqhnxn_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836691870_bqhnxn_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_75wq87/1778836691870_bqhnxn_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:18:13.810Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
@@ -8321,56 +7404,7 @@
       "itemName": "ネクタイ5cm 紺 17",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-navy-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836715735_avkt8q",
-          "filename": "1778836713843_wh0r17_1_fas-16-01-navy-1.jpg",
-          "originalName": "1_fas-16-01-navy-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836713843_wh0r17_1_fas-16-01-navy-1.jpg",
-          "sha": "9628597690f167d3a8bd9e9d27f8249059f3cf8a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836713843_wh0r17_1_fas-16-01-navy-1.jpg",
-          "size": 109661,
-          "uploadedAt": "2026-05-15T09:18:35.735Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836717609_9emoqk",
-          "filename": "1778836715745_uxk60u_2_fas-16-01-navy-2.jpg",
-          "originalName": "2_fas-16-01-navy-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836715745_uxk60u_2_fas-16-01-navy-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836715745_uxk60u_2_fas-16-01-navy-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:18:37.609Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836719390_4d0nct",
-          "filename": "1778836717621_2cs226_3_fas-16-01-navy-3.jpg",
-          "originalName": "3_fas-16-01-navy-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836717621_2cs226_3_fas-16-01-navy-3.jpg",
-          "sha": "a1b1b52812e0be6ccbaff513e5a167324f76c7b3",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836717621_2cs226_3_fas-16-01-navy-3.jpg",
-          "size": 63351,
-          "uploadedAt": "2026-05-15T09:18:39.390Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836721177_lqd030",
-          "filename": "1778836719399_fiq3ku_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836719399_fiq3ku_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_vpftbd/1778836719399_fiq3ku_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:18:41.177Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
@@ -8442,56 +7476,7 @@
       "itemName": "ネクタイ5cm ピンク 14",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-pink-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836724988_4sqnx0",
-          "filename": "1778836723130_rt8hnk_1_fas-16-01-pink-1.jpg",
-          "originalName": "1_fas-16-01-pink-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836723130_rt8hnk_1_fas-16-01-pink-1.jpg",
-          "sha": "d67b25f385e9685adcd579ad80c9c6185f6923f9",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836723130_rt8hnk_1_fas-16-01-pink-1.jpg",
-          "size": 103245,
-          "uploadedAt": "2026-05-15T09:18:44.988Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836726852_08xgzy",
-          "filename": "1778836724990_5xz7ki_2_fas-16-01-pink-2.jpg",
-          "originalName": "2_fas-16-01-pink-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836724990_5xz7ki_2_fas-16-01-pink-2.jpg",
-          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836724990_5xz7ki_2_fas-16-01-pink-2.jpg",
-          "size": 88193,
-          "uploadedAt": "2026-05-15T09:18:46.852Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836729016_ymlhif",
-          "filename": "1778836726862_lhuptb_3_fas-16-01-pink-3.jpg",
-          "originalName": "3_fas-16-01-pink-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836726862_lhuptb_3_fas-16-01-pink-3.jpg",
-          "sha": "22987a6a658a1038f0169540048d1c67fd9ae0d7",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836726862_lhuptb_3_fas-16-01-pink-3.jpg",
-          "size": 54890,
-          "uploadedAt": "2026-05-15T09:18:49.017Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836731003_8imydu",
-          "filename": "1778836729031_0gldku_4_necktie-okuri.jpg",
-          "originalName": "4_necktie-okuri.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836729031_0gldku_4_necktie-okuri.jpg",
-          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836729031_0gldku_4_necktie-okuri.jpg",
-          "size": 177960,
-          "uploadedAt": "2026-05-15T09:18:51.003Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
@@ -8661,44 +7646,7 @@
       "itemName": "蝶ネクタイ 緑 030",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-green-1.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836788834_m1aaf8",
-          "filename": "1778836786527_wcuyor_1_fas-16-02-green-1.jpg",
-          "originalName": "1_fas-16-02-green-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836786527_wcuyor_1_fas-16-02-green-1.jpg",
-          "sha": "de89c8f3a363edaab0e874bd2730e2c8f127a33c",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836786527_wcuyor_1_fas-16-02-green-1.jpg",
-          "size": 50607,
-          "uploadedAt": "2026-05-15T09:19:48.834Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836790028_bpxgrn",
-          "filename": "1778836788842_c63iay_2_fas-16-02-green-2.jpg",
-          "originalName": "2_fas-16-02-green-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836788842_c63iay_2_fas-16-02-green-2.jpg",
-          "sha": "441b6df232a12e347d68de37d4a6de9533295352",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836788842_c63iay_2_fas-16-02-green-2.jpg",
-          "size": 57948,
-          "uploadedAt": "2026-05-15T09:19:50.028Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836792178_t4fugz",
-          "filename": "1778836790033_tqbca3_3_fas-16-02-green-3.jpg",
-          "originalName": "3_fas-16-02-green-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836790033_tqbca3_3_fas-16-02-green-3.jpg",
-          "sha": "a4519792c8289965340f317b328070a0ecd7c5ae",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836790033_tqbca3_3_fas-16-02-green-3.jpg",
-          "size": 68587,
-          "uploadedAt": "2026-05-15T09:19:52.178Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
@@ -9218,248 +8166,7 @@
       "itemName": "指 サポーター シリコン",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fing/fing-25-01-c-01.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1778836907670_i8bi3d",
-          "filename": "1778836905824_fe4r02_01_fing-25-01-mori-01.jpg",
-          "originalName": "01_fing-25-01-mori-01.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836905824_fe4r02_01_fing-25-01-mori-01.jpg",
-          "sha": "c108c68cf7b45c952fb14897722e5134ccafde2f",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836905824_fe4r02_01_fing-25-01-mori-01.jpg",
-          "size": 163127,
-          "uploadedAt": "2026-05-15T09:21:47.670Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836909525_1sdv0y",
-          "filename": "1778836907676_4mjimg_02_fing-25-01-mori-02.jpg",
-          "originalName": "02_fing-25-01-mori-02.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836907676_4mjimg_02_fing-25-01-mori-02.jpg",
-          "sha": "9df833d1633384133e5e677a7f0f0754ae65ffdf",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836907676_4mjimg_02_fing-25-01-mori-02.jpg",
-          "size": 125836,
-          "uploadedAt": "2026-05-15T09:21:49.525Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836911634_ufw63f",
-          "filename": "1778836909539_wr3gio_03_fing-25-01-mori-03.jpg",
-          "originalName": "03_fing-25-01-mori-03.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836909539_wr3gio_03_fing-25-01-mori-03.jpg",
-          "sha": "5daed838d397f5a51259afbba529ff24f5ff201b",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836909539_wr3gio_03_fing-25-01-mori-03.jpg",
-          "size": 239351,
-          "uploadedAt": "2026-05-15T09:21:51.634Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836913511_kvkk2c",
-          "filename": "1778836911645_kgau8h_04_saikyo.jpg",
-          "originalName": "04_saikyo.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836911645_kgau8h_04_saikyo.jpg",
-          "sha": "7f894528c1d1dadb8837daa8ab25935df632a22a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836911645_kgau8h_04_saikyo.jpg",
-          "size": 216689,
-          "uploadedAt": "2026-05-15T09:21:53.511Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836915042_blygho",
-          "filename": "1778836913516_nn2xk3_05_fing-25-01-c-01.jpg",
-          "originalName": "05_fing-25-01-c-01.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836913516_nn2xk3_05_fing-25-01-c-01.jpg",
-          "sha": "5d5db24c7bb45e52bbd619c43280981c93e968db",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836913516_nn2xk3_05_fing-25-01-c-01.jpg",
-          "size": 97584,
-          "uploadedAt": "2026-05-15T09:21:55.042Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836916746_reltkh",
-          "filename": "1778836915053_znridl_06_fing-25-01-c-02.jpg",
-          "originalName": "06_fing-25-01-c-02.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836915053_znridl_06_fing-25-01-c-02.jpg",
-          "sha": "64987c13d8de9a8a7f950a63bd958077ccd105b6",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836915053_znridl_06_fing-25-01-c-02.jpg",
-          "size": 94354,
-          "uploadedAt": "2026-05-15T09:21:56.746Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836918549_xdyewx",
-          "filename": "1778836916758_s7qwqr_07_fing-25-01-c-03.jpg",
-          "originalName": "07_fing-25-01-c-03.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836916758_s7qwqr_07_fing-25-01-c-03.jpg",
-          "sha": "6d667bb77345bddc1c1c179f342d29af012ca687",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836916758_s7qwqr_07_fing-25-01-c-03.jpg",
-          "size": 203416,
-          "uploadedAt": "2026-05-15T09:21:58.549Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836920501_p4wqac",
-          "filename": "1778836918561_en8osz_08_fing-25-01-c-04.jpg",
-          "originalName": "08_fing-25-01-c-04.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836918561_en8osz_08_fing-25-01-c-04.jpg",
-          "sha": "b753acf1b5651d9d5e2ee23ee464f345ed6be4b7",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836918561_en8osz_08_fing-25-01-c-04.jpg",
-          "size": 182429,
-          "uploadedAt": "2026-05-15T09:22:00.501Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836922328_hspes6",
-          "filename": "1778836920514_kddlgd_09_fing-25-01-c-05.jpg",
-          "originalName": "09_fing-25-01-c-05.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836920514_kddlgd_09_fing-25-01-c-05.jpg",
-          "sha": "56de798a27bc38478d5641788d8d9a212c467959",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836920514_kddlgd_09_fing-25-01-c-05.jpg",
-          "size": 164092,
-          "uploadedAt": "2026-05-15T09:22:02.328Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836924179_n9k8um",
-          "filename": "1778836922336_yb182v_10_fing-25-01-c-06.jpg",
-          "originalName": "10_fing-25-01-c-06.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836922336_yb182v_10_fing-25-01-c-06.jpg",
-          "sha": "5bdbb2ccc86e2473df507d1570712f5c82e87da2",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836922336_yb182v_10_fing-25-01-c-06.jpg",
-          "size": 181497,
-          "uploadedAt": "2026-05-15T09:22:04.179Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836926130_k7ef9d",
-          "filename": "1778836924186_23jjhy_11_fing-25-01-c-07.jpg",
-          "originalName": "11_fing-25-01-c-07.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836924186_23jjhy_11_fing-25-01-c-07.jpg",
-          "sha": "f5aaaec137b4b10856b833dc331e8bfa71714e39",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836924186_23jjhy_11_fing-25-01-c-07.jpg",
-          "size": 213424,
-          "uploadedAt": "2026-05-15T09:22:06.130Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836927910_xes48i",
-          "filename": "1778836926141_zr9abn_12_fing-25-01-c-08.jpg",
-          "originalName": "12_fing-25-01-c-08.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836926141_zr9abn_12_fing-25-01-c-08.jpg",
-          "sha": "1f651387db84906e7cea02950792fb88c4df79d8",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836926141_zr9abn_12_fing-25-01-c-08.jpg",
-          "size": 149328,
-          "uploadedAt": "2026-05-15T09:22:07.910Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836929652_46q84s",
-          "filename": "1778836927917_0zlvtw_13_fing-25-01-c-09.jpg",
-          "originalName": "13_fing-25-01-c-09.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836927917_0zlvtw_13_fing-25-01-c-09.jpg",
-          "sha": "d11bf9cf29cf2b3483868c3180fee05c30d8f9cb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836927917_0zlvtw_13_fing-25-01-c-09.jpg",
-          "size": 145616,
-          "uploadedAt": "2026-05-15T09:22:09.652Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836931671_2gwglz",
-          "filename": "1778836929660_imsvuf_14_fing-25-01-c-10.jpg",
-          "originalName": "14_fing-25-01-c-10.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836929660_imsvuf_14_fing-25-01-c-10.jpg",
-          "sha": "103f5321d9be3835521ebf796d5ae581a9039458",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836929660_imsvuf_14_fing-25-01-c-10.jpg",
-          "size": 113961,
-          "uploadedAt": "2026-05-15T09:22:11.671Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836933496_n2xls8",
-          "filename": "1778836931677_vax2b4_15_fing-25-01-c-11.jpg",
-          "originalName": "15_fing-25-01-c-11.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836931677_vax2b4_15_fing-25-01-c-11.jpg",
-          "sha": "566cb05a8ef04a01e1ed461ae7899e2263c47583",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836931677_vax2b4_15_fing-25-01-c-11.jpg",
-          "size": 134681,
-          "uploadedAt": "2026-05-15T09:22:13.496Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836935458_m3xkzs",
-          "filename": "1778836933504_z5e34g_16_fing-25-01-c-12.jpg",
-          "originalName": "16_fing-25-01-c-12.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836933504_z5e34g_16_fing-25-01-c-12.jpg",
-          "sha": "db5f9caddf77b74e5041dd645913ca8ee8b411d7",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836933504_z5e34g_16_fing-25-01-c-12.jpg",
-          "size": 183613,
-          "uploadedAt": "2026-05-15T09:22:15.458Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836937497_933nyi",
-          "filename": "1778836935469_zodlvs_17_fing-25-01-c-13.jpg",
-          "originalName": "17_fing-25-01-c-13.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836935469_zodlvs_17_fing-25-01-c-13.jpg",
-          "sha": "1b09f9ab5cc73506695f11dc3fb93712f67eeb5e",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836935469_zodlvs_17_fing-25-01-c-13.jpg",
-          "size": 215481,
-          "uploadedAt": "2026-05-15T09:22:17.497Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836939364_eoruqn",
-          "filename": "1778836937507_qxrjmt_18_fing-25-01-c-14b.jpg",
-          "originalName": "18_fing-25-01-c-14b.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836937507_qxrjmt_18_fing-25-01-c-14b.jpg",
-          "sha": "22d2b8b0101dbbe8ce628cc8ac3e81e7f17b69a8",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836937507_qxrjmt_18_fing-25-01-c-14b.jpg",
-          "size": 167556,
-          "uploadedAt": "2026-05-15T09:22:19.364Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836941370_x0ilmv",
-          "filename": "1778836939373_26ln1q_19_pre-mat-new.jpg",
-          "originalName": "19_pre-mat-new.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836939373_26ln1q_19_pre-mat-new.jpg",
-          "sha": "81d15cdfe9db5d87c1bcedbe514451353d64f4cb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836939373_26ln1q_19_pre-mat-new.jpg",
-          "size": 158325,
-          "uploadedAt": "2026-05-15T09:22:21.370Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778836944173_xc27e4",
-          "filename": "1778836941395_p7eicf_20_new-coupon.jpg",
-          "originalName": "20_new-coupon.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836941395_p7eicf_20_new-coupon.jpg",
-          "sha": "7e5ac6aaba46d21a50e662fb1097fa328b3007bb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778824043536_eyo6e2/1778836941395_p7eicf_20_new-coupon.jpg",
-          "size": 855878,
-          "uploadedAt": "2026-05-15T09:22:24.173Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:47:23.536Z"
     },
     {
