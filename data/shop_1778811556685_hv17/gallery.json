@@ -4485,7 +4485,56 @@
       "itemName": "蝶ネクタイ 白",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-white2-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836779619_bodrm0",
+          "filename": "1778836777929_39fjpt_1_fas-16-02-white2-1.jpg",
+          "originalName": "1_fas-16-02-white2-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836777929_39fjpt_1_fas-16-02-white2-1.jpg",
+          "sha": "78e1579ecc52ccf3b154fcc4ff5c3b9b9c5f8349",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836777929_39fjpt_1_fas-16-02-white2-1.jpg",
+          "size": 39394,
+          "uploadedAt": "2026-05-15T09:19:39.619Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836781182_nr61nu",
+          "filename": "1778836779628_q2yi78_2_fas-16-02-r_1.jpg",
+          "originalName": "2_fas-16-02-r_1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836779628_q2yi78_2_fas-16-02-r_1.jpg",
+          "sha": "5240d5bc31ca87fffdfde278b050a0b743cc86f6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836779628_q2yi78_2_fas-16-02-r_1.jpg",
+          "size": 65358,
+          "uploadedAt": "2026-05-15T09:19:41.182Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836782383_3nhzwj",
+          "filename": "1778836781191_pnwbge_3_fas-16-02-r_2.jpg",
+          "originalName": "3_fas-16-02-r_2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836781191_pnwbge_3_fas-16-02-r_2.jpg",
+          "sha": "16f63a7bbd037fe765e03cfab88a1d0f3e01d90e",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836781191_pnwbge_3_fas-16-02-r_2.jpg",
+          "size": 69803,
+          "uploadedAt": "2026-05-15T09:19:42.383Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836784432_zvmh0y",
+          "filename": "1778836782393_7cfvpf_4_chou-okuri.jpg",
+          "originalName": "4_chou-okuri.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836782393_7cfvpf_4_chou-okuri.jpg",
+          "sha": "695c0c6cd7d091f5dbc20dac6f63ce268d4f876d",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vrcjg2/1778836782393_7cfvpf_4_chou-okuri.jpg",
+          "size": 170246,
+          "uploadedAt": "2026-05-15T09:19:44.432Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
