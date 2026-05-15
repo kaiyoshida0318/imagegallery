@@ -2932,7 +2932,44 @@
       "itemName": "蝶ネクタイ オレンジ",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-orange-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836802001_lfhpx1",
+          "filename": "1778836800346_f94or2_1_fas-16-02-orange-1.jpg",
+          "originalName": "1_fas-16-02-orange-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836800346_f94or2_1_fas-16-02-orange-1.jpg",
+          "sha": "ce4eeed1186c1ffc92ffdde9ecaa58bfb53ecf85",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836800346_f94or2_1_fas-16-02-orange-1.jpg",
+          "size": 46136,
+          "uploadedAt": "2026-05-15T09:20:02.001Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836803550_z2n6q6",
+          "filename": "1778836802010_0tcz3x_2_fas-16-02-orange-2.jpg",
+          "originalName": "2_fas-16-02-orange-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836802010_0tcz3x_2_fas-16-02-orange-2.jpg",
+          "sha": "4834a4aece2becc8fe645344153264b76dfc4e7a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836802010_0tcz3x_2_fas-16-02-orange-2.jpg",
+          "size": 52351,
+          "uploadedAt": "2026-05-15T09:20:03.550Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836805011_wtwqbe",
+          "filename": "1778836803554_7feb7q_3_fas-16-02-orange-3.jpg",
+          "originalName": "3_fas-16-02-orange-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836803554_7feb7q_3_fas-16-02-orange-3.jpg",
+          "sha": "18b099cb657bddccadb689fc961610f719482179",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_luiw7r/1778836803554_7feb7q_3_fas-16-02-orange-3.jpg",
+          "size": 67276,
+          "uploadedAt": "2026-05-15T09:20:05.011Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
