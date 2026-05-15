@@ -40,7 +40,7 @@ body {
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   position: sticky;
   top: 0;
   z-index: 100;
@@ -54,7 +54,7 @@ body {
   flex-shrink: 0;
 }
 .logo-img {
-  height: 36px;
+  height: 56px;
   width: auto;
   display: block;
 }
@@ -254,9 +254,15 @@ body {
 .product-card.empty {
   border-color: var(--warning-border);
 }
-.product-card.empty .product-card-thumb {
+.product-card.empty .thumb-placeholder {
   background: var(--warning-bg);
   color: var(--warning-text);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
 }
 
 .product-card-thumb {
