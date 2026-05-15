@@ -238,7 +238,98 @@ body {
   margin: 0 auto;
 }
 
-/* ===== Product Table ===== */
+/* ===== CSV Import ===== */
+.csv-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.csv-stat {
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.csv-stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
+.csv-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.csv-stat-ok .csv-stat-num { color: var(--primary); }
+.csv-stat-warn .csv-stat-num { color: var(--warning-text); }
+.csv-stat-warn { background: var(--warning-bg); }
+
+.csv-h {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  color: var(--text);
+}
+.csv-h-warn { color: var(--warning-text); }
+
+.csv-change-list, .csv-notfound-list {
+  max-height: 360px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.csv-change {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-light);
+  font-size: 12px;
+}
+.csv-change:last-child { border-bottom: none; }
+.csv-change-manage {
+  font-family: ui-monospace, monospace;
+  color: var(--text);
+  font-weight: 500;
+}
+.csv-diff { margin-bottom: 3px; line-height: 1.5; }
+.csv-diff:last-child { margin-bottom: 0; }
+.csv-label {
+  display: inline-block;
+  width: 60px;
+  font-size: 10px;
+  color: var(--text-light);
+  font-weight: 500;
+}
+.csv-old { color: var(--text-light); text-decoration: line-through; word-break: break-all; }
+.csv-new { color: var(--primary-dark); font-weight: 500; word-break: break-all; }
+.csv-notfound {
+  padding: 7px 14px;
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+  color: var(--warning-text);
+  border-bottom: 1px solid var(--border-light);
+}
+.csv-notfound:last-child { border-bottom: none; }
+.csv-more {
+  padding: 8px 14px;
+  font-size: 11px;
+  color: var(--text-light);
+  text-align: center;
+  background: var(--bg);
+}
+.csv-empty {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.csv-hint {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
 .product-table {
   background: var(--surface);
   border: 1px solid var(--border);
