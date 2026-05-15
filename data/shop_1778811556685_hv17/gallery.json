@@ -4984,7 +4984,104 @@
       "itemName": "ショルダーベルト08",
       "itemPrice": 1080,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/sb/sb-08-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838370546_wx4k2c",
+          "filename": "1778838368833_apyabt_04_sb-08-01.jpg",
+          "originalName": "04_sb-08-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838368833_apyabt_04_sb-08-01.jpg",
+          "sha": "ecb6b2d58b6c47314a19ba088915d638e6fa38bb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838368833_apyabt_04_sb-08-01.jpg",
+          "size": 201950,
+          "uploadedAt": "2026-05-15T09:46:10.546Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838372709_9aj08w",
+          "filename": "1778838370554_y0mlqd_05_sb-08-02.jpg",
+          "originalName": "05_sb-08-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838370554_y0mlqd_05_sb-08-02.jpg",
+          "sha": "411046b7aba1f529bd9a0a273834a2bae8a83547",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838370554_y0mlqd_05_sb-08-02.jpg",
+          "size": 366887,
+          "uploadedAt": "2026-05-15T09:46:12.709Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838374504_htlo6m",
+          "filename": "1778838372716_2bl5by_06_sb-08-03.jpg",
+          "originalName": "06_sb-08-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838372716_2bl5by_06_sb-08-03.jpg",
+          "sha": "fa112d4eb6e858437ed626af73ac1827b4f8e47e",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838372716_2bl5by_06_sb-08-03.jpg",
+          "size": 311813,
+          "uploadedAt": "2026-05-15T09:46:14.504Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838376323_8fk40s",
+          "filename": "1778838374511_8bc6e5_07_sb-08-04.jpg",
+          "originalName": "07_sb-08-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838374511_8bc6e5_07_sb-08-04.jpg",
+          "sha": "b7e75b65d434c76695c2d28a99fe4c23414e3b8a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838374511_8bc6e5_07_sb-08-04.jpg",
+          "size": 168423,
+          "uploadedAt": "2026-05-15T09:46:16.323Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838378077_z5ck4q",
+          "filename": "1778838376330_0poq4y_08_sb-08-05.jpg",
+          "originalName": "08_sb-08-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838376330_0poq4y_08_sb-08-05.jpg",
+          "sha": "7a7c792f99deebb14ac357c539d7f97b5c81f110",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838376330_0poq4y_08_sb-08-05.jpg",
+          "size": 215385,
+          "uploadedAt": "2026-05-15T09:46:18.077Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838379942_wq6j0s",
+          "filename": "1778838378087_ofriti_09_sb-08-06.jpg",
+          "originalName": "09_sb-08-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838378087_ofriti_09_sb-08-06.jpg",
+          "sha": "463658bce06484c62ea19ee38dd5ba4834c58917",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838378087_ofriti_09_sb-08-06.jpg",
+          "size": 220089,
+          "uploadedAt": "2026-05-15T09:46:19.942Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838381186_hqhmtt",
+          "filename": "1778838379947_ss4rt0_10_sb-08-07.jpg",
+          "originalName": "10_sb-08-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838379947_ss4rt0_10_sb-08-07.jpg",
+          "sha": "3f7d20524ecf59b8018e1eedb9aed895ea51f312",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838379947_ss4rt0_10_sb-08-07.jpg",
+          "size": 108386,
+          "uploadedAt": "2026-05-15T09:46:21.186Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838383202_g6zba8",
+          "filename": "1778838381193_k88ii9_11_sb-08-08.jpg",
+          "originalName": "11_sb-08-08.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838381193_k88ii9_11_sb-08-08.jpg",
+          "sha": "41a99ebf5f7e47b18c44bd2e4db61f928fba0a62",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_kwhkly/1778838381193_k88ii9_11_sb-08-08.jpg",
+          "size": 200123,
+          "uploadedAt": "2026-05-15T09:46:23.202Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
