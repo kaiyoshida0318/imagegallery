@@ -1298,7 +1298,44 @@
       "itemName": "蝶ネクタイ 黄色 011",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-yellow-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836823221_8bmmoh",
+          "filename": "1778836821466_16auhy_1_fas-16-02-yellow-1.jpg",
+          "originalName": "1_fas-16-02-yellow-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836821466_16auhy_1_fas-16-02-yellow-1.jpg",
+          "sha": "9db365c159e31ff9fb8507461b2881ef46334396",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836821466_16auhy_1_fas-16-02-yellow-1.jpg",
+          "size": 40532,
+          "uploadedAt": "2026-05-15T09:20:23.221Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836825019_h93r9i",
+          "filename": "1778836823223_szousv_2_fas-16-02-yellow-2.jpg",
+          "originalName": "2_fas-16-02-yellow-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836823223_szousv_2_fas-16-02-yellow-2.jpg",
+          "sha": "24cafe10085928bca264c7724049f4e4b840e609",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836823223_szousv_2_fas-16-02-yellow-2.jpg",
+          "size": 51303,
+          "uploadedAt": "2026-05-15T09:20:25.019Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836827056_wbr50a",
+          "filename": "1778836825026_tpiei9_3_fas-16-02-yellow-3.jpg",
+          "originalName": "3_fas-16-02-yellow-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836825026_tpiei9_3_fas-16-02-yellow-3.jpg",
+          "sha": "e2d17fdc46cd4a33c7122fa99e27fff415105df5",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jjrt6o/1778836825026_tpiei9_3_fas-16-02-yellow-3.jpg",
+          "size": 64911,
+          "uploadedAt": "2026-05-15T09:20:27.056Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
