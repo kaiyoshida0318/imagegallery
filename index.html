@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImageGallery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.0.0">
+</head>
+<body>
+
+<!-- ============ Header ============ -->
+<header class="app-header">
+  <div class="logo" onclick="goHome()">
+    <span class="logo-icon">📷</span>
+    <span class="logo-text">Image<b>Gallery</b></span>
+  </div>
+
+  <!-- Shop Tabs -->
+  <div class="shop-tabs" id="shopTabs">
+    <!-- shop tabs rendered by JS -->
+  </div>
+
+  <div class="header-actions">
+    <button class="btn-icon" id="btnSyncProducts" title="商品同期">
+      <span class="icon">🔄</span><span class="label">商品同期</span>
+    </button>
+    <button class="btn-icon" id="btnSettings" title="設定">⚙️</button>
+  </div>
+</header>
+
+<!-- ============ Category Row ============ -->
+<div class="category-row">
+  <div class="categories" id="categories">
+    <button class="cat-btn active" data-cat="product">商品</button>
+    <button class="cat-btn" data-cat="material">素材</button>
+    <button class="cat-btn" data-cat="boost">盛り上げ</button>
+  </div>
+  <div class="category-meta" id="categoryMeta">
+    <span id="unregisteredCount"></span>
+  </div>
+</div>
+
+<!-- ============ Search ============ -->
+<div class="search-row">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="商品名・商品コードで検索...">
+  </div>
+  <label class="filter-toggle">
+    <input type="checkbox" id="filterUnregistered">
+    <span>📷 画像未登録のみ</span>
+  </label>
+  <button class="btn-add" id="btnAddEntry">+ 追加</button>
+</div>
+
+<!-- ============ Main Content ============ -->
+<main class="content" id="content">
+  <!-- product grid / material grid / boost grid rendered by JS -->
+</main>
+
+<!-- ============ Empty State ============ -->
+<div class="empty-state" id="emptyState" style="display:none">
+  <div class="empty-icon">📭</div>
+  <div class="empty-title">まだショップがありません</div>
+  <div class="empty-desc">右上の ⚙️ から設定を開いて、ショップを追加してください</div>
+  <button class="btn-primary" onclick="openSettings()">⚙️ 設定を開く</button>
+</div>
+
+<!-- ============ Settings Modal ============ -->
+<div class="modal-backdrop" id="settingsModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>⚙️ 設定</h2>
+      <button class="btn-close" onclick="closeModal('settingsModal')">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- GitHub Section -->
+      <section class="setting-section">
+        <h3>📦 GitHub保存先</h3>
+        <div class="form-row">
+          <label>Personal Access Token (PAT)</label>
+          <input type="password" id="settingPat" placeholder="ghp_...">
+        </div>
+        <div class="form-row form-row-2col">
+          <div>
+            <label>オーナー</label>
+            <input type="text" id="settingOwner" placeholder="kaiyoshida0318">
+          </div>
+          <div>
+            <label>リポジトリ</label>
+            <input type="text" id="settingRepo" placeholder="imagegallery">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>ブランチ</label>
+          <input type="text" id="settingBranch" placeholder="main" value="main">
+        </div>
+      </section>
+
+      <!-- Shops Section -->
+      <section class="setting-section">
+        <h3>🏪 ショップ管理</h3>
+        <div id="shopsList"></div>
+        <button class="btn-add-shop" onclick="openShopForm()">+ ショップを追加</button>
+      </section>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('settingsModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveSettings()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Shop Form Modal ============ -->
+<div class="modal-backdrop" id="shopFormModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="shopFormTitle">ショップを追加</h2>
+      <button class="btn-close" onclick="closeModal('shopFormModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="shopFormId">
+      <div class="form-row">
+        <label>ショップ名</label>
+        <input type="text" id="shopFormName" placeholder="ゆかい屋">
+      </div>
+      <div class="form-row">
+        <label>モール</label>
+        <select id="shopFormMall">
+          <option value="rakuten">楽天</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>ショップコード (shopCode)</label>
+        <input type="text" id="shopFormCode" placeholder="yukaiya">
+      </div>
+      <div class="form-row">
+        <label>楽天 Application ID</label>
+        <input type="text" id="shopFormAppId" placeholder="1234567890123456789">
+      </div>
+      <div class="form-row">
+        <label>License API キー (License Key)</label>
+        <input type="password" id="shopFormLicense" placeholder="sk_..." >
+        <small class="form-hint">商品一覧の取得に使用 (RMS商品API)</small>
+      </div>
+      <div class="form-row">
+        <label>サービスシークレット (Service Secret)</label>
+        <input type="password" id="shopFormSecret" placeholder="SS...">
+        <small class="form-hint">商品一覧の取得に使用 (RMS商品API)</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('shopFormModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveShopForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Product Detail Modal ============ -->
+<div class="modal-backdrop" id="productModal" style="display:none">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <div>
+        <h2 id="productModalTitle">商品名</h2>
+        <div class="product-modal-meta" id="productModalMeta"></div>
+      </div>
+      <button class="btn-close" onclick="closeModal('productModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="product-upload-area" id="productUploadArea">
+        <div class="upload-dropzone" id="uploadDropzone">
+          <div class="upload-icon">📤</div>
+          <div class="upload-text">画像をドラッグ&ドロップ、または<button class="link-btn" id="btnPickFiles">ファイルを選択</button></div>
+          <div class="upload-hint">JPG / PNG / WebP / GIF (複数選択可)</div>
+          <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
+        </div>
+      </div>
+      <div class="upload-progress" id="uploadProgress" style="display:none"></div>
+      <div class="image-grid" id="productImageGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Image Detail Modal ============ -->
+<div class="modal-backdrop" id="imageModal" style="display:none">
+  <div class="modal modal-xl modal-image">
+    <div class="modal-header">
+      <h2 id="imageDetailTitle">画像詳細</h2>
+      <button class="btn-close" onclick="closeModal('imageModal')">×</button>
+    </div>
+    <div class="modal-body image-detail-body">
+      <div class="image-detail-preview">
+        <img id="imageDetailImg" src="" alt="">
+      </div>
+      <div class="image-detail-side">
+        <div class="form-row">
+          <label>ファイル名</label>
+          <div class="readonly-field" id="imageDetailFilename"></div>
+        </div>
+        <div class="form-row">
+          <label>登録日</label>
+          <div class="readonly-field" id="imageDetailDate"></div>
+        </div>
+        <div class="form-row">
+          <label>メモ</label>
+          <textarea id="imageDetailNote" placeholder="この画像のメモ (用途、撮影日、注意点など)"></textarea>
+        </div>
+        <div class="form-row">
+          <label>タグ</label>
+          <div class="tag-input-wrap">
+            <div id="imageDetailTags" class="tag-list"></div>
+            <input type="text" id="imageDetailTagInput" placeholder="タグを追加してEnter">
+          </div>
+        </div>
+        <div class="image-detail-actions">
+          <a id="btnDownloadImage" class="btn-secondary" download>⬇️ ダウンロード</a>
+          <button class="btn-secondary" onclick="copyImageUrl()">🔗 URLコピー</button>
+          <button class="btn-danger" onclick="deleteCurrentImage()">🗑️ 削除</button>
+        </div>
+        <div class="form-row">
+          <button class="btn-primary" onclick="saveImageDetail()">変更を保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Add Entry Modal (for material/boost) ============ -->
+<div class="modal-backdrop" id="entryFormModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="entryFormTitle">追加</h2>
+      <button class="btn-close" onclick="closeModal('entryFormModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="entryFormId">
+      <input type="hidden" id="entryFormCategory">
+      <div class="form-row">
+        <label>名前 / タイトル</label>
+        <input type="text" id="entryFormName" placeholder="例: ロゴ素材、お祝いバナー">
+      </div>
+      <div class="form-row">
+        <label>商品との紐づけ (任意)</label>
+        <select id="entryFormProductId">
+          <option value="">紐づけなし (ショップ共通)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>メモ (任意)</label>
+        <textarea id="entryFormNote" placeholder="このグループに入る画像のメモ"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('entryFormModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveEntryForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Toast ============ -->
+<div class="toast" id="toast"></div>
+
+<!-- ============ Loading Overlay ============ -->
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">処理中...</div>
+  </div>
+</div>
+
+<script src="app.js?v=1.0.0"></script>
+</body>
+</html>
