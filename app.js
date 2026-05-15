@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.3.1';
+const APP_VERSION = 'v1.3.4';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -43,8 +43,8 @@ let currentProductId = null;     // open product modal target
 let currentImageId = null;       // open image detail target
 let searchQuery = '';
 let filterUnregistered = false;
-let sortKey = null;
-let sortDir = 'asc';
+let sortKey = 'number';  // デフォルト: 商品番号
+let sortDir = 'asc';     // デフォルト: 昇順
 let filterTagIds = new Set();
 let openTagPickerProductId = null;
 let viewMode = 'basic';  // 'basic' (基礎情報) | 'images' (画像全体)
@@ -975,10 +975,7 @@ function renderSingleProductRowTags(productId) {
   const productTags = tagIds.map(id => allTags.find(t => t.id === id)).filter(Boolean);
   const tagChipsHTML = productTags.map(t => {
     const c = getTagColor(t.color);
-    return `<span class="tag-chip tag-chip-removable" style="background:${c.bg};color:${c.fg}"
-      data-remove-tag="${t.id}" data-remove-from="${p.id}" title="クリックで外す">
-      ${escapeHtml(t.name)} <span class="tag-chip-x">×</span>
-    </span>`;
+    return `<span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>`;
   }).join('');
   const addBtnHTML = `<button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>`;
   tagsWrap.innerHTML = tagChipsHTML + addBtnHTML;
@@ -987,21 +984,6 @@ function renderSingleProductRowTags(productId) {
   tagsWrap.querySelector('[data-tag-picker-btn]').addEventListener('click', (e) => {
     e.stopPropagation();
     toggleProductTagPicker(productId, e.currentTarget);
-  });
-  tagsWrap.querySelectorAll('[data-remove-tag]').forEach(el => {
-    el.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const tid = el.dataset.removeTag;
-      const before = p.tagIds.slice();
-      p.tagIds = p.tagIds.filter(x => x !== tid);
-      try {
-        await saveShopData(currentShopId, `remove tag from ${p.itemManageNumber || p.id}`);
-        renderSingleProductRowTags(productId);
-      } catch (err) {
-        p.tagIds = before;
-        toast('保存失敗: ' + err.message, 'error');
-      }
-    });
   });
 }
 
@@ -1551,24 +1533,6 @@ function renderProductGrid(products) {
       toggleProductTagPicker(btn.dataset.tagPickerBtn, btn);
     });
   });
-  // タグチップクリック → 解除
-  content.querySelectorAll('[data-remove-tag]').forEach(el => {
-    el.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const pid = el.dataset.removeFrom;
-      const tid = el.dataset.removeTag;
-      const data = dataCache[currentShopId];
-      const p = data.products.find(x => x.id === pid);
-      if (!p) return;
-      p.tagIds = (p.tagIds || []).filter(x => x !== tid);
-      try {
-        await saveShopData(currentShopId, `remove tag from ${p.itemManageNumber}`);
-        render();
-      } catch (err) {
-        toast('保存失敗: ' + err.message, 'error');
-      }
-    });
-  });
   // 画像追加ボタン
   content.querySelectorAll('[data-add-img]').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -1632,10 +1596,7 @@ function productRowHTML(p) {
     .filter(Boolean);
   const tagChipsHTML = productTags.map(t => {
     const c = getTagColor(t.color);
-    return `<span class="tag-chip tag-chip-removable" style="background:${c.bg};color:${c.fg}"
-      data-remove-tag="${t.id}" data-remove-from="${p.id}" title="クリックで外す">
-      ${escapeHtml(t.name)} <span class="tag-chip-x">×</span>
-    </span>`;
+    return `<span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>`;
   }).join('');
 
   const addBtnHTML = isEmpty
