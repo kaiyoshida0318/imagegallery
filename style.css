@@ -106,7 +106,17 @@ body {
   border-color: var(--primary);
 }
 
-.header-actions { display: flex; gap: 8px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.app-version {
+  font-size: 11px;
+  color: var(--text-light);
+  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
 .btn-icon {
   display: inline-flex;
   align-items: center;
