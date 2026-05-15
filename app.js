@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.2.3';
+const APP_VERSION = 'v1.2.4';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -114,10 +114,14 @@ function bindEvents() {
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
   document.getElementById('btnTagManage').addEventListener('click', openTagManageModal);
   document.getElementById('btnAddTag').addEventListener('click', createTagFromForm);
-  document.getElementById('btnSaveTagEdit').addEventListener('click', saveTagEdit);
-  document.getElementById('tagEditName').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); saveTagEdit(); }
-  });
+  const saveTagEditBtn = document.getElementById('btnSaveTagEdit');
+  if (saveTagEditBtn) saveTagEditBtn.addEventListener('click', saveTagEdit);
+  const tagEditNameEl = document.getElementById('tagEditName');
+  if (tagEditNameEl) {
+    tagEditNameEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { e.preventDefault(); saveTagEdit(); }
+    });
+  }
   document.getElementById('newTagName').addEventListener('keydown', (e) => {
     if (e.key === 'Enter') { e.preventDefault(); createTagFromForm(); }
   });
@@ -677,13 +681,55 @@ async function createTagFromForm() {
 let editingTagSelectedColor = 'amber';
 
 function editTag(tagId) {
-  const tag = findTag(tagId);
-  if (!tag) { toast('タグが見つかりません', 'error'); return; }
-  document.getElementById('tagEditId').value = tag.id;
-  document.getElementById('tagEditName').value = tag.name;
-  editingTagSelectedColor = tag.color || 'amber';
-  renderTagEditColorPicker();
-  document.getElementById('tagEditModal').style.display = 'flex';
+  try {
+    const tag = findTag(tagId);
+    if (!tag) { toast('タグが見つかりません', 'error'); return; }
+
+    const modal = document.getElementById('tagEditModal');
+    const idEl = document.getElementById('tagEditId');
+    const nameEl = document.getElementById('tagEditName');
+    const colorPicker = document.getElementById('tagEditColorPicker');
+
+    // モーダル要素が無い場合のフォールバック (HTMLが古い場合)
+    if (!modal || !idEl || !nameEl || !colorPicker) {
+      console.error('[ImageGallery] tagEditModal要素が見つかりません。HTMLを最新版に差し替えてください。');
+      // promptでの簡易編集にフォールバック
+      const newName = prompt('タグ名を変更 (HTMLが古いため簡易モード):', tag.name);
+      if (newName === null) return;
+      const trimmed = newName.trim();
+      if (!trimmed) { toast('タグ名は空にできません', 'error'); return; }
+      const data = dataCache[currentShopId];
+      if (data.tags.some(t => t.id !== tagId && t.name === trimmed)) {
+        toast('同じ名前のタグが既にあります', 'error'); return;
+      }
+      const old = tag.name;
+      tag.name = trimmed;
+      showLoading('保存中...');
+      saveShopData(currentShopId, `rename tag: ${old} -> ${trimmed}`)
+        .then(() => {
+          hideLoading();
+          renderTagManageList();
+          renderTagFilterDropdown();
+          render();
+          toast('タグ名を更新しました(色変更にはHTMLの差し替えが必要)', 'success');
+        })
+        .catch(e => {
+          tag.name = old;
+          hideLoading();
+          toast('保存失敗: ' + e.message, 'error');
+        });
+      return;
+    }
+
+    idEl.value = tag.id;
+    nameEl.value = tag.name;
+    editingTagSelectedColor = tag.color || 'amber';
+    renderTagEditColorPicker();
+    modal.style.display = 'flex';
+  } catch (e) {
+    console.error('[ImageGallery] editTag failed:', e);
+    toast('編集モーダルを開けません: ' + e.message, 'error');
+  }
 }
 
 function renderTagEditColorPicker() {
