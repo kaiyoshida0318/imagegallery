@@ -53,9 +53,11 @@ body {
   cursor: pointer;
   flex-shrink: 0;
 }
-.logo-icon { font-size: 20px; }
-.logo-text { font-size: 17px; font-weight: 400; letter-spacing: -0.3px; }
-.logo-text b { font-weight: 700; }
+.logo-img {
+  height: 36px;
+  width: auto;
+  display: block;
+}
 
 .shop-tabs {
   display: flex;
