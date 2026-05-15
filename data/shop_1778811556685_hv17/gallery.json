@@ -1988,7 +1988,116 @@
       "itemName": "shokz ケーブル",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/cable2/cab-25-01-b-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778833809745_brpsfe",
+          "filename": "1778833808113_ypcpcz_05_cab-25-01-b-01a.jpg",
+          "originalName": "05_cab-25-01-b-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833808113_ypcpcz_05_cab-25-01-b-01a.jpg",
+          "sha": "a5a7a9ef410eb49c0c2985c36474478217aa9412",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833808113_ypcpcz_05_cab-25-01-b-01a.jpg",
+          "size": 106238,
+          "uploadedAt": "2026-05-15T08:30:09.745Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833811356_q5sdqe",
+          "filename": "1778833809745_c2qdt6_06_cab-25-01-b-02.jpg",
+          "originalName": "06_cab-25-01-b-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833809745_c2qdt6_06_cab-25-01-b-02.jpg",
+          "sha": "259cd6c6849ac04b810f8d1fe4604fb37d98edc9",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833809745_c2qdt6_06_cab-25-01-b-02.jpg",
+          "size": 91312,
+          "uploadedAt": "2026-05-15T08:30:11.356Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833813262_2oafxo",
+          "filename": "1778833811356_kh0t29_07_cab-25-01-b-03.jpg",
+          "originalName": "07_cab-25-01-b-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833811356_kh0t29_07_cab-25-01-b-03.jpg",
+          "sha": "c768a73e268dc0a3ccd07e60fce9402ff9b64385",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833811356_kh0t29_07_cab-25-01-b-03.jpg",
+          "size": 223255,
+          "uploadedAt": "2026-05-15T08:30:13.262Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833814809_hbv0uy",
+          "filename": "1778833813262_un5sh8_08_cab-25-01-b-04.jpg",
+          "originalName": "08_cab-25-01-b-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833813262_un5sh8_08_cab-25-01-b-04.jpg",
+          "sha": "76255d7a163367d8303e187b4e0ffe45918f2c2e",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833813262_un5sh8_08_cab-25-01-b-04.jpg",
+          "size": 112508,
+          "uploadedAt": "2026-05-15T08:30:14.809Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833817338_zryt30",
+          "filename": "1778833814809_ce9szi_09_cab-25-01-b-05a.jpg",
+          "originalName": "09_cab-25-01-b-05a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833814809_ce9szi_09_cab-25-01-b-05a.jpg",
+          "sha": "7f0a88e635dd781f0ef1dcc926ddd9660bb76cdf",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833814809_ce9szi_09_cab-25-01-b-05a.jpg",
+          "size": 111402,
+          "uploadedAt": "2026-05-15T08:30:17.338Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833818820_w6xlqm",
+          "filename": "1778833817338_63g4o1_10_cab-25-01-b-06a.jpg",
+          "originalName": "10_cab-25-01-b-06a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833817338_63g4o1_10_cab-25-01-b-06a.jpg",
+          "sha": "a3ad6fd4d5a63fab9bdcafed16c678114f654384",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833817338_63g4o1_10_cab-25-01-b-06a.jpg",
+          "size": 160387,
+          "uploadedAt": "2026-05-15T08:30:18.820Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833820462_6sx3cs",
+          "filename": "1778833818820_bywr09_11_cab-25-01-b-07b.jpg",
+          "originalName": "11_cab-25-01-b-07b.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833818820_bywr09_11_cab-25-01-b-07b.jpg",
+          "sha": "2c80c68255b0f4362e5c0e1cf6a524ae38e69dd9",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833818820_bywr09_11_cab-25-01-b-07b.jpg",
+          "size": 154588,
+          "uploadedAt": "2026-05-15T08:30:20.462Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833822374_g9xwnn",
+          "filename": "1778833820462_jk650r_12_cab-25-01-b-08.jpg",
+          "originalName": "12_cab-25-01-b-08.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833820462_jk650r_12_cab-25-01-b-08.jpg",
+          "sha": "9e737a984713debbd2ab9fe61864414dabdadc1f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833820462_jk650r_12_cab-25-01-b-08.jpg",
+          "size": 166813,
+          "uploadedAt": "2026-05-15T08:30:22.375Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833824141_sk7wf5",
+          "filename": "1778833822375_0xhtxu_13_cab-25-01-b-09a.jpg",
+          "originalName": "13_cab-25-01-b-09a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833822375_0xhtxu_13_cab-25-01-b-09a.jpg",
+          "sha": "41beb84df5d86de45ada7249a26040084db11767",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_hekbnf/1778833822375_0xhtxu_13_cab-25-01-b-09a.jpg",
+          "size": 122851,
+          "uploadedAt": "2026-05-15T08:30:24.141Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
