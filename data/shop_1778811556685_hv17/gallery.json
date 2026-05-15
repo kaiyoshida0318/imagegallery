@@ -5697,7 +5697,80 @@
       "itemName": "ギター  カポタスト",
       "itemPrice": 980,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/mus/mus-03-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838325483_3wd5x3",
+          "filename": "1778838323750_4fu1lb_1_mus-03-01.jpg",
+          "originalName": "1_mus-03-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838323750_4fu1lb_1_mus-03-01.jpg",
+          "sha": "0a5c2ca1323c4a39aac539bdbe941fa2511ed060",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838323750_4fu1lb_1_mus-03-01.jpg",
+          "size": 230458,
+          "uploadedAt": "2026-05-15T09:45:25.483Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838327840_djjahm",
+          "filename": "1778838325494_qb10jj_2_mus-03-02.jpg",
+          "originalName": "2_mus-03-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838325494_qb10jj_2_mus-03-02.jpg",
+          "sha": "912fe99c8c73c80c9bdc2b54bcf06a35badc57b6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838325494_qb10jj_2_mus-03-02.jpg",
+          "size": 771068,
+          "uploadedAt": "2026-05-15T09:45:27.840Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838330099_gdjf9x",
+          "filename": "1778838327848_gkwgn7_3_mus-03-03.jpg",
+          "originalName": "3_mus-03-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838327848_gkwgn7_3_mus-03-03.jpg",
+          "sha": "2bbc4f6b9dab4a550b3e7e901e0edf9d19f24aef",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838327848_gkwgn7_3_mus-03-03.jpg",
+          "size": 539114,
+          "uploadedAt": "2026-05-15T09:45:30.099Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838332417_23ilw5",
+          "filename": "1778838330110_2ia55o_4_new-coupon.jpg",
+          "originalName": "4_new-coupon.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838330110_2ia55o_4_new-coupon.jpg",
+          "sha": "7e5ac6aaba46d21a50e662fb1097fa328b3007bb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838330110_2ia55o_4_new-coupon.jpg",
+          "size": 855878,
+          "uploadedAt": "2026-05-15T09:45:32.417Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838334276_xlq1q1",
+          "filename": "1778838332424_spek0r_5_kanre-mus.gif",
+          "originalName": "5_kanre-mus.gif",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838332424_spek0r_5_kanre-mus.gif",
+          "sha": "fc8d7b76eb8283000028f6502ef012f8d70315a5",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838332424_spek0r_5_kanre-mus.gif",
+          "size": 283201,
+          "uploadedAt": "2026-05-15T09:45:34.276Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838335402_pk7xph",
+          "filename": "1778838334283_o0pog0_6_zensyohin-gif.gif",
+          "originalName": "6_zensyohin-gif.gif",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838334283_o0pog0_6_zensyohin-gif.gif",
+          "sha": "a80487d10459e7045f47b5c8b950fe92f4bf3b93",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_8rl94m/1778838334283_o0pog0_6_zensyohin-gif.gif",
+          "size": 255529,
+          "uploadedAt": "2026-05-15T09:45:35.402Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
