@@ -5178,7 +5178,56 @@
       "itemName": "ストリングクリーナー",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/mus/mus-04-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838339168_s4gxyo",
+          "filename": "1778838337252_iskio2_1_mus-04-01.jpg",
+          "originalName": "1_mus-04-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838337252_iskio2_1_mus-04-01.jpg",
+          "sha": "9c81a3fa6e5e79b72ece35a0917b4d01e84bbff4",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838337252_iskio2_1_mus-04-01.jpg",
+          "size": 348029,
+          "uploadedAt": "2026-05-15T09:45:39.168Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838341337_dq7tjv",
+          "filename": "1778838339177_3dfkpj_2_mus-04-02.jpg",
+          "originalName": "2_mus-04-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838339177_3dfkpj_2_mus-04-02.jpg",
+          "sha": "89989e0fda9a18088e0ae816ba5155870647a157",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838339177_3dfkpj_2_mus-04-02.jpg",
+          "size": 654844,
+          "uploadedAt": "2026-05-15T09:45:41.337Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838343446_bkxigx",
+          "filename": "1778838341345_ochpjy_3_mus-04-03.jpg",
+          "originalName": "3_mus-04-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838341345_ochpjy_3_mus-04-03.jpg",
+          "sha": "a7fcd39d22a9fe4fd2e94f023c91eb32958c6a6b",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838341345_ochpjy_3_mus-04-03.jpg",
+          "size": 445597,
+          "uploadedAt": "2026-05-15T09:45:43.446Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838344559_1ps2ov",
+          "filename": "1778838343453_r5pxkj_4_mus-01-review.jpg",
+          "originalName": "4_mus-01-review.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838343453_r5pxkj_4_mus-01-review.jpg",
+          "sha": "1e2dcd94173f1c40ba5ddd96745d5f57576e7cab",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ncwyvw/1778838343453_r5pxkj_4_mus-01-review.jpg",
+          "size": 185992,
+          "uploadedAt": "2026-05-15T09:45:44.559Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
