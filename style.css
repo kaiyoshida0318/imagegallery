@@ -835,6 +835,13 @@ body {
   padding: 20px;
   overflow-y: auto;
 }
+/* 編集モーダル(他のモーダルから呼ばれる)は前面に */
+#tagEditModal,
+#productEditModal,
+#shopFormModal,
+#entryFormModal {
+  z-index: 1100;
+}
 .modal {
   background: var(--surface);
   border-radius: var(--radius);
