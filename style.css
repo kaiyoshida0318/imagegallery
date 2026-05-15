@@ -151,6 +151,9 @@ body {
   display: flex;
   align-items: center;
   gap: 12px;
+  position: sticky;
+  top: 57px;
+  z-index: 95;
 }
 .categories { display: flex; gap: 4px; flex: 1; }
 .cat-btn {
@@ -187,6 +190,9 @@ body {
   display: flex;
   gap: 10px;
   align-items: center;
+  position: sticky;
+  top: 100px;
+  z-index: 90;
 }
 .search-box {
   flex: 1;
@@ -391,7 +397,7 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  overflow: hidden;
+  /* overflow: hidden を外して sticky を有効化 */
 }
 
 .product-table-header,
@@ -401,7 +407,11 @@ body {
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
-.product-row:last-child { border-bottom: none; }
+.product-row:last-child {
+  border-bottom: none;
+  border-bottom-left-radius: var(--radius);
+  border-bottom-right-radius: var(--radius);
+}
 
 .product-table-header {
   background: var(--bg);
@@ -411,8 +421,11 @@ body {
   padding: 10px 0;
   letter-spacing: 0.3px;
   position: sticky;
-  top: 0;
-  z-index: 5;
+  top: 145px;  /* app-header(57) + category-row(43) + search-row(45) */
+  z-index: 80;
+  border-top-left-radius: var(--radius);
+  border-top-right-radius: var(--radius);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 .product-table-header > div { padding: 0 14px; }
 .product-table-header .sortable {
