@@ -4457,7 +4457,44 @@
       "itemName": "かかと角質削り 替刃",
       "itemPrice": 680,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/ih/ih-21-04-s-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778837577832_zs7in9",
+          "filename": "1778837576740_k7c7rz_1_ih-21-04-s-01.jpg",
+          "originalName": "1_ih-21-04-s-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_5295up/1778837576740_k7c7rz_1_ih-21-04-s-01.jpg",
+          "sha": "a0ca28ee0f0b28898c7ef2d4e50e385ffbe0bc19",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_5295up/1778837576740_k7c7rz_1_ih-21-04-s-01.jpg",
+          "size": 66060,
+          "uploadedAt": "2026-05-15T09:32:57.832Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837579393_fgbtxr",
+          "filename": "1778837577840_4chy7z_2_ih-21-04-s-02.jpg",
+          "originalName": "2_ih-21-04-s-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_5295up/1778837577840_4chy7z_2_ih-21-04-s-02.jpg",
+          "sha": "ac74ac8c89550f811cd6f8475aaa61d7c1bc9169",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_5295up/1778837577840_4chy7z_2_ih-21-04-s-02.jpg",
+          "size": 94437,
+          "uploadedAt": "2026-05-15T09:32:59.393Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778837580797_xs9gq4",
+          "filename": "1778837579397_r3goya_3_ih-21-04-s-03.jpg",
+          "originalName": "3_ih-21-04-s-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_5295up/1778837579397_r3goya_3_ih-21-04-s-03.jpg",
+          "sha": "7c11ccaa3c8d6e990d3c0aa7b4f3fb0f14133146",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_5295up/1778837579397_r3goya_3_ih-21-04-s-03.jpg",
+          "size": 50722,
+          "uploadedAt": "2026-05-15T09:33:00.797Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
