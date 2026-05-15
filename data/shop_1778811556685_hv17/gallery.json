@@ -8041,7 +8041,44 @@
       "itemName": "蝶ネクタイ 緑 030",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-green-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836788834_m1aaf8",
+          "filename": "1778836786527_wcuyor_1_fas-16-02-green-1.jpg",
+          "originalName": "1_fas-16-02-green-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836786527_wcuyor_1_fas-16-02-green-1.jpg",
+          "sha": "de89c8f3a363edaab0e874bd2730e2c8f127a33c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836786527_wcuyor_1_fas-16-02-green-1.jpg",
+          "size": 50607,
+          "uploadedAt": "2026-05-15T09:19:48.834Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836790028_bpxgrn",
+          "filename": "1778836788842_c63iay_2_fas-16-02-green-2.jpg",
+          "originalName": "2_fas-16-02-green-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836788842_c63iay_2_fas-16-02-green-2.jpg",
+          "sha": "441b6df232a12e347d68de37d4a6de9533295352",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836788842_c63iay_2_fas-16-02-green-2.jpg",
+          "size": 57948,
+          "uploadedAt": "2026-05-15T09:19:50.028Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836792178_t4fugz",
+          "filename": "1778836790033_tqbca3_3_fas-16-02-green-3.jpg",
+          "originalName": "3_fas-16-02-green-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836790033_tqbca3_3_fas-16-02-green-3.jpg",
+          "sha": "a4519792c8289965340f317b328070a0ecd7c5ae",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_l5v65z/1778836790033_tqbca3_3_fas-16-02-green-3.jpg",
+          "size": 68587,
+          "uploadedAt": "2026-05-15T09:19:52.178Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
