@@ -5576,7 +5576,92 @@
       "itemName": "BOSE NC700 イヤーパッド",
       "itemPrice": 1980,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/ep/ep-bose-25-02-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778834675908_wsu45q",
+          "filename": "1778834674253_gq4c6g_1_ep-bose-25-02-01.jpg",
+          "originalName": "1_ep-bose-25-02-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834674253_gq4c6g_1_ep-bose-25-02-01.jpg",
+          "sha": "d41b9ffce996c082efb65b5a61445656b2e4a592",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834674253_gq4c6g_1_ep-bose-25-02-01.jpg",
+          "size": 139770,
+          "uploadedAt": "2026-05-15T08:44:35.908Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834677812_dmnvgh",
+          "filename": "1778834675914_hyfuj5_2_ep-bose-25-02-02.jpg",
+          "originalName": "2_ep-bose-25-02-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834675914_hyfuj5_2_ep-bose-25-02-02.jpg",
+          "sha": "1bbff8cee95ea50d6957eef8b9d32f4d8489e7b2",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834675914_hyfuj5_2_ep-bose-25-02-02.jpg",
+          "size": 202740,
+          "uploadedAt": "2026-05-15T08:44:37.812Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834679742_d7uj7o",
+          "filename": "1778834677818_0s5qe1_3_ep-bose-25-02-03.jpg",
+          "originalName": "3_ep-bose-25-02-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834677818_0s5qe1_3_ep-bose-25-02-03.jpg",
+          "sha": "4f150ed5344292b3c38639d8c44eee1cda670166",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834677818_0s5qe1_3_ep-bose-25-02-03.jpg",
+          "size": 118665,
+          "uploadedAt": "2026-05-15T08:44:39.742Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834681575_ea4gm6",
+          "filename": "1778834679749_6aai9e_4_ep-bose-25-02-04.jpg",
+          "originalName": "4_ep-bose-25-02-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834679749_6aai9e_4_ep-bose-25-02-04.jpg",
+          "sha": "673d93c478522efeafa66519e62f90c800959270",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834679749_6aai9e_4_ep-bose-25-02-04.jpg",
+          "size": 190696,
+          "uploadedAt": "2026-05-15T08:44:41.575Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834683572_mtgqmg",
+          "filename": "1778834681582_71s35m_5_ep-bose-25-02-05.jpg",
+          "originalName": "5_ep-bose-25-02-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834681582_71s35m_5_ep-bose-25-02-05.jpg",
+          "sha": "a1bc5725271132e60d9f67626fc10501974f08cf",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834681582_71s35m_5_ep-bose-25-02-05.jpg",
+          "size": 242841,
+          "uploadedAt": "2026-05-15T08:44:43.572Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834685286_abn02f",
+          "filename": "1778834683579_4w9iri_6_ep-bose-25-02-06.jpg",
+          "originalName": "6_ep-bose-25-02-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834683579_4w9iri_6_ep-bose-25-02-06.jpg",
+          "sha": "4ca1ca287678770a032138987b1658c8c7894967",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834683579_4w9iri_6_ep-bose-25-02-06.jpg",
+          "size": 166862,
+          "uploadedAt": "2026-05-15T08:44:45.286Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834687113_0wzk46",
+          "filename": "1778834685295_tsito6_7_ep-bose-25-02-07.jpg",
+          "originalName": "7_ep-bose-25-02-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834685295_tsito6_7_ep-bose-25-02-07.jpg",
+          "sha": "169a043b3d060f5cfa376d6f1cec07f8d1837c57",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_44nns8/1778834685295_tsito6_7_ep-bose-25-02-07.jpg",
+          "size": 251392,
+          "uploadedAt": "2026-05-15T08:44:47.113Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
