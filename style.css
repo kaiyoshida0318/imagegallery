@@ -861,7 +861,7 @@ body {
   flex-shrink: 0;
   width: 80px;
   height: 130px;
-  border-radius: 8px;
+  border-radius: 0;
   overflow: hidden;
   border: 1px solid var(--border);
   cursor: pointer;
