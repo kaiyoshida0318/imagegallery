@@ -5637,7 +5637,104 @@
       "itemName": "PULSE3D",
       "itemPrice": 1080,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/ep/ep-sony-25-01-b-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778834704180_teupxe",
+          "filename": "1778834703058_pb79tn_1_ep-sony-25-01-b-01.jpg",
+          "originalName": "1_ep-sony-25-01-b-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834703058_pb79tn_1_ep-sony-25-01-b-01.jpg",
+          "sha": "3876a4edee0775e94334dda9ad50f216c40fec0d",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834703058_pb79tn_1_ep-sony-25-01-b-01.jpg",
+          "size": 136324,
+          "uploadedAt": "2026-05-15T08:45:04.180Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834707270_lu8kfg",
+          "filename": "1778834704187_8koqla_2_ep-sony-25-01-b-02.jpg",
+          "originalName": "2_ep-sony-25-01-b-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834704187_8koqla_2_ep-sony-25-01-b-02.jpg",
+          "sha": "61a42907c0193b07160491dbaf28b2eef7cd098f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834704187_8koqla_2_ep-sony-25-01-b-02.jpg",
+          "size": 177963,
+          "uploadedAt": "2026-05-15T08:45:07.270Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834709016_ofmgyg",
+          "filename": "1778834707277_a1v6x2_3_ep-sony-25-01-b-03.jpg",
+          "originalName": "3_ep-sony-25-01-b-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834707277_a1v6x2_3_ep-sony-25-01-b-03.jpg",
+          "sha": "e72797395bd43579d25b65c1eb4e37f18d32cd91",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834707277_a1v6x2_3_ep-sony-25-01-b-03.jpg",
+          "size": 155910,
+          "uploadedAt": "2026-05-15T08:45:09.016Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834710627_lhv5fa",
+          "filename": "1778834709023_hs7h0k_4_ep-sony-25-01-b-04.jpg",
+          "originalName": "4_ep-sony-25-01-b-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834709023_hs7h0k_4_ep-sony-25-01-b-04.jpg",
+          "sha": "fdc4a36bf2b27f6939aed66f1f64daa90af3283b",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834709023_hs7h0k_4_ep-sony-25-01-b-04.jpg",
+          "size": 138801,
+          "uploadedAt": "2026-05-15T08:45:10.627Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834712465_mb7khc",
+          "filename": "1778834710635_8w0qil_5_ep-sony-25-01-b-05.jpg",
+          "originalName": "5_ep-sony-25-01-b-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834710635_8w0qil_5_ep-sony-25-01-b-05.jpg",
+          "sha": "a1bc5725271132e60d9f67626fc10501974f08cf",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834710635_8w0qil_5_ep-sony-25-01-b-05.jpg",
+          "size": 242841,
+          "uploadedAt": "2026-05-15T08:45:12.465Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834714508_g0hpbv",
+          "filename": "1778834712473_ekrdg8_6_ep-sony-25-01-b-06.jpg",
+          "originalName": "6_ep-sony-25-01-b-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834712473_ekrdg8_6_ep-sony-25-01-b-06.jpg",
+          "sha": "b0dd1cbc34167f0fa6df418a54eed77152977249",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834712473_ekrdg8_6_ep-sony-25-01-b-06.jpg",
+          "size": 211089,
+          "uploadedAt": "2026-05-15T08:45:14.508Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834716096_f5aa6e",
+          "filename": "1778834714514_9vhmz5_7_ep-sony-25-01-b-07.jpg",
+          "originalName": "7_ep-sony-25-01-b-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834714514_9vhmz5_7_ep-sony-25-01-b-07.jpg",
+          "sha": "03cc13ba4db53649e7590db686f3a930d5a2a52b",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834714514_9vhmz5_7_ep-sony-25-01-b-07.jpg",
+          "size": 152159,
+          "uploadedAt": "2026-05-15T08:45:16.096Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834717934_o22ky7",
+          "filename": "1778834716104_13xcsh_8_ep-sony-25-01-b-08.jpg",
+          "originalName": "8_ep-sony-25-01-b-08.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834716104_13xcsh_8_ep-sony-25-01-b-08.jpg",
+          "sha": "169a043b3d060f5cfa376d6f1cec07f8d1837c57",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_hr7hzh/1778834716104_13xcsh_8_ep-sony-25-01-b-08.jpg",
+          "size": 251392,
+          "uploadedAt": "2026-05-15T08:45:17.934Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
