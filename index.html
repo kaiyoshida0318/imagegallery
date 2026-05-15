@@ -1,1406 +1,450 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImageGallery</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="speeddial-192.png">
+<meta name="theme-color" content="#fdf2f8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.5.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
 
-:root {
-  --primary: #6366f1;
-  --primary-light: #eef2ff;
-  --primary-dark: #4f46e5;
-  --bg: #f7f5f2;
-  --surface: #ffffff;
-  --text: #1a1a1a;
-  --text-muted: #6b6b6b;
-  --text-light: #9ca3af;
-  --border: #e0ddd8;
-  --border-light: #f0eee9;
-  --warning-bg: #fef3c7;
-  --warning-text: #92400e;
-  --warning-border: #fbbf24;
-  --success-bg: #d1fae5;
-  --success-text: #065f46;
-  --danger: #dc2626;
-  --danger-bg: #fee2e2;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --shadow: 0 2px 12px rgba(0,0,0,0.07);
-  --shadow-lg: 0 10px 40px rgba(0,0,0,0.15);
-}
+<!-- ============ Header ============ -->
+<header class="app-header">
+  <div class="logo" onclick="goHome()">
+    <img src="logo-header.png" alt="ImageGallery" class="logo-img">
+  </div>
 
-body {
-  font-family: 'DM Sans', 'Noto Sans JP', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  font-size: 14px;
-  line-height: 1.6;
-}
+  <!-- Shop Tabs -->
+  <div class="shop-tabs" id="shopTabs">
+    <!-- shop tabs rendered by JS -->
+  </div>
 
-/* ===== Header ===== */
-.app-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 12px 20px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+  <div class="header-actions">
+    <span class="app-version" id="appVersion">v1.0.0</span>
+    <button class="btn-icon" id="btnImportCsv" title="商品名称一括更新(CSV)">
+      <span class="icon">📋</span><span class="label">商品名称一括更新</span>
+    </button>
+    <button class="btn-icon" id="btnBulkImages" title="画像一括アップロード(ZIP)">
+      <span class="icon">📦</span><span class="label">画像一括アップロード</span>
+    </button>
+    <button class="btn-icon" id="btnExportCsv" title="基礎情報をCSVでダウンロード">
+      <span class="icon">⬇️</span><span class="label">基礎情報DL</span>
+    </button>
+    <button class="btn-icon" id="btnTagManage" title="タグ管理">
+      <span class="icon">🏷️</span><span class="label">タグ管理</span>
+    </button>
+    <button class="btn-icon" id="btnSyncProducts" title="商品同期">
+      <span class="icon">🔄</span><span class="label">商品同期</span>
+    </button>
+    <button class="btn-icon btn-danger-mini" id="btnClearProducts" title="商品データを全クリア">
+      <span class="icon">🗑️</span><span class="label">全クリア</span>
+    </button>
+    <button class="btn-icon" id="btnSettings" title="設定">⚙️</button>
+  </div>
+  <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none">
+</header>
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-.logo-img {
-  height: 56px;
-  width: auto;
-  display: block;
-}
+<!-- ============ Category Row ============ -->
+<div class="category-row">
+  <div class="categories" id="categories">
+    <button class="cat-btn active" data-cat="product">商品</button>
+    <button class="cat-btn" data-cat="material">素材</button>
+    <button class="cat-btn" data-cat="boost">盛り上げ</button>
+  </div>
+  <div class="category-meta" id="categoryMeta">
+    <span id="unregisteredCount"></span>
+  </div>
+</div>
 
-.shop-tabs {
-  display: flex;
-  gap: 4px;
-  flex: 1;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  padding: 4px 0;
-}
-.shop-tab {
-  padding: 7px 14px;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  border: 1px solid var(--border);
-  font-size: 13px;
-  color: var(--text-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all .15s;
-  font-family: inherit;
-}
-.shop-tab:hover {
-  background: var(--bg);
-  color: var(--text);
-}
-.shop-tab.active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: white;
-  font-weight: 500;
-}
-.shop-tab-add {
-  padding: 7px 12px;
-  border-radius: var(--radius-sm);
-  background: transparent;
-  border: 1px dashed var(--border);
-  font-size: 13px;
-  color: var(--text-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  font-family: inherit;
-}
-.shop-tab-add:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-}
+<!-- ============ Search ============ -->
+<div class="search-row">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="商品名・商品コードで検索...">
+  </div>
+  <div class="view-mode-toggle">
+    <button class="view-mode-btn active" data-mode="basic" id="modeBasic">📋 基礎情報</button>
+    <button class="view-mode-btn" data-mode="images" id="modeImages">🖼️ 画像全体</button>
+    <button class="view-mode-btn view-mode-btn-danger" data-mode="delete" id="modeDelete">🗑️ 削除</button>
+  </div>
+  <label class="filter-toggle">
+    <input type="checkbox" id="filterUnregistered">
+    <span>📷 画像未登録のみ</span>
+  </label>
+  <div class="tag-filter-wrap" id="tagFilterWrap">
+    <button class="filter-toggle tag-filter-toggle" id="btnTagFilterToggle">
+      🏷️ タグ <span id="tagFilterCount"></span>
+    </button>
+    <div class="tag-filter-dropdown" id="tagFilterDropdown" style="display:none"></div>
+  </div>
+  <button class="btn-add" id="btnAddEntry">+ 追加</button>
+</div>
 
-.header-actions { display: flex; gap: 8px; align-items: center; }
-.app-version {
-  font-size: 11px;
-  color: var(--text-light);
-  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  white-space: nowrap;
-}
-.btn-icon {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font-size: 12px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.btn-icon:hover { background: var(--bg); color: var(--text); }
-.btn-icon .icon { font-size: 14px; }
-.btn-icon.btn-danger-mini {
-  border-color: rgba(220, 38, 38, 0.3);
-  color: #b91c1c;
-}
-.btn-icon.btn-danger-mini:hover {
-  background: var(--danger-bg);
-  border-color: var(--danger);
-  color: var(--danger);
-}
+<!-- ============ Main Content ============ -->
+<main class="content" id="content">
+  <!-- product grid / material grid / boost grid rendered by JS -->
+</main>
 
-/* ===== Category Row ===== */
-.category-row {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: sticky;
-  top: 57px;
-  z-index: 95;
-}
-.categories { display: flex; gap: 4px; flex: 1; }
-.cat-btn {
-  padding: 8px 18px;
-  border-radius: var(--radius-sm);
-  border: 1px solid transparent;
-  background: transparent;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.cat-btn:hover { background: var(--bg); color: var(--text); }
-.cat-btn.active {
-  background: var(--text);
-  color: var(--surface);
-}
-.category-meta { font-size: 12px; color: var(--text-light); }
-.category-meta .badge-warning {
-  background: var(--warning-bg);
-  color: var(--warning-text);
-  padding: 3px 8px;
-  border-radius: var(--radius-sm);
-  font-weight: 500;
-}
+<!-- ============ Empty State ============ -->
+<div class="empty-state" id="emptyState" style="display:none">
+  <div class="empty-icon">📭</div>
+  <div class="empty-title">まだショップがありません</div>
+  <div class="empty-desc">右上の ⚙️ から設定を開いて、ショップを追加してください</div>
+  <button class="btn-primary" onclick="openSettings()">⚙️ 設定を開く</button>
+</div>
 
-/* ===== Search Row ===== */
-.search-row {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 10px 20px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  position: sticky;
-  top: 100px;
-  z-index: 90;
-}
-.search-box {
-  flex: 1;
-  position: relative;
-}
-.search-icon {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-light);
-  font-size: 13px;
-}
-#searchInput {
-  width: 100%;
-  padding: 9px 12px 9px 36px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--bg);
-  font-size: 13px;
-  font-family: inherit;
-  outline: none;
-}
-#searchInput:focus { border-color: var(--primary); background: var(--surface); }
+<!-- ============ Delete Mode Action Bar ============ -->
+<div class="delete-action-bar" id="deleteActionBar" style="display:none">
+  <div class="delete-action-info">
+    <span class="delete-action-icon">🗑️</span>
+    <span>削除予約: <strong id="deleteCount">0</strong> 枚</span>
+  </div>
+  <div class="delete-action-buttons">
+    <button class="btn-secondary" id="btnDeleteCancel">予約をクリア</button>
+    <button class="btn-danger" id="btnDeleteExecute">選択した画像を削除</button>
+  </div>
+</div>
 
-.filter-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 7px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  font-size: 12px;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-.filter-toggle:hover { background: var(--bg); }
-.filter-toggle input { margin: 0; cursor: pointer; }
+<!-- ============ Settings Modal ============ -->
+<div class="modal-backdrop" id="settingsModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>⚙️ 設定</h2>
+      <button class="btn-close" onclick="closeModal('settingsModal')">×</button>
+    </div>
+    <div class="modal-body">
 
-/* 表示モード切替 */
-.view-mode-toggle {
-  display: inline-flex;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  background: var(--surface);
-}
-.view-mode-btn {
-  padding: 7px 12px;
-  border: none;
-  background: transparent;
-  font-size: 12px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-  white-space: nowrap;
-}
-.view-mode-btn + .view-mode-btn {
-  border-left: 1px solid var(--border);
-}
-.view-mode-btn:hover {
-  background: var(--bg);
-  color: var(--text);
-}
-.view-mode-btn.active {
-  background: var(--primary);
-  color: white;
-}
+      <!-- GitHub Section -->
+      <section class="setting-section">
+        <h3>📦 GitHub保存先</h3>
+        <div class="form-row">
+          <label>Personal Access Token (PAT)</label>
+          <input type="password" id="settingPat" placeholder="ghp_...">
+        </div>
+        <div class="form-row form-row-2col">
+          <div>
+            <label>オーナー</label>
+            <input type="text" id="settingOwner" placeholder="kaiyoshida0318">
+          </div>
+          <div>
+            <label>リポジトリ</label>
+            <input type="text" id="settingRepo" placeholder="imagegallery">
+          </div>
+        </div>
+        <div class="form-row">
+          <label>ブランチ</label>
+          <input type="text" id="settingBranch" placeholder="main" value="main">
+        </div>
+      </section>
 
-/* 「+N」残り表示 */
-.product-row-more {
-  flex-shrink: 0;
-  min-width: 50px;
-  height: 130px;
-  border-radius: 0;
-  border: 1px dashed var(--border);
-  background: var(--bg);
-  color: var(--text-muted);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all .15s;
-  padding: 0 8px;
-}
-.product-row-more:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-  border-style: solid;
-}
+      <!-- Shops Section -->
+      <section class="setting-section">
+        <h3>🏪 ショップ管理</h3>
+        <div id="shopsList"></div>
+        <button class="btn-add-shop" onclick="openShopForm()">+ ショップを追加</button>
+      </section>
 
-.btn-add {
-  padding: 7px 16px;
-  border-radius: var(--radius-sm);
-  border: none;
-  background: var(--primary);
-  color: white;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.btn-add:hover { background: var(--primary-dark); }
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('settingsModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveSettings()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-/* ===== Content ===== */
-.content {
-  padding: 20px;
-  width: 100%;
-}
+<!-- ============ Shop Form Modal ============ -->
+<div class="modal-backdrop" id="shopFormModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="shopFormTitle">ショップを追加</h2>
+      <button class="btn-close" onclick="closeModal('shopFormModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="shopFormId">
+      <div class="form-row">
+        <label>ショップ名</label>
+        <input type="text" id="shopFormName" placeholder="ゆかい屋">
+      </div>
+      <div class="form-row">
+        <label>モール</label>
+        <select id="shopFormMall">
+          <option value="rakuten">楽天</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>ショップコード (shopCode)</label>
+        <input type="text" id="shopFormCode" placeholder="yukaiya">
+      </div>
+      <div class="form-row">
+        <label>楽天 Application ID (UUID形式)</label>
+        <input type="text" id="shopFormAppId" placeholder="25e47e44-78d4-4298-a49e-9e5bb71bba2c">
+        <small class="form-hint">楽天Web Service「アプリ情報の確認」のアプリケーションID</small>
+      </div>
+      <div class="form-row">
+        <label>Access Key</label>
+        <input type="password" id="shopFormAccessKey" placeholder="アクセスキー">
+        <small class="form-hint">楽天Web Service「アプリ情報の確認」のアクセスキー</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('shopFormModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveShopForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-/* ===== Tags ===== */
-.tag-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 500;
-  line-height: 1.4;
-  white-space: nowrap;
-}
-.tag-chip-removable {
-  cursor: pointer;
-  transition: opacity .15s, transform .15s;
-}
-.tag-chip-removable:hover {
-  opacity: 0.85;
-  transform: translateY(-1px);
-}
-.tag-chip-x {
-  font-size: 10px;
-  opacity: 0.6;
-}
-.tag-chip-removable:hover .tag-chip-x { opacity: 1; }
+<!-- ============ Product Detail Modal ============ -->
+<div class="modal-backdrop" id="productModal" style="display:none">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <div>
+        <h2 id="productModalTitle">商品名</h2>
+        <div class="product-modal-meta" id="productModalMeta"></div>
+      </div>
+      <button class="btn-close" onclick="closeModal('productModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="product-upload-area" id="productUploadArea">
+        <div class="upload-dropzone" id="uploadDropzone">
+          <div class="upload-icon">📤</div>
+          <div class="upload-text">画像をドラッグ&ドロップ、または<button class="link-btn" id="btnPickFiles">ファイルを選択</button></div>
+          <div class="upload-hint">JPG / PNG / WebP / GIF (複数選択可)</div>
+          <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
+        </div>
+      </div>
+      <div class="upload-progress" id="uploadProgress" style="display:none"></div>
+      <div class="image-grid" id="productImageGrid"></div>
+    </div>
+  </div>
+</div>
 
-.product-row-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  align-items: center;
-}
+<!-- ============ Image Detail Modal ============ -->
+<div class="modal-backdrop" id="imageModal" style="display:none">
+  <div class="modal modal-xl modal-image">
+    <div class="modal-header">
+      <h2 id="imageDetailTitle">画像詳細</h2>
+      <button class="btn-close" onclick="closeModal('imageModal')">×</button>
+    </div>
+    <div class="modal-body image-detail-body">
+      <div class="image-detail-preview">
+        <img id="imageDetailImg" src="" alt="">
+      </div>
+      <div class="image-detail-side">
+        <div class="form-row">
+          <label>ファイル名</label>
+          <div class="readonly-field" id="imageDetailFilename"></div>
+        </div>
+        <div class="form-row">
+          <label>登録日</label>
+          <div class="readonly-field" id="imageDetailDate"></div>
+        </div>
+        <div class="form-row">
+          <label>メモ</label>
+          <textarea id="imageDetailNote" placeholder="この画像のメモ (用途、撮影日、注意点など)"></textarea>
+        </div>
+        <div class="form-row">
+          <label>タグ</label>
+          <div class="tag-input-wrap">
+            <div id="imageDetailTags" class="tag-list"></div>
+            <input type="text" id="imageDetailTagInput" placeholder="タグを追加してEnter">
+          </div>
+        </div>
+        <div class="image-detail-actions">
+          <a id="btnDownloadImage" class="btn-secondary" download>⬇️ ダウンロード</a>
+          <button class="btn-secondary" onclick="copyImageUrl()">🔗 URLコピー</button>
+          <button class="btn-danger" onclick="deleteCurrentImage()">🗑️ 削除</button>
+        </div>
+        <div class="form-row">
+          <button class="btn-primary" onclick="saveImageDetail()">変更を保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-.col-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
-  padding: 4px 14px;
-  border-left: 1px solid var(--border-light);
-}
-.col-actions .btn-edit-mini {
-  align-self: stretch;
-  text-align: center;
-}
+<!-- ============ Tag Edit Modal ============ -->
+<div class="modal-backdrop" id="tagEditModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>🏷️ タグを編集</h2>
+      <button class="btn-close" onclick="closeModal('tagEditModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="tagEditId">
+      <div class="form-row">
+        <label>タグ名</label>
+        <input type="text" id="tagEditName" placeholder="タグ名">
+      </div>
+      <div class="form-row">
+        <label>色</label>
+        <div class="color-picker" id="tagEditColorPicker"></div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('tagEditModal')">キャンセル</button>
+        <button class="btn-primary" id="btnSaveTagEdit">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-.btn-tag-add {
-  padding: 2px 8px;
-  border-radius: 4px;
-  border: 1px dashed var(--border);
-  background: transparent;
-  font-size: 10px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.btn-tag-add:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-  border-style: solid;
-}
+<!-- ============ Tag Manage Modal ============ -->
+<div class="modal-backdrop" id="tagManageModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>🏷️ タグ管理</h2>
+      <button class="btn-close" onclick="closeModal('tagManageModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="tag-manage-hint">このショップで使うタグを登録・編集できます。商品行の「+タグ」ボタンから付与できます。</div>
+      <div class="tag-manage-list" id="tagManageList"></div>
+      <div class="tag-manage-add">
+        <input type="text" id="newTagName" placeholder="タグ名 (例: もうやってる、サイズOK、微妙)">
+        <div class="color-picker" id="newTagColorPicker"></div>
+        <button class="btn-primary" id="btnAddTag">+ 追加</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-/* タグ管理モーダル */
-.tag-manage-hint {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-bottom: 12px;
-  padding: 10px 12px;
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-}
-.tag-manage-list {
-  max-height: 360px;
-  overflow-y: auto;
-  margin-bottom: 16px;
-}
-.tag-manage-empty {
-  padding: 30px;
-  text-align: center;
-  color: var(--text-light);
-  font-size: 13px;
-}
-.tag-manage-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-sm);
-  margin-bottom: 6px;
-}
-.tag-manage-row:hover { background: var(--bg); }
-.tag-manage-row .tag-chip { font-size: 12px; padding: 3px 10px; }
-.tag-used-count {
-  flex: 1;
-  font-size: 11px;
-  color: var(--text-light);
-}
-.tag-manage-actions { display: flex; gap: 6px; }
+<!-- ============ Bulk Image Upload Modal ============ -->
+<div class="modal-backdrop" id="bulkImagesModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>📦 画像一括アップロード</h2>
+      <button class="btn-close" onclick="closeModal('bulkImagesModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="bulk-dropzone" id="bulkDropzone">
+        <div class="bulk-dropzone-icon">📦</div>
+        <div class="bulk-dropzone-text">ZIPファイルをドラッグ&ドロップ<br>または<button class="link-btn" id="btnPickBulkZip">ファイルを選択</button></div>
+        <div class="bulk-dropzone-hint">
+          ZIPの構造: <code>rakuten-images/<b>{shopCode}_{管理番号}</b>/画像ファイル</code><br>
+          例: <code>rakuten-images/yukaiya_10000176/1_xxx.jpg</code>
+        </div>
+        <input type="file" id="bulkZipInput" accept=".zip,application/zip" style="display:none">
+      </div>
+      <div class="bulk-import-summary" id="bulkImportSummary"></div>
+      <div class="bulk-import-preview" id="bulkImportPreview"></div>
+      <div class="bulk-upload-progress" id="bulkUploadProgress" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('bulkImagesModal')">キャンセル</button>
+        <button class="btn-primary" id="btnConfirmBulkImport" style="display:none">一括アップロードを実行</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-.tag-manage-add {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  padding: 12px;
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-}
-.tag-manage-add input {
-  flex: 1;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font-size: 13px;
-  font-family: inherit;
-  outline: none;
-}
-.tag-manage-add input:focus { border-color: var(--primary); }
+<!-- ============ CSV Import Modal ============ -->
+<div class="modal-backdrop" id="csvImportModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>📋 商品名称一括更新</h2>
+      <button class="btn-close" onclick="closeModal('csvImportModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="csv-dropzone" id="csvDropzone">
+        <div class="csv-dropzone-icon">📋</div>
+        <div class="csv-dropzone-text">CSVファイルをドラッグ&ドロップ<br>または<button class="link-btn" id="btnPickCsv">ファイルを選択</button></div>
+        <div class="csv-dropzone-hint">必須列: 商品管理番号 / 商品番号 / 商品名</div>
+      </div>
+      <div class="csv-import-summary" id="csvImportSummary"></div>
+      <div class="csv-import-preview" id="csvImportPreview"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('csvImportModal')">キャンセル</button>
+        <button class="btn-primary" id="btnConfirmCsvImport" style="display:none">一括更新を実行</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-.color-picker {
-  display: flex;
-  gap: 4px;
-  align-items: center;
-}
-.color-swatch {
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all .15s;
-  font-size: 0;
-}
-.color-swatch:hover { transform: scale(1.15); }
-.color-swatch.selected {
-  border-color: var(--text);
-  transform: scale(1.15);
-}
+<!-- ============ Product Edit Modal ============ -->
+<div class="modal-backdrop" id="productEditModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>商品情報を編集</h2>
+      <button class="btn-close" onclick="closeModal('productEditModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="productEditId">
+      <div class="form-row">
+        <label>商品管理番号</label>
+        <input type="text" id="productEditManageNumber" placeholder="10000176">
+        <small class="form-hint">楽天で自動採番される管理番号</small>
+      </div>
+      <div class="form-row">
+        <label>商品番号</label>
+        <input type="text" id="productEditNumber" placeholder="cab-16-01">
+        <small class="form-hint">店舗内で商品を管理する番号(自分で決める形式)</small>
+      </div>
+      <div class="form-row">
+        <label>商品名</label>
+        <input type="text" id="productEditName" placeholder="商品名">
+      </div>
+      <div class="form-row">
+        <label>商品コード (itemCode)</label>
+        <div class="readonly-field" id="productEditItemCode"></div>
+        <small class="form-hint">楽天API由来のため編集不可</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('productEditModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveProductEditForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-/* タグフィルタ */
-.tag-filter-wrap { position: relative; }
-.tag-filter-toggle {
-  background: var(--surface);
-}
-.tag-filter-toggle.active {
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  border-color: var(--primary);
-}
-.tag-filter-dropdown {
-  position: absolute;
-  top: calc(100% + 6px);
-  right: 0;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow);
-  min-width: 220px;
-  max-width: 320px;
-  max-height: 360px;
-  overflow-y: auto;
-  z-index: 200;
-  padding: 8px;
-}
-.tag-filter-empty {
-  text-align: center;
-  padding: 20px;
-  font-size: 12px;
-  color: var(--text-light);
-  line-height: 1.5;
-}
-.tag-filter-clear {
-  width: 100%;
-  padding: 6px 10px;
-  margin-bottom: 6px;
-  border-radius: 6px;
-  border: none;
-  background: var(--bg);
-  color: var(--text-muted);
-  font-size: 11px;
-  cursor: pointer;
-  font-family: inherit;
-}
-.tag-filter-clear:hover { background: var(--border-light); color: var(--text); }
-.tag-filter-list { display: flex; flex-direction: column; gap: 2px; }
-.tag-filter-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background .15s;
-}
-.tag-filter-item:hover { background: var(--bg); }
-.tag-filter-item input { cursor: pointer; margin: 0; }
+<!-- ============ Add Entry Modal (for material/boost) ============ -->
+<div class="modal-backdrop" id="entryFormModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="entryFormTitle">追加</h2>
+      <button class="btn-close" onclick="closeModal('entryFormModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="entryFormId">
+      <input type="hidden" id="entryFormCategory">
+      <div class="form-row">
+        <label>名前 / タイトル</label>
+        <input type="text" id="entryFormName" placeholder="例: ロゴ素材、お祝いバナー">
+      </div>
+      <div class="form-row">
+        <label>商品との紐づけ (任意)</label>
+        <select id="entryFormProductId">
+          <option value="">紐づけなし (ショップ共通)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>メモ (任意)</label>
+        <textarea id="entryFormNote" placeholder="このグループに入る画像のメモ"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('entryFormModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveEntryForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
 
-/* タグピッカー (商品行) */
-.tag-picker {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-lg);
-  min-width: 200px;
-  max-height: 360px;
-  overflow-y: auto;
-  z-index: 500;
-  padding: 6px;
-}
-.tag-picker-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background .15s;
-}
-.tag-picker-item:hover { background: var(--bg); }
-.tag-picker-item.selected { background: var(--primary-light); }
-.tag-picker-check {
-  width: 14px;
-  font-size: 12px;
-  color: var(--primary);
-  font-weight: 700;
-}
-.tag-picker-empty {
-  text-align: center;
-  padding: 20px;
-  font-size: 12px;
-  color: var(--text-light);
-  line-height: 1.5;
-}
+<!-- ============ Toast ============ -->
+<div class="toast" id="toast"></div>
 
-/* ===== Bulk Image Upload ===== */
-.bulk-dropzone {
-  border: 2px dashed var(--border);
-  border-radius: 0;
-  padding: 36px 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .15s;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 200px;
-  margin-bottom: 16px;
-}
-.bulk-dropzone:hover, .bulk-dropzone.dragover {
-  border-color: var(--primary);
-  background: var(--primary-light);
-}
-.bulk-dropzone-icon { font-size: 40px; line-height: 1; }
-.bulk-dropzone-text { font-size: 14px; color: var(--text); line-height: 1.7; }
-.bulk-dropzone-hint {
-  font-size: 11px;
-  color: var(--text-light);
-  margin-top: 4px;
-  line-height: 1.6;
-}
-.bulk-dropzone-hint code {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 1px 6px;
-  border-radius: 4px;
-  font-family: ui-monospace, monospace;
-  font-size: 10px;
-}
-.bulk-upload-progress {
-  background: var(--primary-light);
-  border: 1px solid var(--primary);
-  padding: 12px 16px;
-  font-family: ui-monospace, monospace;
-  font-size: 12px;
-  color: var(--primary-dark);
-  margin-bottom: 16px;
-  text-align: center;
-}
-.bulk-product-name {
-  font-size: 12px;
-  color: var(--text);
-  font-weight: 500;
-  margin-bottom: 2px;
-}
-.bulk-files-count {
-  font-size: 11px;
-  color: var(--text-muted);
-}
+<!-- ============ Loading Overlay ============ -->
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">処理中...</div>
+  </div>
+</div>
 
-/* ===== CSV Import ===== */
-.csv-dropzone {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 36px 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .15s;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 200px;
-  margin-bottom: 16px;
-}
-.csv-dropzone:hover, .csv-dropzone.dragover {
-  border-color: var(--primary);
-  background: var(--primary-light);
-}
-.csv-dropzone-icon { font-size: 40px; line-height: 1; }
-.csv-dropzone-text { font-size: 14px; color: var(--text); line-height: 1.7; }
-.csv-dropzone-hint { font-size: 11px; color: var(--text-light); margin-top: 4px; }
-
-.csv-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-bottom: 20px;
-}
-.csv-stat {
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  padding: 12px;
-  text-align: center;
-}
-.csv-stat-num { font-size: 22px; font-weight: 700; color: var(--text); }
-.csv-stat-label { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.csv-stat-ok .csv-stat-num { color: var(--primary); }
-.csv-stat-warn .csv-stat-num { color: var(--warning-text); }
-.csv-stat-warn { background: var(--warning-bg); }
-
-.csv-h {
-  font-size: 13px;
-  font-weight: 600;
-  margin: 16px 0 8px;
-  color: var(--text);
-}
-.csv-h-warn { color: var(--warning-text); }
-
-.csv-change-list, .csv-notfound-list {
-  max-height: 360px;
-  overflow-y: auto;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface);
-}
-.csv-change {
-  display: grid;
-  grid-template-columns: 110px 1fr;
-  gap: 12px;
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border-light);
-  font-size: 12px;
-}
-.csv-change:last-child { border-bottom: none; }
-.csv-change-manage {
-  font-family: ui-monospace, monospace;
-  color: var(--text);
-  font-weight: 500;
-}
-.csv-diff { margin-bottom: 3px; line-height: 1.5; }
-.csv-diff:last-child { margin-bottom: 0; }
-.csv-label {
-  display: inline-block;
-  width: 60px;
-  font-size: 10px;
-  color: var(--text-light);
-  font-weight: 500;
-}
-.csv-old { color: var(--text-light); text-decoration: line-through; word-break: break-all; }
-.csv-new { color: var(--primary-dark); font-weight: 500; word-break: break-all; }
-.csv-notfound {
-  padding: 7px 14px;
-  font-size: 12px;
-  font-family: ui-monospace, monospace;
-  color: var(--warning-text);
-  border-bottom: 1px solid var(--border-light);
-}
-.csv-notfound:last-child { border-bottom: none; }
-.csv-more {
-  padding: 8px 14px;
-  font-size: 11px;
-  color: var(--text-light);
-  text-align: center;
-  background: var(--bg);
-}
-.csv-empty {
-  padding: 40px;
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 13px;
-}
-.csv-debug {
-  margin-top: 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
-  padding: 8px 12px;
-  font-size: 11px;
-}
-.csv-debug summary {
-  cursor: pointer;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-.csv-debug-pre {
-  margin-top: 8px;
-  padding: 10px;
-  background: #1a1a1a;
-  color: #e0e0e0;
-  border-radius: var(--radius-sm);
-  font-family: ui-monospace, monospace;
-  font-size: 10px;
-  overflow-x: auto;
-  max-height: 280px;
-  overflow-y: auto;
-}
-.csv-hint {
-  margin-top: 8px;
-  padding: 8px 12px;
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-}
-.btn-primary:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-.product-table {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0;
-}
-
-.product-table-header.mode-basic,
-.product-row.mode-basic {
-  display: grid;
-  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 140px;
-  align-items: center;
-  border-bottom: 1px solid var(--border-light);
-}
-
-.product-table-header.mode-images,
-.product-row.mode-images {
-  display: grid;
-  grid-template-columns: 130px minmax(0, 1fr) 140px;
-  align-items: center;
-  border-bottom: 1px solid var(--border-light);
-}
-.product-row:last-child {
-  border-bottom: none;
-}
-
-.product-table-header {
-  background: var(--bg);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-  padding: 10px 0;
-  letter-spacing: 0.3px;
-  position: sticky;
-  top: 145px;
-  z-index: 80;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.04);
-}
-.product-table-header > div { padding: 0 14px; }
-.product-table-header .sortable {
-  cursor: pointer;
-  user-select: none;
-  transition: color .15s;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-.product-table-header .sortable:hover { color: var(--text); }
-.sort-indicator {
-  font-size: 10px;
-  color: var(--text-light);
-  opacity: 0.5;
-}
-.sort-indicator.active {
-  color: var(--primary);
-  opacity: 1;
-}
-
-.product-row { padding: 10px 0; transition: background .15s; }
-.product-row:hover { background: var(--bg); }
-.product-row.empty { background: rgba(254, 243, 199, 0.25); }
-.product-row.empty:hover { background: rgba(254, 243, 199, 0.4); }
-.product-row > div { padding: 0 14px; min-width: 0; }
-
-.col-manage, .col-number {
-  font-family: ui-monospace, 'SF Mono', Monaco, monospace;
-  font-size: 12px;
-  color: var(--text);
-  user-select: text;
-}
-.col-manage .mono, .col-number .mono { display: inline-block; word-break: break-all; }
-.mono-placeholder {
-  color: var(--text-light);
-  opacity: 0.5;
-  font-style: italic;
-}
-.product-row .col-manage:empty::before,
-.product-row .col-number:empty::before { content: "—"; color: var(--text-light); }
-
-.col-name {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-  min-width: 0;
-}
-.product-row-name {
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  word-break: break-word;
-  user-select: text;
-}
-
-.btn-edit-mini {
-  align-self: flex-start;
-  padding: 2px 8px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font-size: 10px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-}
-.btn-edit-mini:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-.col-images { overflow: hidden; }
-.product-row-images {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  padding: 2px 0 6px;
-}
-.product-row-images::-webkit-scrollbar { height: 6px; }
-.product-row-images::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 3px;
-}
-
-.thumb-add {
-  flex-shrink: 0;
-  width: 80px;
-  height: 130px;
-  border-radius: 0;
-  border: 1.5px dashed var(--border);
-  background: var(--bg);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  transition: all .15s;
-  font-family: inherit;
-  padding: 0;
-}
-.thumb-add:hover {
-  border-color: var(--primary);
-  background: var(--primary-light);
-  color: var(--primary);
-}
-.thumb-add-icon { font-size: 28px; line-height: 1; color: var(--text-muted); font-weight: 300; }
-.thumb-add:hover .thumb-add-icon { color: var(--primary); }
-.thumb-add-empty {
-  font-size: 10px;
-  color: var(--warning-text);
-  font-weight: 600;
-}
-.product-row.empty .thumb-add {
-  border-color: var(--warning-border);
-  background: var(--warning-bg);
-}
-
-.product-row-thumb {
-  flex-shrink: 0;
-  width: 80px;
-  height: 130px;
-  border-radius: 0;
-  overflow: hidden;
-  border: none;
-  cursor: pointer;
-  background: #fff;
-  transition: outline .15s;
-}
-.product-row-thumb:hover {
-  outline: 2px solid var(--primary);
-  outline-offset: -2px;
-}
-.product-row-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-  border-radius: 0;
-}
-
-/* ===== Empty State ===== */
-.empty-state {
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--text-muted);
-}
-.empty-icon { font-size: 56px; margin-bottom: 16px; }
-.empty-title { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
-.empty-desc { font-size: 14px; margin-bottom: 24px; }
-
-/* ===== Modal ===== */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  overflow-y: auto;
-}
-/* 編集モーダル(他のモーダルから呼ばれる)は前面に */
-#tagEditModal,
-#productEditModal,
-#shopFormModal,
-#entryFormModal {
-  z-index: 1100;
-}
-.modal {
-  background: var(--surface);
-  border-radius: var(--radius);
-  max-width: 520px;
-  width: 100%;
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: var(--shadow-lg);
-}
-.modal-lg { max-width: 720px; }
-.modal-xl { max-width: 1100px; }
-.modal-image .modal-body { padding: 0; }
-
-.modal-header {
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-.modal-header h2 { font-size: 18px; font-weight: 600; }
-.product-modal-meta {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-top: 2px;
-  font-family: ui-monospace, monospace;
-}
-.btn-close {
-  background: transparent;
-  border: none;
-  font-size: 24px;
-  color: var(--text-muted);
-  cursor: pointer;
-  width: 32px;
-  height: 32px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-close:hover { background: var(--bg); color: var(--text); }
-.modal-body {
-  padding: 20px;
-  overflow-y: auto;
-  flex: 1;
-}
-
-/* ===== Form ===== */
-.setting-section {
-  margin-bottom: 28px;
-}
-.setting-section h3 {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 12px;
-  color: var(--text);
-}
-
-.form-row { margin-bottom: 14px; }
-.form-row label {
-  display: block;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  margin-bottom: 5px;
-}
-.form-row input, .form-row select, .form-row textarea {
-  width: 100%;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border);
-  background: var(--surface);
-  font-size: 13px;
-  font-family: inherit;
-  outline: none;
-}
-.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
-  border-color: var(--primary);
-}
-.form-row textarea { resize: vertical; min-height: 70px; }
-.form-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.form-hint { display: block; margin-top: 4px; font-size: 11px; color: var(--text-light); }
-.readonly-field {
-  padding: 8px 12px;
-  background: var(--bg);
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  color: var(--text-muted);
-  font-family: ui-monospace, monospace;
-  word-break: break-all;
-}
-
-.modal-actions {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-  margin-top: 16px;
-}
-.btn-primary, .btn-secondary, .btn-danger {
-  padding: 9px 18px;
-  border-radius: var(--radius-sm);
-  border: none;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all .15s;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  text-decoration: none;
-}
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: var(--primary-dark); }
-.btn-secondary { background: var(--bg); color: var(--text); }
-.btn-secondary:hover { background: var(--border-light); }
-.btn-danger { background: var(--danger-bg); color: var(--danger); }
-.btn-danger:hover { background: #fecaca; }
-
-.btn-add-shop {
-  width: 100%;
-  padding: 10px;
-  border-radius: var(--radius-sm);
-  border: 1px dashed var(--border);
-  background: transparent;
-  font-size: 13px;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-family: inherit;
-  margin-top: 8px;
-}
-.btn-add-shop:hover {
-  background: var(--primary-light);
-  color: var(--primary);
-  border-color: var(--primary);
-}
-
-/* ===== Shops List in Settings ===== */
-.shop-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  margin-bottom: 8px;
-}
-.shop-row-info { flex: 1; min-width: 0; }
-.shop-row-name { font-size: 13px; font-weight: 500; }
-.shop-row-meta { font-size: 11px; color: var(--text-muted); font-family: ui-monospace, monospace; }
-.shop-row-actions { display: flex; gap: 6px; }
-.btn-icon-mini {
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: transparent;
-  font-size: 11px;
-  cursor: pointer;
-  font-family: inherit;
-}
-.btn-icon-mini:hover { background: var(--bg); }
-.btn-icon-mini.danger { color: var(--danger); }
-.btn-icon-mini.danger:hover { background: var(--danger-bg); }
-
-/* ===== Product Detail Modal ===== */
-.product-upload-area { margin-bottom: 20px; }
-.upload-dropzone {
-  border: 2px dashed var(--border);
-  border-radius: var(--radius);
-  padding: 24px;
-  text-align: center;
-  cursor: pointer;
-  transition: all .15s;
-  background: var(--bg);
-}
-.upload-dropzone:hover, .upload-dropzone.dragover {
-  border-color: var(--primary);
-  background: var(--primary-light);
-}
-.upload-icon { font-size: 32px; margin-bottom: 8px; }
-.upload-text { font-size: 13px; color: var(--text); margin-bottom: 4px; }
-.upload-hint { font-size: 11px; color: var(--text-light); }
-.link-btn {
-  background: none;
-  border: none;
-  color: var(--primary);
-  cursor: pointer;
-  font-weight: 500;
-  text-decoration: underline;
-  font-family: inherit;
-  font-size: inherit;
-}
-
-.upload-progress {
-  background: var(--primary-light);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-  margin-bottom: 14px;
-  font-size: 12px;
-  color: var(--primary-dark);
-}
-
-.image-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 12px;
-}
-.image-tile {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all .15s;
-  display: flex;
-  flex-direction: column;
-}
-.image-tile:hover { border-color: var(--primary); transform: scale(1.02); }
-.image-tile-thumb {
-  aspect-ratio: 1;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.image-tile-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.image-tile-info {
-  padding: 6px 8px;
-  font-size: 11px;
-}
-.image-tile-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: var(--text);
-}
-.image-tile-tags {
-  margin-top: 3px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 3px;
-}
-.image-tile-tags .tag {
-  font-size: 9px;
-  padding: 1px 5px;
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  border-radius: 4px;
-}
-
-/* ===== Image Detail Modal ===== */
-.image-detail-body {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 0;
-  height: 70vh;
-  max-height: 700px;
-}
-.image-detail-preview {
-  background: #1a1a1a;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-.image-detail-preview img {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-}
-.image-detail-side {
-  padding: 20px;
-  overflow-y: auto;
-  border-left: 1px solid var(--border);
-}
-.image-detail-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 16px 0;
-  padding: 16px 0;
-  border-top: 1px solid var(--border-light);
-  border-bottom: 1px solid var(--border-light);
-}
-
-.tag-input-wrap {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 6px;
-  background: var(--surface);
-}
-.tag-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 4px;
-}
-.tag-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 3px 8px;
-  background: var(--primary-light);
-  color: var(--primary-dark);
-  border-radius: 12px;
-  font-size: 11px;
-}
-.tag-pill .tag-remove {
-  cursor: pointer;
-  font-weight: bold;
-  opacity: 0.6;
-}
-.tag-pill .tag-remove:hover { opacity: 1; }
-#imageDetailTagInput {
-  border: none !important;
-  padding: 4px 8px !important;
-  background: transparent !important;
-  width: 100%;
-}
-
-/* ===== Toast ===== */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  left: 50%;
-  transform: translateX(-50%) translateY(80px);
-  background: var(--text);
-  color: var(--surface);
-  padding: 10px 18px;
-  border-radius: var(--radius-sm);
-  font-size: 13px;
-  box-shadow: var(--shadow-lg);
-  opacity: 0;
-  transition: all .25s;
-  z-index: 2000;
-  pointer-events: none;
-}
-.toast.show {
-  transform: translateX(-50%) translateY(0);
-  opacity: 1;
-}
-.toast.error { background: var(--danger); }
-.toast.success { background: #059669; }
-
-/* ===== Loading ===== */
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.5);
-  z-index: 3000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.loading-box {
-  background: var(--surface);
-  border-radius: var(--radius);
-  padding: 24px 36px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--bg);
-  border-top-color: var(--primary);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
-.loading-text { font-size: 13px; color: var(--text-muted); }
-
-/* ===== Material/Boost Grid (画像中心) ===== */
-.material-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 12px;
-}
-.material-tile {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 0;
-  overflow: hidden;
-  cursor: pointer;
-  transition: all .2s;
-}
-.material-tile:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow);
-}
-.material-tile-thumb {
-  aspect-ratio: 1;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-light);
-  font-size: 32px;
-}
-.material-tile-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-.material-tile-info { padding: 8px 10px; }
-.material-tile-name {
-  font-size: 12px;
-  font-weight: 500;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.material-tile-count {
-  font-size: 10px;
-  color: var(--text-light);
-  margin-top: 2px;
-}
-
-/* ===== Responsive ===== */
-@media (max-width: 768px) {
-  .app-header { flex-wrap: wrap; padding: 10px 14px; }
-  .shop-tabs { order: 3; width: 100%; padding-top: 6px; }
-  .content { padding: 14px; }
-  .image-detail-body {
-    grid-template-columns: 1fr;
-    height: auto;
-    max-height: 80vh;
-  }
-  .image-detail-preview { min-height: 300px; }
-  .image-detail-side { border-left: none; border-top: 1px solid var(--border); }
-  .form-row-2col { grid-template-columns: 1fr; }
-}
+<script src="app.js?v=1.5.0"></script>
+</body>
+</html>
