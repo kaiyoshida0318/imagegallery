@@ -3126,7 +3126,80 @@
       "itemName": "USB ポートカバー オス 09 20個セット",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/bg/bg-08-usb-osu-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778832903048_bxhjf7",
+          "filename": "1778832900811_31p32v_2_bg-08-usb-osu-02.jpg",
+          "originalName": "2_bg-08-usb-osu-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832900811_31p32v_2_bg-08-usb-osu-02.jpg",
+          "sha": "80db4303a292a339657aac4064e4c0aad6c62dfa",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832900811_31p32v_2_bg-08-usb-osu-02.jpg",
+          "size": 511743,
+          "uploadedAt": "2026-05-15T08:15:03.048Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832904890_6vm0rn",
+          "filename": "1778832903049_dvd3rf_3_bg-08-usb-osu-03.jpg",
+          "originalName": "3_bg-08-usb-osu-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832903049_dvd3rf_3_bg-08-usb-osu-03.jpg",
+          "sha": "e3595b141116e012fb8a14638f24cb1db8195e39",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832903049_dvd3rf_3_bg-08-usb-osu-03.jpg",
+          "size": 260526,
+          "uploadedAt": "2026-05-15T08:15:04.890Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832907194_ekotwf",
+          "filename": "1778832904890_twgmih_4_bg-08-usb-osu-04.jpg",
+          "originalName": "4_bg-08-usb-osu-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832904890_twgmih_4_bg-08-usb-osu-04.jpg",
+          "sha": "e003f5f9f140a711b5c24f57983a3c5eb3c34ddf",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832904890_twgmih_4_bg-08-usb-osu-04.jpg",
+          "size": 507898,
+          "uploadedAt": "2026-05-15T08:15:07.194Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832909607_lzyxl5",
+          "filename": "1778832907194_853039_5_bg-08-usb-osu-05.jpg",
+          "originalName": "5_bg-08-usb-osu-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832907194_853039_5_bg-08-usb-osu-05.jpg",
+          "sha": "972ae2057bcb2ed37e0da7053db1c1b72afcb44c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832907194_853039_5_bg-08-usb-osu-05.jpg",
+          "size": 303711,
+          "uploadedAt": "2026-05-15T08:15:09.607Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832912262_zquti0",
+          "filename": "1778832909607_b87xa6_6_bg-08-usb-osu-06.jpg",
+          "originalName": "6_bg-08-usb-osu-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832909607_b87xa6_6_bg-08-usb-osu-06.jpg",
+          "sha": "0ec22e79a877a76177d93783185d6d27f725d0c5",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832909607_b87xa6_6_bg-08-usb-osu-06.jpg",
+          "size": 591695,
+          "uploadedAt": "2026-05-15T08:15:12.262Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832913960_fiq090",
+          "filename": "1778832912262_o99por_1_bg-08-usb-osu-01.jpg",
+          "originalName": "1_bg-08-usb-osu-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832912262_o99por_1_bg-08-usb-osu-01.jpg",
+          "sha": "289dfab51614dedd4a8ee881bb13b102a6c3ed6c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ksoxhl/1778832912262_o99por_1_bg-08-usb-osu-01.jpg",
+          "size": 246841,
+          "uploadedAt": "2026-05-15T08:15:13.960Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
