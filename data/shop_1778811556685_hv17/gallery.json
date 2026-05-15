@@ -1855,7 +1855,80 @@
       "itemName": "除電ブラシ",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/si/si-22-06-brush-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838631738_mghcgn",
+          "filename": "1778838630162_v7p7vt_05_si-22-06-brush-01a.jpg",
+          "originalName": "05_si-22-06-brush-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838630162_v7p7vt_05_si-22-06-brush-01a.jpg",
+          "sha": "fde52eff583d93a040abd2bd6fa10ba7a58717ba",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838630162_v7p7vt_05_si-22-06-brush-01a.jpg",
+          "size": 131103,
+          "uploadedAt": "2026-05-15T09:50:31.738Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838634291_lbdcpg",
+          "filename": "1778838631748_t0uma0_06_si-22-06-brush-02.jpg",
+          "originalName": "06_si-22-06-brush-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838631748_t0uma0_06_si-22-06-brush-02.jpg",
+          "sha": "4582c54af9c9b7199a6f84d57608a2f8155d6b62",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838631748_t0uma0_06_si-22-06-brush-02.jpg",
+          "size": 648525,
+          "uploadedAt": "2026-05-15T09:50:34.291Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838636243_7qv5ge",
+          "filename": "1778838634299_5at9fy_07_si-22-06-brush-03.jpg",
+          "originalName": "07_si-22-06-brush-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838634299_5at9fy_07_si-22-06-brush-03.jpg",
+          "sha": "8bbe7cd34592c217ca3863724c7e69dd87da2514",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838634299_5at9fy_07_si-22-06-brush-03.jpg",
+          "size": 336864,
+          "uploadedAt": "2026-05-15T09:50:36.243Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838638395_qdvwfp",
+          "filename": "1778838636252_944mf7_08_si-22-06-brush-04.jpg",
+          "originalName": "08_si-22-06-brush-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838636252_944mf7_08_si-22-06-brush-04.jpg",
+          "sha": "2a31da93eb5265895d90e2d751d7a0be0f913794",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838636252_944mf7_08_si-22-06-brush-04.jpg",
+          "size": 496763,
+          "uploadedAt": "2026-05-15T09:50:38.395Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838640507_t5x2kb",
+          "filename": "1778838638405_3gt7f0_09_si-22-06-brush-05.jpg",
+          "originalName": "09_si-22-06-brush-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838638405_3gt7f0_09_si-22-06-brush-05.jpg",
+          "sha": "3b866c7b0ea52e58b47dcd9d0eb3d4dd5a3a033a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838638405_3gt7f0_09_si-22-06-brush-05.jpg",
+          "size": 626015,
+          "uploadedAt": "2026-05-15T09:50:40.507Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838642267_lyp92o",
+          "filename": "1778838640513_36dzw2_10_si-22-06-brush-07.jpg",
+          "originalName": "10_si-22-06-brush-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838640513_36dzw2_10_si-22-06-brush-07.jpg",
+          "sha": "c60622759fb55ee0bd2218cdb8678ea6fbb9f04a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ku3z7d/1778838640513_36dzw2_10_si-22-06-brush-07.jpg",
+          "size": 166539,
+          "uploadedAt": "2026-05-15T09:50:42.267Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
