@@ -1587,7 +1587,68 @@
       "itemName": "イヤホン 延長コード 1M",
       "itemPrice": 680,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/cab-16-02-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778833788617_vuv0w8",
+          "filename": "1778833787373_cx0dvj_3_cab-16-02-001-3.jpg",
+          "originalName": "3_cab-16-02-001-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833787373_cx0dvj_3_cab-16-02-001-3.jpg",
+          "sha": "c26fd0b867345209ca03ae9a4426f15fb3fe22fb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833787373_cx0dvj_3_cab-16-02-001-3.jpg",
+          "size": 54943,
+          "uploadedAt": "2026-05-15T08:29:48.617Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833789871_m49h3g",
+          "filename": "1778833788617_mfzlzq_4_cab-16-02-001-4.jpg",
+          "originalName": "4_cab-16-02-001-4.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833788617_mfzlzq_4_cab-16-02-001-4.jpg",
+          "sha": "37a517277911b79842f58911550b408cb3e70555",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833788617_mfzlzq_4_cab-16-02-001-4.jpg",
+          "size": 47832,
+          "uploadedAt": "2026-05-15T08:29:49.871Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833791345_udzp26",
+          "filename": "1778833789871_t0kyfi_5_cab-16-02-001-5.jpg",
+          "originalName": "5_cab-16-02-001-5.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833789871_t0kyfi_5_cab-16-02-001-5.jpg",
+          "sha": "72f1278c6db139775c74b0731c233db5dbce0cfa",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833789871_t0kyfi_5_cab-16-02-001-5.jpg",
+          "size": 45328,
+          "uploadedAt": "2026-05-15T08:29:51.346Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833792982_53h9sn",
+          "filename": "1778833791346_0wndj0_1_cab-16-02-001-1.jpg",
+          "originalName": "1_cab-16-02-001-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833791346_0wndj0_1_cab-16-02-001-1.jpg",
+          "sha": "8de6cc423ad1fc6005f029cb34f7f04379d3d8be",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833791346_0wndj0_1_cab-16-02-001-1.jpg",
+          "size": 95468,
+          "uploadedAt": "2026-05-15T08:29:52.982Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778833794527_zg3njb",
+          "filename": "1778833792983_rfozm8_2_cab-16-02-001-2.jpg",
+          "originalName": "2_cab-16-02-001-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833792983_rfozm8_2_cab-16-02-001-2.jpg",
+          "sha": "0982c725a3e061ca2212263a7a543de54c6caddb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_w2vkhu/1778833792983_rfozm8_2_cab-16-02-001-2.jpg",
+          "size": 65408,
+          "uploadedAt": "2026-05-15T08:29:54.527Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
