@@ -15,7 +15,7 @@ let auth = {
   repo: '',
   branch: 'main'
 };
-let shops = [];        // [{id, name, mall, shopCode, appId, licenseKey, serviceSecret}]
+let shops = [];        // [{id, name, mall, shopCode, appId, accessKey}]
 let currentShopId = null;
 let currentCategory = 'product';  // 'product' | 'material' | 'boost'
 let dataCache = {};    // {shopId: {products: [...], materials: [...], boosts: [...], shaMap: {}}}
@@ -277,16 +277,17 @@ async function deleteImageFromGitHub(imageMeta) {
 // 楽天 RMS 商品API (商品一覧取得)
 // =====================================================
 async function fetchRakutenProducts(shop) {
-  // 楽天RMS Item APIを直接ブラウザから叩くのはCORSで弾かれるため、
-  // ここではIchiba Item Search APIで自社商品を取得する方式を採用
-  // (applicationIdベース・shopCodeでフィルタ)
-  if (!shop.appId) throw new Error('Application IDが未設定です');
+  // 楽天ウェブサービス 新API (2026年2月移行版)
+  // エンドポイント: openapi.rakuten.co.jp
+  // applicationId(UUID) + accessKey の両方が必須
+  if (!shop.appId) throw new Error('Application ID(UUID)が未設定です');
+  if (!shop.accessKey) throw new Error('Access Keyが未設定です');
   if (!shop.shopCode) throw new Error('shopCodeが未設定です');
 
   const all = [];
   const hitsPerPage = 30;
   for (let page = 1; page <= 34; page++) {  // max 34 pages = 1020 items
-    const url = `https://app.rakuten.co.jp/services/api/IchibaItem/Search/20170706?applicationId=${encodeURIComponent(shop.appId)}&shopCode=${encodeURIComponent(shop.shopCode)}&hits=${hitsPerPage}&page=${page}&format=json`;
+    const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601?applicationId=${encodeURIComponent(shop.appId)}&accessKey=${encodeURIComponent(shop.accessKey)}&shopCode=${encodeURIComponent(shop.shopCode)}&hits=${hitsPerPage}&page=${page}&format=json`;
 
     let retries = 0;
     while (retries < 3) {
@@ -875,16 +876,14 @@ function openShopForm(shopId) {
     document.getElementById('shopFormMall').value = s.mall || 'rakuten';
     document.getElementById('shopFormCode').value = s.shopCode || '';
     document.getElementById('shopFormAppId').value = s.appId || '';
-    document.getElementById('shopFormLicense').value = s.licenseKey || '';
-    document.getElementById('shopFormSecret').value = s.serviceSecret || '';
+    document.getElementById('shopFormAccessKey').value = s.accessKey || '';
   } else {
     document.getElementById('shopFormTitle').textContent = 'ショップを追加';
     document.getElementById('shopFormName').value = '';
     document.getElementById('shopFormMall').value = 'rakuten';
     document.getElementById('shopFormCode').value = '';
     document.getElementById('shopFormAppId').value = '';
-    document.getElementById('shopFormLicense').value = '';
-    document.getElementById('shopFormSecret').value = '';
+    document.getElementById('shopFormAccessKey').value = '';
   }
   document.getElementById('shopFormModal').style.display = 'flex';
 }
@@ -899,8 +898,7 @@ function saveShopForm() {
     mall: document.getElementById('shopFormMall').value,
     shopCode: document.getElementById('shopFormCode').value.trim(),
     appId: document.getElementById('shopFormAppId').value.trim(),
-    licenseKey: document.getElementById('shopFormLicense').value.trim(),
-    serviceSecret: document.getElementById('shopFormSecret').value.trim()
+    accessKey: document.getElementById('shopFormAccessKey').value.trim()
   };
   if (id) {
     const i = shops.findIndex(x => x.id === id);
