@@ -485,7 +485,80 @@
       "itemName": "USB コネクタカバー メス 08 20個セット",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/bg/bg-07-usb-mesu-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778832878968_77pacz",
+          "filename": "1778832876940_5s0qj0_06_bg-07-usb-mesu-03.jpg",
+          "originalName": "06_bg-07-usb-mesu-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832876940_5s0qj0_06_bg-07-usb-mesu-03.jpg",
+          "sha": "9f5b034bf7bf4ad71717b81dffc8007de75c0884",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832876940_5s0qj0_06_bg-07-usb-mesu-03.jpg",
+          "size": 266340,
+          "uploadedAt": "2026-05-15T08:14:38.968Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832881188_i00w8u",
+          "filename": "1778832878969_qu0vma_07_bg-07-usb-mesu-04.jpg",
+          "originalName": "07_bg-07-usb-mesu-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832878969_qu0vma_07_bg-07-usb-mesu-04.jpg",
+          "sha": "cdb8e95f0fc310f317ea182ed81b2923c5394999",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832878969_qu0vma_07_bg-07-usb-mesu-04.jpg",
+          "size": 391358,
+          "uploadedAt": "2026-05-15T08:14:41.188Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832883496_n2ntf3",
+          "filename": "1778832881189_sx6v4m_08_bg-07-usb-mesu-05.jpg",
+          "originalName": "08_bg-07-usb-mesu-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832881189_sx6v4m_08_bg-07-usb-mesu-05.jpg",
+          "sha": "78a8e4cbbc87011029ed9d9ffd25a00baa457fea",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832881189_sx6v4m_08_bg-07-usb-mesu-05.jpg",
+          "size": 306278,
+          "uploadedAt": "2026-05-15T08:14:43.497Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832885722_hs9493",
+          "filename": "1778832883497_zi8jyn_09_bg-07-usb-mesu-06.jpg",
+          "originalName": "09_bg-07-usb-mesu-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832883497_zi8jyn_09_bg-07-usb-mesu-06.jpg",
+          "sha": "682a0e7d3c819935fdd55dccaa04a4228079dde8",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832883497_zi8jyn_09_bg-07-usb-mesu-06.jpg",
+          "size": 589261,
+          "uploadedAt": "2026-05-15T08:14:45.723Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832887724_b5mk0f",
+          "filename": "1778832885723_l9v72v_04_bg-07-usb-mesu-01.jpg",
+          "originalName": "04_bg-07-usb-mesu-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832885723_l9v72v_04_bg-07-usb-mesu-01.jpg",
+          "sha": "08c1355189f01e52d0ad9dedfba76864db6849ea",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832885723_l9v72v_04_bg-07-usb-mesu-01.jpg",
+          "size": 245867,
+          "uploadedAt": "2026-05-15T08:14:47.725Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832889854_vyyaxj",
+          "filename": "1778832887725_f4gsxf_05_bg-07-usb-mesu-02.jpg",
+          "originalName": "05_bg-07-usb-mesu-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832887725_f4gsxf_05_bg-07-usb-mesu-02.jpg",
+          "sha": "9df29525f98cf283df92f3368160ab3677391325",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_559b1n/1778832887725_f4gsxf_05_bg-07-usb-mesu-02.jpg",
+          "size": 611838,
+          "uploadedAt": "2026-05-15T08:14:49.855Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
