@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.1.7';
+const APP_VERSION = 'v1.2.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -43,8 +43,25 @@ let currentProductId = null;     // open product modal target
 let currentImageId = null;       // open image detail target
 let searchQuery = '';
 let filterUnregistered = false;
-let sortKey = null;     // 'manage' | 'number' | null
-let sortDir = 'asc';    // 'asc' | 'desc'
+let sortKey = null;
+let sortDir = 'asc';
+let filterTagIds = new Set();   // フィルタ用に選ばれているタグIDs
+let openTagPickerProductId = null;  // タグピッカーが開いてる商品ID
+
+// タグ用カラーパレット
+const TAG_COLORS = [
+  { id: 'gray',   bg: '#e5e7eb', fg: '#374151' },
+  { id: 'red',    bg: '#fecaca', fg: '#991b1b' },
+  { id: 'orange', bg: '#fed7aa', fg: '#9a3412' },
+  { id: 'amber',  bg: '#fde68a', fg: '#92400e' },
+  { id: 'green',  bg: '#bbf7d0', fg: '#166534' },
+  { id: 'teal',   bg: '#99f6e4', fg: '#115e59' },
+  { id: 'blue',   bg: '#bfdbfe', fg: '#1e40af' },
+  { id: 'indigo', bg: '#c7d2fe', fg: '#3730a3' },
+  { id: 'purple', bg: '#e9d5ff', fg: '#6b21a8' },
+  { id: 'pink',   bg: '#fbcfe8', fg: '#9d174d' }
+];
+let newTagSelectedColor = 'amber';
 
 // =====================================================
 // 起動
@@ -95,6 +112,28 @@ function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
   document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
+  document.getElementById('btnTagManage').addEventListener('click', openTagManageModal);
+  document.getElementById('btnAddTag').addEventListener('click', createTagFromForm);
+  document.getElementById('newTagName').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); createTagFromForm(); }
+  });
+  document.getElementById('btnTagFilterToggle').addEventListener('click', toggleTagFilterDropdown);
+
+  // ドキュメントクリックでドロップダウン閉じる
+  document.addEventListener('click', (e) => {
+    const filterWrap = document.getElementById('tagFilterWrap');
+    if (filterWrap && !filterWrap.contains(e.target)) {
+      document.getElementById('tagFilterDropdown').style.display = 'none';
+    }
+    // タグピッカーも閉じる
+    if (openTagPickerProductId) {
+      const picker = document.querySelector(`.tag-picker[data-pid="${openTagPickerProductId}"]`);
+      if (picker && !picker.contains(e.target) && !e.target.closest(`[data-tag-picker-btn="${openTagPickerProductId}"]`)) {
+        picker.remove();
+        openTagPickerProductId = null;
+      }
+    }
+  });
   document.getElementById('btnImportCsv').addEventListener('click', openCsvImportModal);
   document.getElementById('btnPickCsv').addEventListener('click', (e) => {
     e.stopPropagation();
@@ -254,7 +293,7 @@ async function loadShopData(shopId) {
   try {
     const res = await ghFetch(`contents/${path}?ref=${auth.branch}`);
     if (res.status === 404) {
-      return { products: [], materials: [], boosts: [], sha: null };
+      return { products: [], materials: [], boosts: [], tags: [], sha: null };
     }
     const data = await res.json();
     const json = JSON.parse(b64decode(data.content.replace(/\n/g, '')));
@@ -314,12 +353,13 @@ async function loadShopData(shopId) {
       products,
       materials: Array.isArray(json.materials) ? json.materials : [],
       boosts: Array.isArray(json.boosts) ? json.boosts : [],
+      tags: Array.isArray(json.tags) ? json.tags : [],  // ショップのタグマスタ
       sha: data.sha,
-      _mergedCount: mergedCount  // 通知用
+      _mergedCount: mergedCount
     };
   } catch (e) {
     console.error('loadShopData failed', e);
-    return { products: [], materials: [], boosts: [], sha: null };
+    return { products: [], materials: [], boosts: [], tags: [], sha: null };
   }
 }
 
@@ -330,7 +370,8 @@ async function saveShopData(shopId, message) {
   const content = JSON.stringify({
     products: data.products,
     materials: data.materials,
-    boosts: data.boosts
+    boosts: data.boosts,
+    tags: data.tags || []
   }, null, 2);
 
   const body = {
@@ -492,6 +533,289 @@ async function fetchRakutenProducts(shop) {
     await new Promise(r => setTimeout(r, 200));
   }
   return all;
+}
+
+// =====================================================
+// タグ管理
+// =====================================================
+function getCurrentTags() {
+  const data = dataCache[currentShopId];
+  return (data && Array.isArray(data.tags)) ? data.tags : [];
+}
+function findTag(tagId) {
+  return getCurrentTags().find(t => t.id === tagId);
+}
+function getTagColor(colorId) {
+  return TAG_COLORS.find(c => c.id === colorId) || TAG_COLORS[0];
+}
+
+function openTagManageModal() {
+  if (!currentShopId) { toast('ショップが選択されていません', 'error'); return; }
+  newTagSelectedColor = 'amber';
+  document.getElementById('newTagName').value = '';
+  renderTagColorPicker();
+  renderTagManageList();
+  document.getElementById('tagManageModal').style.display = 'flex';
+}
+
+function renderTagColorPicker() {
+  const wrap = document.getElementById('newTagColorPicker');
+  wrap.innerHTML = TAG_COLORS.map(c => `
+    <div class="color-swatch ${c.id === newTagSelectedColor ? 'selected' : ''}"
+         data-color="${c.id}"
+         style="background:${c.bg};color:${c.fg}"
+         title="${c.id}">●</div>
+  `).join('');
+  wrap.querySelectorAll('.color-swatch').forEach(el => {
+    el.addEventListener('click', () => {
+      newTagSelectedColor = el.dataset.color;
+      renderTagColorPicker();
+    });
+  });
+}
+
+function renderTagManageList() {
+  const wrap = document.getElementById('tagManageList');
+  const tags = getCurrentTags();
+  if (tags.length === 0) {
+    wrap.innerHTML = '<div class="tag-manage-empty">まだタグがありません。下のフォームから追加してください。</div>';
+    return;
+  }
+  wrap.innerHTML = tags.map(t => {
+    const c = getTagColor(t.color);
+    const usedCount = countTagUsage(t.id);
+    return `<div class="tag-manage-row">
+      <span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>
+      <span class="tag-used-count">${usedCount}件で使用中</span>
+      <div class="tag-manage-actions">
+        <button class="btn-icon-mini" data-edit-tag="${t.id}">編集</button>
+        <button class="btn-icon-mini danger" data-del-tag="${t.id}">削除</button>
+      </div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('[data-edit-tag]').forEach(b =>
+    b.addEventListener('click', () => editTag(b.dataset.editTag)));
+  wrap.querySelectorAll('[data-del-tag]').forEach(b =>
+    b.addEventListener('click', () => deleteTag(b.dataset.delTag)));
+}
+
+function countTagUsage(tagId) {
+  const data = dataCache[currentShopId];
+  if (!data) return 0;
+  return data.products.filter(p => (p.tagIds || []).includes(tagId)).length;
+}
+
+async function createTagFromForm() {
+  const input = document.getElementById('newTagName');
+  const name = input.value.trim();
+  if (!name) { toast('タグ名を入力してください', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data.tags) data.tags = [];
+  if (data.tags.some(t => t.name === name)) {
+    toast('同じ名前のタグが既にあります', 'error'); return;
+  }
+  const newTag = {
+    id: 'tag_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    name,
+    color: newTagSelectedColor,
+    createdAt: new Date().toISOString()
+  };
+  data.tags.push(newTag);
+  showLoading('タグを保存中...');
+  try {
+    await saveShopData(currentShopId, `add tag: ${name}`);
+    hideLoading();
+    input.value = '';
+    renderTagManageList();
+    renderTagFilterDropdown();
+    render();
+    toast(`タグ「${name}」を追加しました`, 'success');
+  } catch (e) {
+    hideLoading();
+    data.tags.pop();
+    toast('保存失敗: ' + e.message, 'error');
+  }
+}
+
+async function editTag(tagId) {
+  const tag = findTag(tagId);
+  if (!tag) return;
+  const newName = prompt('タグ名を変更:', tag.name);
+  if (newName === null) return;
+  const trimmed = newName.trim();
+  if (!trimmed) { toast('タグ名は空にできません', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (data.tags.some(t => t.id !== tagId && t.name === trimmed)) {
+    toast('同じ名前のタグが既にあります', 'error'); return;
+  }
+  const old = tag.name;
+  tag.name = trimmed;
+  showLoading('保存中...');
+  try {
+    await saveShopData(currentShopId, `rename tag: ${old} -> ${trimmed}`);
+    hideLoading();
+    renderTagManageList();
+    renderTagFilterDropdown();
+    render();
+    toast('タグ名を更新しました', 'success');
+  } catch (e) {
+    tag.name = old;
+    hideLoading();
+    toast('保存失敗: ' + e.message, 'error');
+  }
+}
+
+async function deleteTag(tagId) {
+  const tag = findTag(tagId);
+  if (!tag) return;
+  const usage = countTagUsage(tagId);
+  const msg = usage > 0
+    ? `タグ「${tag.name}」を削除します。\n${usage}件の商品からも自動で外されます。\n続行しますか?`
+    : `タグ「${tag.name}」を削除します。続行しますか?`;
+  if (!confirm(msg)) return;
+  const data = dataCache[currentShopId];
+  const tagIndex = data.tags.findIndex(t => t.id === tagId);
+  if (tagIndex < 0) return;
+  data.products.forEach(p => {
+    if (Array.isArray(p.tagIds)) {
+      p.tagIds = p.tagIds.filter(id => id !== tagId);
+    }
+  });
+  const removed = data.tags.splice(tagIndex, 1)[0];
+  filterTagIds.delete(tagId);
+  showLoading('保存中...');
+  try {
+    await saveShopData(currentShopId, `delete tag: ${tag.name}`);
+    hideLoading();
+    renderTagManageList();
+    renderTagFilterDropdown();
+    render();
+    toast('タグを削除しました', 'success');
+  } catch (e) {
+    data.tags.splice(tagIndex, 0, removed);
+    hideLoading();
+    toast('削除失敗: ' + e.message, 'error');
+  }
+}
+
+function toggleTagFilterDropdown() {
+  const dd = document.getElementById('tagFilterDropdown');
+  if (dd.style.display === 'none') {
+    renderTagFilterDropdown();
+    dd.style.display = 'block';
+  } else {
+    dd.style.display = 'none';
+  }
+}
+
+function renderTagFilterDropdown() {
+  const dd = document.getElementById('tagFilterDropdown');
+  const tags = getCurrentTags();
+  if (tags.length === 0) {
+    dd.innerHTML = '<div class="tag-filter-empty">タグがまだありません。<br>🏷️タグ管理から追加してください</div>';
+    return;
+  }
+  const allBtn = filterTagIds.size > 0
+    ? '<button class="tag-filter-clear" id="btnClearTagFilter">フィルタをクリア</button>'
+    : '';
+  dd.innerHTML = `
+    ${allBtn}
+    <div class="tag-filter-list">
+      ${tags.map(t => {
+        const c = getTagColor(t.color);
+        const active = filterTagIds.has(t.id);
+        return `<label class="tag-filter-item ${active ? 'active' : ''}">
+          <input type="checkbox" data-filter-tag="${t.id}" ${active ? 'checked' : ''}>
+          <span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>
+        </label>`;
+      }).join('')}
+    </div>
+  `;
+  dd.querySelectorAll('[data-filter-tag]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const id = cb.dataset.filterTag;
+      if (cb.checked) filterTagIds.add(id);
+      else filterTagIds.delete(id);
+      updateTagFilterIndicator();
+      render();
+    });
+  });
+  const clearBtn = document.getElementById('btnClearTagFilter');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      filterTagIds.clear();
+      renderTagFilterDropdown();
+      updateTagFilterIndicator();
+      render();
+    });
+  }
+}
+
+function updateTagFilterIndicator() {
+  const c = document.getElementById('tagFilterCount');
+  if (!c) return;
+  c.textContent = filterTagIds.size > 0 ? `(${filterTagIds.size})` : '';
+  const btn = document.getElementById('btnTagFilterToggle');
+  if (btn) btn.classList.toggle('active', filterTagIds.size > 0);
+}
+
+function toggleProductTagPicker(productId, anchorEl) {
+  document.querySelectorAll('.tag-picker').forEach(el => el.remove());
+  if (openTagPickerProductId === productId) {
+    openTagPickerProductId = null;
+    return;
+  }
+  openTagPickerProductId = productId;
+  const tags = getCurrentTags();
+  const data = dataCache[currentShopId];
+  const p = data.products.find(x => x.id === productId);
+  if (!p) return;
+  if (!p.tagIds) p.tagIds = [];
+
+  const picker = document.createElement('div');
+  picker.className = 'tag-picker';
+  picker.dataset.pid = productId;
+  if (tags.length === 0) {
+    picker.innerHTML = '<div class="tag-picker-empty">タグがありません。<br>🏷️タグ管理から追加してください</div>';
+  } else {
+    picker.innerHTML = tags.map(t => {
+      const c = getTagColor(t.color);
+      const has = p.tagIds.includes(t.id);
+      return `<div class="tag-picker-item ${has ? 'selected' : ''}" data-tag-id="${t.id}">
+        <span class="tag-picker-check">${has ? '✓' : ''}</span>
+        <span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>
+      </div>`;
+    }).join('');
+  }
+
+  const rect = anchorEl.getBoundingClientRect();
+  picker.style.position = 'fixed';
+  picker.style.top = (rect.bottom + 4) + 'px';
+  picker.style.left = rect.left + 'px';
+  document.body.appendChild(picker);
+
+  picker.querySelectorAll('[data-tag-id]').forEach(el => {
+    el.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const tid = el.dataset.tagId;
+      if (p.tagIds.includes(tid)) {
+        p.tagIds = p.tagIds.filter(x => x !== tid);
+      } else {
+        p.tagIds.push(tid);
+      }
+      try {
+        await saveShopData(currentShopId, `update tags: ${p.itemManageNumber}`);
+        render();
+        const newAnchor = document.querySelector(`[data-tag-picker-btn="${productId}"]`);
+        if (newAnchor) {
+          openTagPickerProductId = null;
+          toggleProductTagPicker(productId, newAnchor);
+        }
+      } catch (err) {
+        toast('保存失敗: ' + err.message, 'error');
+      }
+    });
+  });
 }
 
 async function clearAllProducts() {
@@ -888,7 +1212,7 @@ async function loadCurrentShopData() {
     }
   } catch (e) {
     toast('読み込み失敗: ' + e.message, 'error');
-    dataCache[currentShopId] = { products: [], materials: [], boosts: [], sha: null };
+    dataCache[currentShopId] = { products: [], materials: [], boosts: [], tags: [], sha: null };
   }
   hideLoading();
 }
@@ -897,6 +1221,7 @@ async function loadCurrentShopData() {
 // 描画
 // =====================================================
 function render() {
+  updateTagFilterIndicator();
   const shop = getCurrentShop();
   const empty = document.getElementById('emptyState');
   const content = document.getElementById('content');
@@ -947,6 +1272,13 @@ function renderProductGrid(products) {
   }
   if (filterUnregistered) {
     list = list.filter(p => !p.images || p.images.length === 0);
+  }
+  // タグフィルタ (OR: 選択タグのいずれかを持っていればOK)
+  if (filterTagIds.size > 0) {
+    list = list.filter(p => {
+      const ids = p.tagIds || [];
+      return ids.some(id => filterTagIds.has(id));
+    });
   }
 
   // === ソート ===
@@ -1007,6 +1339,31 @@ function renderProductGrid(products) {
       openProductEditForm(btn.dataset.editProduct);
     });
   });
+  // タグ追加ボタン
+  content.querySelectorAll('[data-tag-picker-btn]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleProductTagPicker(btn.dataset.tagPickerBtn, btn);
+    });
+  });
+  // タグチップクリック → 解除
+  content.querySelectorAll('[data-remove-tag]').forEach(el => {
+    el.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const pid = el.dataset.removeFrom;
+      const tid = el.dataset.removeTag;
+      const data = dataCache[currentShopId];
+      const p = data.products.find(x => x.id === pid);
+      if (!p) return;
+      p.tagIds = (p.tagIds || []).filter(x => x !== tid);
+      try {
+        await saveShopData(currentShopId, `remove tag from ${p.itemManageNumber}`);
+        render();
+      } catch (err) {
+        toast('保存失敗: ' + err.message, 'error');
+      }
+    });
+  });
   // 画像追加ボタン
   content.querySelectorAll('[data-add-img]').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -1053,12 +1410,30 @@ function productRowHTML(p) {
     ? `<span class="mono">${escapeHtml(number)}</span>`
     : `<span class="mono mono-placeholder">cab-16-01</span>`;
 
+  // タグ表示
+  const tagIds = p.tagIds || [];
+  const allTags = getCurrentTags();
+  const productTags = tagIds
+    .map(id => allTags.find(t => t.id === id))
+    .filter(Boolean);
+  const tagChipsHTML = productTags.map(t => {
+    const c = getTagColor(t.color);
+    return `<span class="tag-chip tag-chip-removable" style="background:${c.bg};color:${c.fg}"
+      data-remove-tag="${t.id}" data-remove-from="${p.id}" title="クリックで外す">
+      ${escapeHtml(t.name)} <span class="tag-chip-x">×</span>
+    </span>`;
+  }).join('');
+
   return `<div class="product-row ${isEmpty ? 'empty' : ''}">
     <div class="col-manage" data-open-product="${p.id}">${manageCell}</div>
     <div class="col-number" data-open-product="${p.id}">${numberCell}</div>
     <div class="col-name">
       <div class="product-row-name" data-open-product="${p.id}" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
-      <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+      <div class="product-row-tags">
+        ${tagChipsHTML}
+        <button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>
+        <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+      </div>
     </div>
     <div class="col-images">
       <div class="product-row-images">
