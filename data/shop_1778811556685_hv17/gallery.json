@@ -26,7 +26,10 @@
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/si/si-23-06a-01a.jpg?_ex=128x128",
       "images": [],
-      "syncedAt": "2026-05-15T05:35:17.155Z"
+      "syncedAt": "2026-05-15T05:35:17.155Z",
+      "tagIds": [
+        "tag_1778825361008_1j00"
+      ]
     },
     {
       "id": "prod_1778823317155_mso6qk",
