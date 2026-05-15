@@ -868,12 +868,13 @@ body {
   background: #fff;
   transition: transform .15s;
 }
-.product-row-thumb:hover { transform: scale(1.05); border-color: var(--primary); }
+.product-row-thumb:hover { border-color: var(--primary); }
 .product-row-thumb img {
   width: 100%;
   height: 100%;
   object-fit: contain;
   display: block;
+  border-radius: 0;
 }
 
 /* ===== Empty State ===== */
@@ -1117,7 +1118,7 @@ body {
 .image-tile {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border-radius: 0;
   overflow: hidden;
   cursor: pointer;
   transition: all .15s;
@@ -1295,7 +1296,7 @@ body {
 .material-tile {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 0;
   overflow: hidden;
   cursor: pointer;
   transition: all .2s;
