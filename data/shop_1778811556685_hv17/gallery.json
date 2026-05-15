@@ -846,7 +846,80 @@
       "itemName": "ベビーガードナイロン 10個セット",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/bg/bg-04-nylon-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778832335112_y5gk89",
+          "filename": "1778832333369_0mqubr_01_bg-04-nylon-01.jpg",
+          "originalName": "01_bg-04-nylon-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832333369_0mqubr_01_bg-04-nylon-01.jpg",
+          "sha": "73bf0a4d31e945c903f7d700aa9c51e47fe0dd67",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832333369_0mqubr_01_bg-04-nylon-01.jpg",
+          "size": 257009,
+          "uploadedAt": "2026-05-15T08:05:35.112Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832337507_yrgwd8",
+          "filename": "1778832335112_ohm6qe_02_bg-04-nylon-02.jpg",
+          "originalName": "02_bg-04-nylon-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832335112_ohm6qe_02_bg-04-nylon-02.jpg",
+          "sha": "74efafcd1be8517eebc8612e60b5fc402c60a91d",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832335112_ohm6qe_02_bg-04-nylon-02.jpg",
+          "size": 573407,
+          "uploadedAt": "2026-05-15T08:05:37.507Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832339740_6zzkjc",
+          "filename": "1778832337508_5mqk6a_03_bg-04-nylon-03.jpg",
+          "originalName": "03_bg-04-nylon-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832337508_5mqk6a_03_bg-04-nylon-03.jpg",
+          "sha": "ff68c417ba454ba65b5d1acccb0789b8087dce0b",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832337508_5mqk6a_03_bg-04-nylon-03.jpg",
+          "size": 409659,
+          "uploadedAt": "2026-05-15T08:05:39.740Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832342264_81svh9",
+          "filename": "1778832339740_9af232_04_bg-04-nylon-04.jpg",
+          "originalName": "04_bg-04-nylon-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832339740_9af232_04_bg-04-nylon-04.jpg",
+          "sha": "acff228a484d2e462bdbd17f2d5d966f32ecda1c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832339740_9af232_04_bg-04-nylon-04.jpg",
+          "size": 554420,
+          "uploadedAt": "2026-05-15T08:05:42.264Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832344282_mcxnvd",
+          "filename": "1778832342264_pusaax_06_bg-04-nylon-06.jpg",
+          "originalName": "06_bg-04-nylon-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832342264_pusaax_06_bg-04-nylon-06.jpg",
+          "sha": "3b1e770454e4b00eb8cea2c0af07aca8ed2a0e69",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832342264_pusaax_06_bg-04-nylon-06.jpg",
+          "size": 395769,
+          "uploadedAt": "2026-05-15T08:05:44.282Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832346791_3hrkwd",
+          "filename": "1778832344282_0t0f8e_07_bg-04-nylon-07.jpg",
+          "originalName": "07_bg-04-nylon-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832344282_0t0f8e_07_bg-04-nylon-07.jpg",
+          "sha": "66d7374ac97cdae5d77dcc9f047752875885890f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_82ypzu/1778832344282_0t0f8e_07_bg-04-nylon-07.jpg",
+          "size": 410245,
+          "uploadedAt": "2026-05-15T08:05:46.791Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
