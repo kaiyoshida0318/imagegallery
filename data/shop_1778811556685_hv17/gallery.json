@@ -5818,7 +5818,44 @@
       "itemName": "蝶ネクタイ 赤色",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-red2-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836816270_3z4iu1",
+          "filename": "1778836814563_91ob3i_1_fas-16-02-red2-1.jpg",
+          "originalName": "1_fas-16-02-red2-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836814563_91ob3i_1_fas-16-02-red2-1.jpg",
+          "sha": "0e07bb72fdc74d90b00ef6a1ae17606e484a70bc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836814563_91ob3i_1_fas-16-02-red2-1.jpg",
+          "size": 51725,
+          "uploadedAt": "2026-05-15T09:20:16.270Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836817794_hzc5hp",
+          "filename": "1778836816278_2j9h08_2_fas-16-02-red2-2.jpg",
+          "originalName": "2_fas-16-02-red2-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836816278_2j9h08_2_fas-16-02-red2-2.jpg",
+          "sha": "73de91444d4e1c194e38776a31ede8289c50df36",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836816278_2j9h08_2_fas-16-02-red2-2.jpg",
+          "size": 57975,
+          "uploadedAt": "2026-05-15T09:20:17.794Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836819403_pt5zrw",
+          "filename": "1778836817799_sci40y_3_fas-16-02-red2-3.jpg",
+          "originalName": "3_fas-16-02-red2-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836817799_sci40y_3_fas-16-02-red2-3.jpg",
+          "sha": "cd124ebeeee53b0e641615bce0e9ebba01504d38",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_4a2cu5/1778836817799_sci40y_3_fas-16-02-red2-3.jpg",
+          "size": 68811,
+          "uploadedAt": "2026-05-15T09:20:19.403Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
