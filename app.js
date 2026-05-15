@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.0.9';
+const APP_VERSION = 'v1.1.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -43,6 +43,8 @@ let currentProductId = null;     // open product modal target
 let currentImageId = null;       // open image detail target
 let searchQuery = '';
 let filterUnregistered = false;
+let sortKey = null;     // 'manage' | 'number' | null
+let sortDir = 'asc';    // 'asc' | 'desc'
 
 // =====================================================
 // 起動
@@ -772,6 +774,24 @@ function renderProductGrid(products) {
     list = list.filter(p => !p.images || p.images.length === 0);
   }
 
+  // === ソート ===
+  if (sortKey) {
+    const dir = sortDir === 'desc' ? -1 : 1;
+    list.sort((a, b) => {
+      const av = (sortKey === 'manage' ? a.itemManageNumber : a.itemNumber) || '';
+      const bv = (sortKey === 'manage' ? b.itemManageNumber : b.itemNumber) || '';
+      // 空欄は常に末尾
+      if (!av && !bv) return 0;
+      if (!av) return 1;
+      if (!bv) return -1;
+      // 数字のみなら数値比較、それ以外は文字列比較
+      const aNum = /^\d+$/.test(av);
+      const bNum = /^\d+$/.test(bv);
+      if (aNum && bNum) return (parseInt(av) - parseInt(bv)) * dir;
+      return av.localeCompare(bv, 'ja') * dir;
+    });
+  }
+
   if (list.length === 0) {
     content.innerHTML = `<div class="empty-state">
       <div class="empty-icon">📦</div>
@@ -781,11 +801,18 @@ function renderProductGrid(products) {
     return;
   }
 
+  const sortIndicator = (key) => {
+    if (sortKey !== key) return '<span class="sort-indicator">⇅</span>';
+    return sortDir === 'asc'
+      ? '<span class="sort-indicator active">▲</span>'
+      : '<span class="sort-indicator active">▼</span>';
+  };
+
   const html = `
     <div class="product-table">
       <div class="product-table-header">
-        <div class="col-manage">商品管理番号</div>
-        <div class="col-number">商品番号</div>
+        <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
+        <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-name">商品名</div>
         <div class="col-images">画像</div>
       </div>
@@ -794,6 +821,10 @@ function renderProductGrid(products) {
   `;
   content.innerHTML = html;
 
+  // ソート切替
+  content.querySelectorAll('[data-sort]').forEach(el => {
+    el.addEventListener('click', () => toggleSort(el.dataset.sort));
+  });
   // 編集ボタン
   content.querySelectorAll('[data-edit-product]').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -814,11 +845,24 @@ function renderProductGrid(products) {
   });
 }
 
+function toggleSort(key) {
+  if (sortKey !== key) {
+    sortKey = key;
+    sortDir = 'asc';
+  } else if (sortDir === 'asc') {
+    sortDir = 'desc';
+  } else {
+    sortKey = null;
+    sortDir = 'asc';
+  }
+  render();
+}
+
 function productRowHTML(p) {
   const imgCount = (p.images || []).length;
   const isEmpty = imgCount === 0;
-  const manage = p.itemManageNumber || '—';
-  const number = p.itemNumber || '—';
+  const manage = p.itemManageNumber || '';
+  const number = p.itemNumber || '';
 
   const imgsHTML = (p.images || []).map(img => `
     <div class="product-row-thumb" data-open-product="${p.id}" title="${escapeHtml(img.filename)}">
@@ -826,9 +870,16 @@ function productRowHTML(p) {
     </div>
   `).join('');
 
+  const manageCell = manage
+    ? `<span class="mono">${escapeHtml(manage)}</span>`
+    : `<span class="mono mono-placeholder">10000000</span>`;
+  const numberCell = number
+    ? `<span class="mono">${escapeHtml(number)}</span>`
+    : `<span class="mono mono-placeholder">cab-16-01</span>`;
+
   return `<div class="product-row ${isEmpty ? 'empty' : ''}">
-    <div class="col-manage" data-open-product="${p.id}"><span class="mono">${escapeHtml(manage)}</span></div>
-    <div class="col-number" data-open-product="${p.id}"><span class="mono">${escapeHtml(number)}</span></div>
+    <div class="col-manage" data-open-product="${p.id}">${manageCell}</div>
+    <div class="col-number" data-open-product="${p.id}">${numberCell}</div>
     <div class="col-name">
       <div class="product-row-name" data-open-product="${p.id}" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
       <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
