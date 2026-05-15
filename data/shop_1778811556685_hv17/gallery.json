@@ -10164,7 +10164,44 @@
       "itemName": "マグネットパッド",
       "itemPrice": 980,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/ih/ih-22-02a-01-fix.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838721779_5mlmub",
+          "filename": "1778838720254_5s1qa8_1_ih-22-02a-01-fix.jpg",
+          "originalName": "1_ih-22-02a-01-fix.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_25rsnn/1778838720254_5s1qa8_1_ih-22-02a-01-fix.jpg",
+          "sha": "17f9f2a891478b9a3bb7cfb6915e22d2dd8d7c05",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_25rsnn/1778838720254_5s1qa8_1_ih-22-02a-01-fix.jpg",
+          "size": 81788,
+          "uploadedAt": "2026-05-15T09:52:01.779Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838722908_pt194x",
+          "filename": "1778838721784_76ytzj_2_ih-22-02a-02.jpg",
+          "originalName": "2_ih-22-02a-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_25rsnn/1778838721784_76ytzj_2_ih-22-02a-02.jpg",
+          "sha": "95e784cb772756c44f6ce14fe55bd7e7ed8e9730",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_25rsnn/1778838721784_76ytzj_2_ih-22-02a-02.jpg",
+          "size": 138248,
+          "uploadedAt": "2026-05-15T09:52:02.908Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838724513_b5mnmm",
+          "filename": "1778838722913_ogmbnr_3_ih-22-02a-03.jpg",
+          "originalName": "3_ih-22-02a-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_25rsnn/1778838722913_ogmbnr_3_ih-22-02a-03.jpg",
+          "sha": "a4d58c3698ccdfa47cb3b732ccef9a471cd936ad",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_25rsnn/1778838722913_ogmbnr_3_ih-22-02a-03.jpg",
+          "size": 73903,
+          "uploadedAt": "2026-05-15T09:52:04.513Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
