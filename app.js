@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.1.6';
+const APP_VERSION = 'v1.1.7';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -185,6 +185,28 @@ function bindEvents() {
 }
 
 // =====================================================
+// 画像のソート (ファイル名昇順、自然順序)
+// "メイン1.jpg" < "メイン2.jpg" < "メイン10.jpg" のように扱う
+// =====================================================
+function getImageSortKey(img) {
+  if (img.originalName) return img.originalName;
+  if (img.filename) {
+    // "1715000000_abc123_元のファイル名.jpg" → "元のファイル名.jpg"
+    const m = img.filename.match(/^\d+_[a-z0-9]+_(.+)$/);
+    return m ? m[1] : img.filename;
+  }
+  return '';
+}
+
+function sortImagesByName(images) {
+  return images.slice().sort((a, b) => {
+    const ka = getImageSortKey(a);
+    const kb = getImageSortKey(b);
+    return ka.localeCompare(kb, 'ja', { numeric: true, sensitivity: 'base' });
+  });
+}
+
+// =====================================================
 // GitHub API
 // =====================================================
 async function ghFetch(path, opts = {}) {
@@ -358,6 +380,7 @@ async function uploadImageToGitHub(shopId, productId, file) {
   return {
     id: 'img_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
     filename,
+    originalName: file.name,  // 元のファイル名(ソート用)
     path,
     sha: result.content.sha,
     url: result.content.download_url,
@@ -1016,8 +1039,9 @@ function productRowHTML(p) {
   const manage = p.itemManageNumber || '';
   const number = p.itemNumber || '';
 
-  const imgsHTML = (p.images || []).map(img => `
-    <div class="product-row-thumb" data-open-product="${p.id}" title="${escapeHtml(img.filename)}">
+  const sortedImages = sortImagesByName(p.images || []);
+  const imgsHTML = sortedImages.map(img => `
+    <div class="product-row-thumb" data-open-product="${p.id}" title="${escapeHtml(getImageSortKey(img))}">
       <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
     </div>
   `).join('');
@@ -1158,7 +1182,7 @@ function getCurrentEntry() {
 
 function renderProductImageGrid(entry) {
   const grid = document.getElementById('productImageGrid');
-  const images = entry.images || [];
+  const images = sortImagesByName(entry.images || []);
   if (images.length === 0) {
     grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-light)">
       📷 まだ画像がありません。上のエリアからアップロードしてください
@@ -1169,7 +1193,7 @@ function renderProductImageGrid(entry) {
     <div class="image-tile" data-img-id="${img.id}">
       <div class="image-tile-thumb"><img src="${escapeHtml(img.url)}" alt="" loading="lazy"></div>
       <div class="image-tile-info">
-        <div class="image-tile-name" title="${escapeHtml(img.filename)}">${escapeHtml(img.filename)}</div>
+        <div class="image-tile-name" title="${escapeHtml(getImageSortKey(img))}">${escapeHtml(getImageSortKey(img))}</div>
         ${(img.tags && img.tags.length)
           ? `<div class="image-tile-tags">${img.tags.map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('')}</div>`
           : ''}
@@ -1228,13 +1252,14 @@ function openImageDetail(imgId) {
   if (!img) return;
 
   currentImageId = imgId;
+  const displayName = getImageSortKey(img);
   document.getElementById('imageDetailImg').src = img.url;
-  document.getElementById('imageDetailTitle').textContent = img.filename;
-  document.getElementById('imageDetailFilename').textContent = img.filename;
+  document.getElementById('imageDetailTitle').textContent = displayName;
+  document.getElementById('imageDetailFilename').textContent = displayName;
   document.getElementById('imageDetailDate').textContent = formatDate(img.uploadedAt);
   document.getElementById('imageDetailNote').value = img.note || '';
   document.getElementById('btnDownloadImage').href = img.url;
-  document.getElementById('btnDownloadImage').download = img.filename;
+  document.getElementById('btnDownloadImage').download = img.originalName || img.filename;
   renderImageTags(img.tags || []);
   document.getElementById('imageModal').style.display = 'flex';
 }
