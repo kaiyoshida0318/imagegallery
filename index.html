@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.0.7">
+<link rel="stylesheet" href="style.css?v=1.0.9">
 </head>
 <body>
 
@@ -243,11 +243,16 @@
       <button class="btn-close" onclick="closeModal('csvImportModal')">×</button>
     </div>
     <div class="modal-body">
+      <div class="csv-dropzone" id="csvDropzone">
+        <div class="csv-dropzone-icon">📋</div>
+        <div class="csv-dropzone-text">CSVファイルをドラッグ&ドロップ<br>または<button class="link-btn" id="btnPickCsv">ファイルを選択</button></div>
+        <div class="csv-dropzone-hint">必須列: 商品管理番号 / 商品番号 / 商品名</div>
+      </div>
       <div class="csv-import-summary" id="csvImportSummary"></div>
       <div class="csv-import-preview" id="csvImportPreview"></div>
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeModal('csvImportModal')">キャンセル</button>
-        <button class="btn-primary" id="btnConfirmCsvImport">一括更新を実行</button>
+        <button class="btn-primary" id="btnConfirmCsvImport" style="display:none">一括更新を実行</button>
       </div>
     </div>
   </div>
@@ -332,6 +337,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.0.7"></script>
+<script src="app.js?v=1.0.9"></script>
 </body>
 </html>
