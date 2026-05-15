@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.4.2';
+const APP_VERSION = 'v1.5.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -49,8 +49,9 @@ const LS_SORT_KEY = 'imagegallery_sort_key_v1';
 const LS_SORT_DIR = 'imagegallery_sort_dir_v1';
 let filterTagIds = new Set();
 let openTagPickerProductId = null;
-let viewMode = 'basic';  // 'basic' (基礎情報) | 'images' (画像全体)
+let viewMode = 'basic';  // 'basic' (基礎情報) | 'images' (画像全体) | 'delete' (削除)
 const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
+let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 
 // タグ用カラーパレット
 const TAG_COLORS = [
@@ -232,9 +233,20 @@ function bindEvents() {
       localStorage.setItem(LS_VIEW_MODE, viewMode);
       document.querySelectorAll('.view-mode-btn').forEach(b =>
         b.classList.toggle('active', b === btn));
+      // モード切替で削除予約は一旦リセット
+      deleteSelection.clear();
+      updateDeleteActionBar();
       render();
     });
   });
+
+  // 削除モードのアクションバー
+  document.getElementById('btnDeleteCancel').addEventListener('click', () => {
+    deleteSelection.clear();
+    updateDeleteActionBar();
+    render();
+  });
+  document.getElementById('btnDeleteExecute').addEventListener('click', executeDeleteSelected);
 
   // Category tabs
   document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -1743,8 +1755,79 @@ async function loadCurrentShopData() {
 // =====================================================
 // 描画
 // =====================================================
+// =====================================================
+// 削除モード: アクションバー & 一括削除
+// =====================================================
+function updateDeleteActionBar() {
+  const bar = document.getElementById('deleteActionBar');
+  const cnt = document.getElementById('deleteCount');
+  if (!bar || !cnt) return;
+  if (viewMode === 'delete' && deleteSelection.size > 0) {
+    bar.style.display = 'flex';
+    cnt.textContent = deleteSelection.size;
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+async function executeDeleteSelected() {
+  if (deleteSelection.size === 0) return;
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const count = deleteSelection.size;
+  if (!confirm(`${count}枚の画像を削除します。\n※GitHub上の画像ファイル本体も削除されます。\n本当に実行しますか?`)) return;
+
+  // 対象画像をリストアップ (product, image のペア)
+  const targets = [];
+  data.products.forEach(p => {
+    if (!p.images) return;
+    p.images.forEach(img => {
+      if (deleteSelection.has(img.id)) {
+        targets.push({ product: p, image: img });
+      }
+    });
+  });
+
+  let okCount = 0;
+  let failCount = 0;
+  showLoading(`画像を削除中... 0/${targets.length}`);
+  for (let i = 0; i < targets.length; i++) {
+    const t = targets[i];
+    showLoading(`画像を削除中... ${i + 1}/${targets.length}`);
+    try {
+      // GitHubから画像ファイル削除
+      await ghFetch(`contents/${t.image.path}`, {
+        method: 'DELETE',
+        body: JSON.stringify({
+          message: `delete image (bulk): ${t.image.filename}`,
+          sha: t.image.sha,
+          branch: auth.branch
+        })
+      });
+      // 商品から取り除く
+      t.product.images = t.product.images.filter(x => x.id !== t.image.id);
+      okCount++;
+    } catch (e) {
+      console.error('Delete failed', t.image.filename, e);
+      failCount++;
+    }
+  }
+  // gallery.json を保存
+  try {
+    await saveShopData(currentShopId, `bulk delete: ${okCount} images`);
+  } catch (e) {
+    console.error('Save after bulk delete failed', e);
+  }
+  hideLoading();
+  deleteSelection.clear();
+  updateDeleteActionBar();
+  render();
+  toast(`削除完了: ${okCount}枚${failCount ? ` / 失敗${failCount}件` : ''}`, failCount ? 'error' : 'success');
+}
+
 function render() {
   updateTagFilterIndicator();
+  updateDeleteActionBar();
   const shop = getCurrentShop();
   const empty = document.getElementById('emptyState');
   const content = document.getElementById('content');
@@ -1848,8 +1931,16 @@ function renderProductGrid(products) {
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
+  } else if (viewMode === 'delete') {
+    // 削除モード: 商品番号・画像 (画像クリックで削除予約)
+    headerHTML = `
+      <div class="product-table-header mode-delete">
+        <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+        <div class="col-images">画像 (クリックで削除予約)</div>
+      </div>
+    `;
   } else {
-    // 基礎情報モード: 管理番号・商品番号・商品名・画像5枚・タグ操作
+    // 基礎情報モード
     headerHTML = `
       <div class="product-table-header mode-basic">
         <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
@@ -1885,6 +1976,27 @@ function renderProductGrid(products) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleProductTagPicker(btn.dataset.tagPickerBtn, btn);
+    });
+  });
+  // 削除モード: 画像クリックで予約トグル
+  content.querySelectorAll('[data-delete-toggle]').forEach(el => {
+    el.addEventListener('click', () => {
+      const imgId = el.dataset.deleteToggle;
+      if (deleteSelection.has(imgId)) {
+        deleteSelection.delete(imgId);
+        el.classList.remove('marked');
+        el.querySelector('.delete-mark-overlay')?.remove();
+      } else {
+        deleteSelection.add(imgId);
+        el.classList.add('marked');
+        if (!el.querySelector('.delete-mark-overlay')) {
+          const ov = document.createElement('div');
+          ov.className = 'delete-mark-overlay';
+          ov.textContent = '✕';
+          el.appendChild(ov);
+        }
+      }
+      updateDeleteActionBar();
     });
   });
   // 画像追加ボタン
@@ -1923,15 +2035,26 @@ function productRowHTML(p) {
   const number = p.itemNumber || '';
 
   const sortedImages = sortImagesByName(p.images || []);
-  // basicモードは5枚まで、imagesモードは全部
-  const displayImages = viewMode === 'images' ? sortedImages : sortedImages.slice(0, 5);
+  // basicモードは5枚まで、imagesとdeleteは全部
+  const displayImages = (viewMode === 'images' || viewMode === 'delete')
+    ? sortedImages
+    : sortedImages.slice(0, 5);
   const remaining = sortedImages.length - displayImages.length;
 
-  const imgsHTML = displayImages.map(img => `
-    <div class="product-row-thumb" data-open-product="${p.id}" title="${escapeHtml(getImageSortKey(img))}">
+  const imgsHTML = displayImages.map(img => {
+    const isMarked = deleteSelection.has(img.id);
+    if (viewMode === 'delete') {
+      return `<div class="product-row-thumb delete-mark ${isMarked ? 'marked' : ''}"
+        data-delete-toggle="${img.id}"
+        title="${escapeHtml(getImageSortKey(img))}">
+        <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
+        ${isMarked ? '<div class="delete-mark-overlay">✕</div>' : ''}
+      </div>`;
+    }
+    return `<div class="product-row-thumb" data-open-product="${p.id}" title="${escapeHtml(getImageSortKey(img))}">
       <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 
   // 残り表示(basicモードで5枚超え)
   const moreHTML = remaining > 0
@@ -1985,6 +2108,14 @@ function productRowHTML(p) {
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
       ${actionsCellHTML}
+    </div>`;
+  }
+
+  if (viewMode === 'delete') {
+    // 削除モード: 商品番号・画像のみ (タグ・操作なし)
+    return `<div class="product-row mode-delete ${isEmpty ? 'empty' : ''}">
+      <div class="col-number">${numberCell}</div>
+      ${imagesCellHTML}
     </div>`;
   }
 
