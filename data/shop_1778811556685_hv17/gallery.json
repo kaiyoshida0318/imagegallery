@@ -1358,7 +1358,44 @@
       "itemName": "蝶ネクタイ えんじ",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-red-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836773059_t2ibre",
+          "filename": "1778836771597_j3wec1_1_fas-16-02-red-1.jpg",
+          "originalName": "1_fas-16-02-red-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836771597_j3wec1_1_fas-16-02-red-1.jpg",
+          "sha": "dff452247fdca1f54fee088a99664150e28d9494",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836771597_j3wec1_1_fas-16-02-red-1.jpg",
+          "size": 55536,
+          "uploadedAt": "2026-05-15T09:19:33.059Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836774538_95avzt",
+          "filename": "1778836773064_7stfd6_2_fas-16-02-w_1.jpg",
+          "originalName": "2_fas-16-02-w_1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836773064_7stfd6_2_fas-16-02-w_1.jpg",
+          "sha": "5240d5bc31ca87fffdfde278b050a0b743cc86f6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836773064_7stfd6_2_fas-16-02-w_1.jpg",
+          "size": 65358,
+          "uploadedAt": "2026-05-15T09:19:34.538Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836776041_e61hbl",
+          "filename": "1778836774548_hru9ds_3_fas-16-02-red-3.jpg",
+          "originalName": "3_fas-16-02-red-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836774548_hru9ds_3_fas-16-02-red-3.jpg",
+          "sha": "cf6dcf8d7f9f783349f27caa31c40e9885849300",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_7ervqn/1778836774548_hru9ds_3_fas-16-02-red-3.jpg",
+          "size": 70214,
+          "uploadedAt": "2026-05-15T09:19:36.041Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
