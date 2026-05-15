@@ -1322,7 +1322,92 @@
       "itemName": "HUAWEI Band 6 ケーブル",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/si/si-22-02-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838399274_x099we",
+          "filename": "1778838397624_8babv6_1_si-22-02-01a.jpg",
+          "originalName": "1_si-22-02-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838397624_8babv6_1_si-22-02-01a.jpg",
+          "sha": "8fbf829182415712b184631ab2c411f0977567aa",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838397624_8babv6_1_si-22-02-01a.jpg",
+          "size": 103150,
+          "uploadedAt": "2026-05-15T09:46:39.274Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838401076_f1gs0c",
+          "filename": "1778838399280_03ms2k_2_si-22-02-02.jpg",
+          "originalName": "2_si-22-02-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838399280_03ms2k_2_si-22-02-02.jpg",
+          "sha": "14e2ed489d2f098db7a342c8ac7765cc264734e0",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838399280_03ms2k_2_si-22-02-02.jpg",
+          "size": 96639,
+          "uploadedAt": "2026-05-15T09:46:41.076Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838403197_9u0zpd",
+          "filename": "1778838401085_r16u7f_3_si-22-02-03.jpg",
+          "originalName": "3_si-22-02-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838401085_r16u7f_3_si-22-02-03.jpg",
+          "sha": "3c27065fb082fb322325aca84017f578a0606764",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838401085_r16u7f_3_si-22-02-03.jpg",
+          "size": 430252,
+          "uploadedAt": "2026-05-15T09:46:43.197Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838404777_5kt8o9",
+          "filename": "1778838403202_53mdj7_4_si-22-02-04.jpg",
+          "originalName": "4_si-22-02-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838403202_53mdj7_4_si-22-02-04.jpg",
+          "sha": "bc4ce141f0f8179337f4e72deb74c98764f785c9",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838403202_53mdj7_4_si-22-02-04.jpg",
+          "size": 88456,
+          "uploadedAt": "2026-05-15T09:46:44.777Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838406432_8iasqh",
+          "filename": "1778838404782_be6ed2_5_si-22-02-05.jpg",
+          "originalName": "5_si-22-02-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838404782_be6ed2_5_si-22-02-05.jpg",
+          "sha": "c84132c42953c41f54f2d4e36d7c8a7317441a92",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838404782_be6ed2_5_si-22-02-05.jpg",
+          "size": 93063,
+          "uploadedAt": "2026-05-15T09:46:46.432Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838407836_axsixj",
+          "filename": "1778838406438_3x1htr_6_si-22-02-06.jpg",
+          "originalName": "6_si-22-02-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838406438_3x1htr_6_si-22-02-06.jpg",
+          "sha": "8e571a5639d19bfd4b2bbcfc5f5d2c7aece600a6",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838406438_3x1htr_6_si-22-02-06.jpg",
+          "size": 106063,
+          "uploadedAt": "2026-05-15T09:46:47.836Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838409279_pi4zhs",
+          "filename": "1778838407845_dxdl0k_7_si-22-02-07.jpg",
+          "originalName": "7_si-22-02-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838407845_dxdl0k_7_si-22-02-07.jpg",
+          "sha": "597e8ff5991340d3349a1eecfe07d6309afa4f34",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vcae7b/1778838407845_dxdl0k_7_si-22-02-07.jpg",
+          "size": 91586,
+          "uploadedAt": "2026-05-15T09:46:49.279Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
