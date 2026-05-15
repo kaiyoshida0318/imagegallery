@@ -6410,7 +6410,44 @@
       "itemName": "蝶ネクタイ 紫",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-purple-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836809021_un527k",
+          "filename": "1778836806668_alelus_1_fas-16-02-purple-1.jpg",
+          "originalName": "1_fas-16-02-purple-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836806668_alelus_1_fas-16-02-purple-1.jpg",
+          "sha": "175dcf7b58ab8cdee9cfb228ce1760ad719f6348",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836806668_alelus_1_fas-16-02-purple-1.jpg",
+          "size": 50877,
+          "uploadedAt": "2026-05-15T09:20:09.021Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836810529_yc6ggs",
+          "filename": "1778836809033_a5uf40_2_fas-16-02-purple-2.jpg",
+          "originalName": "2_fas-16-02-purple-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836809033_a5uf40_2_fas-16-02-purple-2.jpg",
+          "sha": "93e0a58b06499a7ea86d990694a00d33c588e027",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836809033_a5uf40_2_fas-16-02-purple-2.jpg",
+          "size": 58139,
+          "uploadedAt": "2026-05-15T09:20:10.529Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836812378_0a3i9j",
+          "filename": "1778836810534_hvrl6e_3_fas-16-02-purple-3.jpg",
+          "originalName": "3_fas-16-02-purple-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836810534_hvrl6e_3_fas-16-02-purple-3.jpg",
+          "sha": "e1160931136c7e608ce2a5373e4fcb9b9454cca3",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_49brut/1778836810534_hvrl6e_3_fas-16-02-purple-3.jpg",
+          "size": 68656,
+          "uploadedAt": "2026-05-15T09:20:12.378Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
