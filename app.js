@@ -502,11 +502,16 @@ function renderProductGrid(products) {
 function productCardHTML(p) {
   const imgCount = (p.images || []).length;
   const isEmpty = imgCount === 0;
-  const thumb = isEmpty
-    ? (p.rakutenThumb
-        ? `<img src="${escapeHtml(p.rakutenThumb)}" alt="" onerror="this.style.display='none'">` + '📷'
-        : '📷')
-    : `<img src="${escapeHtml(p.images[0].url)}" alt="">`;
+  let thumb;
+  if (isEmpty) {
+    if (p.rakutenThumb) {
+      thumb = `<img src="${escapeHtml(p.rakutenThumb)}" alt="" loading="lazy">`;
+    } else {
+      thumb = '<span class="thumb-placeholder">📷</span>';
+    }
+  } else {
+    thumb = `<img src="${escapeHtml(p.images[0].url)}" alt="" loading="lazy">`;
+  }
   const badges = isEmpty
     ? '<span class="badge badge-empty">📷 未登録</span>'
     : `<span class="badge badge-count">${imgCount}枚</span>`;
