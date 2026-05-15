@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.3.8';
+const APP_VERSION = 'v1.4.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -187,6 +187,32 @@ function bindEvents() {
     else toast('CSVファイルをドロップしてください', 'error');
   });
   document.getElementById('btnConfirmCsvImport').addEventListener('click', confirmCsvImport);
+
+  // ZIP一括アップロード
+  document.getElementById('btnBulkImages').addEventListener('click', openBulkImagesModal);
+  document.getElementById('btnPickBulkZip').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('bulkZipInput').click();
+  });
+  document.getElementById('bulkZipInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) handleBulkZip(file);
+    e.target.value = '';
+  });
+  const bulkDz = document.getElementById('bulkDropzone');
+  bulkDz.addEventListener('click', () => document.getElementById('bulkZipInput').click());
+  bulkDz.addEventListener('dragover', (e) => { e.preventDefault(); bulkDz.classList.add('dragover'); });
+  bulkDz.addEventListener('dragleave', () => bulkDz.classList.remove('dragover'));
+  bulkDz.addEventListener('drop', (e) => {
+    e.preventDefault();
+    bulkDz.classList.remove('dragover');
+    const file = Array.from(e.dataTransfer.files).find(f =>
+      f.name.toLowerCase().endsWith('.zip') || f.type === 'application/zip'
+    );
+    if (file) handleBulkZip(file);
+    else toast('ZIPファイルをドロップしてください', 'error');
+  });
+  document.getElementById('btnConfirmBulkImport').addEventListener('click', confirmBulkImport);
   document.getElementById('btnAddEntry').addEventListener('click', openEntryForm);
 
   document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -1337,6 +1363,226 @@ async function confirmCsvImport() {
     hideLoading();
     toast('保存失敗: ' + e.message, 'error');
   }
+}
+
+// =====================================================
+// ZIP一括画像アップロード
+// =====================================================
+let pendingBulkImport = null;  // {matched: [{product, files: [...]}], unmatched: [{folder, count}], totalFiles}
+
+function openBulkImagesModal() {
+  const shop = getCurrentShop();
+  if (!shop) { toast('ショップが選択されていません', 'error'); return; }
+  if (!shop.shopCode) { toast('ショップコードが未設定です', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) { toast('データ未読み込みです', 'error'); return; }
+
+  pendingBulkImport = null;
+  document.getElementById('bulkImportSummary').innerHTML = '';
+  document.getElementById('bulkImportPreview').innerHTML = '';
+  document.getElementById('bulkUploadProgress').style.display = 'none';
+  document.getElementById('btnConfirmBulkImport').style.display = 'none';
+  document.getElementById('bulkDropzone').style.display = 'flex';
+  document.getElementById('bulkImagesModal').style.display = 'flex';
+}
+
+async function handleBulkZip(file) {
+  if (typeof JSZip === 'undefined') {
+    toast('JSZipライブラリが読み込まれていません', 'error');
+    return;
+  }
+  const shop = getCurrentShop();
+  if (!shop) return;
+  const data = dataCache[currentShopId];
+  if (!data) return;
+
+  if (document.getElementById('bulkImagesModal').style.display === 'none') {
+    openBulkImagesModal();
+  }
+
+  showLoading('ZIPを解析中...');
+  try {
+    const zip = await JSZip.loadAsync(file);
+    const shopCode = String(shop.shopCode).toLowerCase();
+
+    // ファイルを管理番号別にグループ化
+    // パス例: rakuten-images/yukaiya_10000176/1_xxx.jpg
+    // → 管理番号 "10000176" にマッチ
+    const folderRegex = new RegExp(`(?:^|/)${escapeRegExp(shopCode)}_([^/]+)/([^/]+\\.(jpg|jpeg|png|webp|gif))$`, 'i');
+    const groups = new Map();  // manageNumber -> [{path, file}, ...]
+
+    zip.forEach((relativePath, entry) => {
+      if (entry.dir) return;
+      const lower = relativePath.toLowerCase();
+      const m = lower.match(folderRegex);
+      if (!m) return;
+      const manageNumber = m[1];
+      // 元のパスから実際のファイル名を取得
+      const filename = relativePath.split('/').pop();
+      if (!groups.has(manageNumber)) groups.set(manageNumber, []);
+      groups.get(manageNumber).push({ path: relativePath, filename, entry });
+    });
+
+    // 商品とマッチング
+    const productsByManage = new Map();
+    data.products.forEach(p => {
+      if (p.itemManageNumber) productsByManage.set(String(p.itemManageNumber).trim(), p);
+    });
+
+    const matched = [];      // {product, files: [{path, filename, entry}]}
+    const unmatched = [];    // {manageNumber, fileCount}
+    let totalFiles = 0;
+
+    for (const [manageNumber, files] of groups) {
+      // ファイル名でソート (1_xxx.jpg, 2_xxx.jpg ...)
+      files.sort((a, b) => a.filename.localeCompare(b.filename, 'ja', { numeric: true }));
+      const product = productsByManage.get(manageNumber);
+      if (product) {
+        matched.push({ product, files });
+        totalFiles += files.length;
+      } else {
+        unmatched.push({ manageNumber, fileCount: files.length });
+      }
+    }
+
+    pendingBulkImport = { matched, unmatched, totalFiles };
+    hideLoading();
+    showBulkImportPreview();
+  } catch (e) {
+    hideLoading();
+    console.error(e);
+    toast('ZIP解析失敗: ' + e.message, 'error');
+  }
+}
+
+function escapeRegExp(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function showBulkImportPreview() {
+  const r = pendingBulkImport;
+  if (!r) return;
+
+  document.getElementById('bulkDropzone').style.display = 'none';
+  const confirmBtn = document.getElementById('btnConfirmBulkImport');
+  confirmBtn.style.display = '';
+  confirmBtn.disabled = r.matched.length === 0;
+
+  const summary = document.getElementById('bulkImportSummary');
+  summary.innerHTML = `
+    <div class="csv-stats">
+      <div class="csv-stat csv-stat-ok">
+        <div class="csv-stat-num">${r.matched.length}</div>
+        <div class="csv-stat-label">対象商品</div>
+      </div>
+      <div class="csv-stat csv-stat-ok">
+        <div class="csv-stat-num">${r.totalFiles}</div>
+        <div class="csv-stat-label">画像ファイル</div>
+      </div>
+      <div class="csv-stat csv-stat-warn">
+        <div class="csv-stat-num">${r.unmatched.length}</div>
+        <div class="csv-stat-label">未マッチ商品</div>
+      </div>
+    </div>
+  `;
+
+  const preview = document.getElementById('bulkImportPreview');
+  let html = '';
+  if (r.matched.length > 0) {
+    html += `<h4 class="csv-h">アップロード対象 (${r.matched.length}商品 / ${r.totalFiles}枚)</h4>`;
+    html += '<div class="csv-change-list">';
+    r.matched.slice(0, 50).forEach(m => {
+      html += `<div class="csv-change">
+        <div class="csv-change-manage">${escapeHtml(m.product.itemManageNumber)}</div>
+        <div class="csv-change-detail">
+          <div class="bulk-product-name">${escapeHtml(m.product.itemName || '(無題)')}</div>
+          <div class="bulk-files-count">📷 ${m.files.length}枚: ${m.files.slice(0,3).map(f => escapeHtml(f.filename)).join(', ')}${m.files.length>3?' …':''}</div>
+        </div>
+      </div>`;
+    });
+    if (r.matched.length > 50) {
+      html += `<div class="csv-more">…他 ${r.matched.length - 50} 商品</div>`;
+    }
+    html += '</div>';
+  }
+  if (r.unmatched.length > 0) {
+    html += `<h4 class="csv-h csv-h-warn">ZIPにあるがツールに未登録 (${r.unmatched.length}件)</h4>`;
+    html += '<div class="csv-notfound-list">';
+    r.unmatched.slice(0, 20).forEach(u => {
+      html += `<div class="csv-notfound">${escapeHtml(u.manageNumber)} — ${u.fileCount}枚</div>`;
+    });
+    if (r.unmatched.length > 20) {
+      html += `<div class="csv-more">…他 ${r.unmatched.length - 20} 件</div>`;
+    }
+    html += '</div>';
+    html += '<div class="csv-hint">💡 これらは商品同期で取り込まれていない管理番号です</div>';
+  }
+  if (r.matched.length === 0 && r.unmatched.length === 0) {
+    html = '<div class="csv-empty">ZIPから画像が見つかりませんでした。フォルダ構造を確認してください。</div>';
+  }
+  preview.innerHTML = html;
+}
+
+async function confirmBulkImport() {
+  const r = pendingBulkImport;
+  if (!r || r.matched.length === 0) return;
+  const confirmBtn = document.getElementById('btnConfirmBulkImport');
+  const dz = document.getElementById('bulkDropzone');
+  const progress = document.getElementById('bulkUploadProgress');
+  confirmBtn.disabled = true;
+  dz.style.display = 'none';
+  progress.style.display = 'block';
+
+  let uploadedCount = 0;
+  let failedCount = 0;
+  const totalCount = r.totalFiles;
+  let processedProducts = 0;
+
+  for (const m of r.matched) {
+    processedProducts++;
+    const p = m.product;
+    if (!p.images) p.images = [];
+
+    for (let i = 0; i < m.files.length; i++) {
+      const f = m.files[i];
+      uploadedCount++;
+      progress.textContent = `[${uploadedCount}/${totalCount}] ${p.itemManageNumber} - ${f.filename}`;
+      try {
+        // Blob化してFile相当のオブジェクトに変換
+        const blob = await f.entry.async('blob');
+        const ext = f.filename.split('.').pop().toLowerCase();
+        const mime = (ext === 'png') ? 'image/png'
+                   : (ext === 'gif') ? 'image/gif'
+                   : (ext === 'webp') ? 'image/webp'
+                   : 'image/jpeg';
+        const fileObj = new File([blob], f.filename, { type: mime });
+
+        // 重複チェック: 同じoriginalNameが既にあればスキップ
+        const exists = p.images.some(img =>
+          (img.originalName || img.filename) === f.filename
+        );
+        if (exists) continue;
+
+        const imgMeta = await uploadImageToGitHub(currentShopId, p.id, fileObj);
+        p.images.push(imgMeta);
+      } catch (e) {
+        console.error(`Upload failed: ${f.filename}`, e);
+        failedCount++;
+      }
+    }
+    // 商品ごとにJSONも保存 (途中で失敗しても進捗が残る)
+    try {
+      await saveShopData(currentShopId, `bulk upload: ${p.itemManageNumber} (${m.files.length} images)`);
+    } catch (e) {
+      console.error('Save failed', e);
+    }
+  }
+
+  progress.style.display = 'none';
+  closeModal('bulkImagesModal');
+  toast(`完了: ${uploadedCount}枚アップロード${failedCount ? ` / 失敗${failedCount}件` : ''}`, failedCount ? 'error' : 'success');
+  pendingBulkImport = null;
+  render();
 }
 
 // =====================================================
