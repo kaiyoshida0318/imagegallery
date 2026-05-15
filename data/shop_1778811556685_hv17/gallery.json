@@ -172,7 +172,68 @@
       "itemName": "バンダナキャップ 迷彩",
       "itemPrice": 680,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/bc/bc-01-01c.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778831657586_aom94q",
+          "filename": "1778831655509_5iz306_2_bc-01-02.jpg",
+          "originalName": "2_bc-01-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831655509_5iz306_2_bc-01-02.jpg",
+          "sha": "4c46a1ada5c134c9f99460f10c58a5448eef0f53",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831655509_5iz306_2_bc-01-02.jpg",
+          "size": 420655,
+          "uploadedAt": "2026-05-15T07:54:17.586Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778831659559_6za7qz",
+          "filename": "1778831657586_eyay41_3_bc-01-03.jpg",
+          "originalName": "3_bc-01-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831657586_eyay41_3_bc-01-03.jpg",
+          "sha": "5b33f2b2072c416c9733a4a1bf47c7f4a3387c09",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831657586_eyay41_3_bc-01-03.jpg",
+          "size": 316858,
+          "uploadedAt": "2026-05-15T07:54:19.559Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778831661379_p3a2cg",
+          "filename": "1778831659559_wqrnpt_4_bc-01-04.jpg",
+          "originalName": "4_bc-01-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831659559_wqrnpt_4_bc-01-04.jpg",
+          "sha": "17ce771abd2d4199591aa31aee7e7c6280c518bb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831659559_wqrnpt_4_bc-01-04.jpg",
+          "size": 347128,
+          "uploadedAt": "2026-05-15T07:54:21.380Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778831663270_flvmxj",
+          "filename": "1778831661380_a4k4l4_5_bc-01-05b.jpg",
+          "originalName": "5_bc-01-05b.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831661380_a4k4l4_5_bc-01-05b.jpg",
+          "sha": "716e6a7581218b880ea3f9b602699b269a524f19",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831661380_a4k4l4_5_bc-01-05b.jpg",
+          "size": 272191,
+          "uploadedAt": "2026-05-15T07:54:23.271Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778831664802_qafb2k",
+          "filename": "1778831663271_t953iy_1_bc-01-01c.jpg",
+          "originalName": "1_bc-01-01c.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831663271_t953iy_1_bc-01-01c.jpg",
+          "sha": "9ff574a791a6960dfa795b57a371d213feb1a409",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_pb8b8z/1778831663271_t953iy_1_bc-01-01c.jpg",
+          "size": 111756,
+          "uploadedAt": "2026-05-15T07:54:24.803Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
