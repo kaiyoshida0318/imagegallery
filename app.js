@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.1.3';
+const APP_VERSION = 'v1.1.4';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -597,10 +597,18 @@ async function handleCsvFile(file) {
       return;
     }
 
-    // 既存商品を管理番号でインデックス
+    // 既存商品を管理番号でインデックス (寛容マッチ用に複数キーで登録)
     const productsByManage = new Map();
     data.products.forEach(p => {
-      if (p.itemManageNumber) productsByManage.set(p.itemManageNumber, p);
+      if (p.itemManageNumber) {
+        const key = String(p.itemManageNumber).trim();
+        productsByManage.set(key, p);
+        // 全角→半角変換キーも登録
+        const halfwidth = key.replace(/[\uFF10-\uFF19]/g, c =>
+          String.fromCharCode(c.charCodeAt(0) - 0xFEE0)
+        );
+        if (halfwidth !== key) productsByManage.set(halfwidth, p);
+      }
     });
 
     const result = {
@@ -608,15 +616,21 @@ async function handleCsvFile(file) {
       updated: 0,
       notFound: 0,
       noChange: 0,
-      changes: [],   // [{p, newNumber, newName, oldNumber, oldName}]
-      notFoundList: []
+      changes: [],
+      notFoundList: [],
+      debug: null
     };
 
     rows.forEach(row => {
-      const manage = (row[idxManage] || '').trim();
+      let manage = (row[idxManage] || '').trim();
       if (!manage) return;
       const newNumber = idxNumber >= 0 ? (row[idxNumber] || '').trim() : null;
       const newName = idxName >= 0 ? (row[idxName] || '').trim() : null;
+
+      // 全角→半角に正規化
+      manage = manage.replace(/[\uFF10-\uFF19]/g, c =>
+        String.fromCharCode(c.charCodeAt(0) - 0xFEE0)
+      );
 
       const p = productsByManage.get(manage);
       if (!p) {
@@ -640,6 +654,35 @@ async function handleCsvFile(file) {
         result.noChange++;
       }
     });
+
+    // 未マッチが多い場合のデバッグ情報を作る
+    if (result.notFound > 0 && data.products.length > 0) {
+      const sampleProductKeys = data.products.slice(0, 5).map(p => ({
+        itemManageNumber: JSON.stringify(p.itemManageNumber),
+        length: p.itemManageNumber ? p.itemManageNumber.length : 0,
+        itemUrl: p.itemUrl || '',
+      }));
+      const sampleCsvKeys = result.notFoundList.slice(0, 5).map(nf => ({
+        manage: JSON.stringify(nf.manage),
+        length: nf.manage.length
+      }));
+      result.debug = {
+        productCount: data.products.length,
+        productSample: sampleProductKeys,
+        csvSample: sampleCsvKeys,
+        // 10001208 でのテストマッチ
+        specificTest: (() => {
+          const target = '10001208';
+          const hit = productsByManage.get(target);
+          return {
+            target,
+            inMap: !!hit,
+            mapSize: productsByManage.size,
+            sampleMapKeys: Array.from(productsByManage.keys()).slice(0, 10)
+          };
+        })()
+      };
+    }
 
     pendingCsvImport = result;
     showCsvImportPreview(result);
@@ -703,6 +746,13 @@ function showCsvImportPreview(result) {
       }
       html += '</div>';
       html += '<div class="csv-hint">💡 これらの商品は、楽天で商品同期を実行してから再度CSVをインポートしてください</div>';
+
+      // デバッグ情報
+      if (result.debug) {
+        html += '<details class="csv-debug"><summary>🔍 デバッグ情報 (開く)</summary>';
+        html += '<pre class="csv-debug-pre">' + escapeHtml(JSON.stringify(result.debug, null, 2)) + '</pre>';
+        html += '</details>';
+      }
     }
     preview.innerHTML = html;
   }
