@@ -382,6 +382,24 @@ body {
   z-index: 5;
 }
 .product-table-header > div { padding: 0 14px; }
+.product-table-header .sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color .15s;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.product-table-header .sortable:hover { color: var(--text); }
+.sort-indicator {
+  font-size: 10px;
+  color: var(--text-light);
+  opacity: 0.5;
+}
+.sort-indicator.active {
+  color: var(--primary);
+  opacity: 1;
+}
 
 .product-row { padding: 12px 0; transition: background .15s; }
 .product-row:hover { background: var(--bg); }
@@ -396,6 +414,11 @@ body {
   cursor: pointer;
 }
 .col-manage .mono, .col-number .mono { display: inline-block; word-break: break-all; }
+.mono-placeholder {
+  color: var(--text-light);
+  opacity: 0.5;
+  font-style: italic;
+}
 .product-row .col-manage:empty::before,
 .product-row .col-number:empty::before { content: "—"; color: var(--text-light); }
 
