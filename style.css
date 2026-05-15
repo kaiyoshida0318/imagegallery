@@ -692,8 +692,7 @@ body {
 .product-table {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  /* overflow: hidden を外して sticky を有効化 */
+  border-radius: 0;
 }
 
 .product-table-header.mode-basic,
@@ -713,8 +712,6 @@ body {
 }
 .product-row:last-child {
   border-bottom: none;
-  border-bottom-left-radius: var(--radius);
-  border-bottom-right-radius: var(--radius);
 }
 
 .product-table-header {
@@ -725,10 +722,8 @@ body {
   padding: 10px 0;
   letter-spacing: 0.3px;
   position: sticky;
-  top: 145px;  /* app-header(57) + category-row(43) + search-row(45) */
+  top: 145px;
   z-index: 80;
-  border-top-left-radius: var(--radius);
-  border-top-right-radius: var(--radius);
   box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 .product-table-header > div { padding: 0 14px; }
@@ -863,12 +858,15 @@ body {
   height: 130px;
   border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--border);
+  border: none;
   cursor: pointer;
   background: #fff;
-  transition: transform .15s;
+  transition: outline .15s;
 }
-.product-row-thumb:hover { border-color: var(--primary); }
+.product-row-thumb:hover {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
 .product-row-thumb img {
   width: 100%;
   height: 100%;
