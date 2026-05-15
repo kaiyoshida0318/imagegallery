@@ -2126,7 +2126,92 @@
       "itemName": "コンセントプラグカバー 30個セット",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/bg/bg-03-con-mesu-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778832287164_kgyb4t",
+          "filename": "1778832285109_xu2ewi_04_bg-03-con-mesu-01.jpg",
+          "originalName": "04_bg-03-con-mesu-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832285109_xu2ewi_04_bg-03-con-mesu-01.jpg",
+          "sha": "afa5b2e5ec2bd45e7853d87e8f595cbbbec40da4",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832285109_xu2ewi_04_bg-03-con-mesu-01.jpg",
+          "size": 244424,
+          "uploadedAt": "2026-05-15T08:04:47.165Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832289481_i7d0mt",
+          "filename": "1778832287165_kz07fa_05_bg-03-con-mesu-02.jpg",
+          "originalName": "05_bg-03-con-mesu-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832287165_kz07fa_05_bg-03-con-mesu-02.jpg",
+          "sha": "46bee99005d7113e7a041d41b92aee37f901b820",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832287165_kz07fa_05_bg-03-con-mesu-02.jpg",
+          "size": 579966,
+          "uploadedAt": "2026-05-15T08:04:49.481Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832291286_dvet64",
+          "filename": "1778832289481_ulcow8_06_bg-03-con-mesu-03.jpg",
+          "originalName": "06_bg-03-con-mesu-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832289481_ulcow8_06_bg-03-con-mesu-03.jpg",
+          "sha": "bd219fce47876dfa51b3f7c358015ca4cc6021b7",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832289481_ulcow8_06_bg-03-con-mesu-03.jpg",
+          "size": 373641,
+          "uploadedAt": "2026-05-15T08:04:51.286Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832293520_0jvh0j",
+          "filename": "1778832291286_3fm3sr_07_bg-03-con-mesu-04.jpg",
+          "originalName": "07_bg-03-con-mesu-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832291286_3fm3sr_07_bg-03-con-mesu-04.jpg",
+          "sha": "ea992b79a9617cbb2e04d8bcb869ebac4d8354c2",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832291286_3fm3sr_07_bg-03-con-mesu-04.jpg",
+          "size": 504376,
+          "uploadedAt": "2026-05-15T08:04:53.520Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832295661_5wgwnj",
+          "filename": "1778832293521_ipkbfz_08_bg-03-con-mesu-05.jpg",
+          "originalName": "08_bg-03-con-mesu-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832293521_ipkbfz_08_bg-03-con-mesu-05.jpg",
+          "sha": "817dfee14b4e6418a73425a3b192cda09e65dc77",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832293521_ipkbfz_08_bg-03-con-mesu-05.jpg",
+          "size": 295162,
+          "uploadedAt": "2026-05-15T08:04:55.661Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832297876_5k59nn",
+          "filename": "1778832295661_tnev78_09_bg-03-con-mesu-06.jpg",
+          "originalName": "09_bg-03-con-mesu-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832295661_tnev78_09_bg-03-con-mesu-06.jpg",
+          "sha": "95062b3be4e068662abc81c18762f769bbfcd8d2",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832295661_tnev78_09_bg-03-con-mesu-06.jpg",
+          "size": 379068,
+          "uploadedAt": "2026-05-15T08:04:57.876Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778832299869_lzzvcb",
+          "filename": "1778832297876_zjprj0_10_bg-03-con-mesu-07.jpg",
+          "originalName": "10_bg-03-con-mesu-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832297876_zjprj0_10_bg-03-con-mesu-07.jpg",
+          "sha": "be038dd63e3d7c75d3b4beb3084147b0392e2b25",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_nbh0gd/1778832297876_zjprj0_10_bg-03-con-mesu-07.jpg",
+          "size": 408640,
+          "uploadedAt": "2026-05-15T08:04:59.869Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
