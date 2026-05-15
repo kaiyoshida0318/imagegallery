@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.4.1">
+<link rel="stylesheet" href="style.css?v=1.4.2">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -35,6 +35,9 @@
     </button>
     <button class="btn-icon" id="btnBulkImages" title="画像一括アップロード(ZIP)">
       <span class="icon">📦</span><span class="label">画像一括アップロード</span>
+    </button>
+    <button class="btn-icon" id="btnExportCsv" title="基礎情報をCSVでダウンロード">
+      <span class="icon">⬇️</span><span class="label">基礎情報DL</span>
     </button>
     <button class="btn-icon" id="btnTagManage" title="タグ管理">
       <span class="icon">🏷️</span><span class="label">タグ管理</span>
@@ -71,7 +74,6 @@
   <div class="view-mode-toggle">
     <button class="view-mode-btn active" data-mode="basic" id="modeBasic">📋 基礎情報</button>
     <button class="view-mode-btn" data-mode="images" id="modeImages">🖼️ 画像全体</button>
-    <button class="view-mode-btn" data-mode="compact" id="modeCompact">📝 文字+1</button>
   </div>
   <label class="filter-toggle">
     <input type="checkbox" id="filterUnregistered">
@@ -430,6 +432,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.4.1"></script>
+<script src="app.js?v=1.4.2"></script>
 </body>
 </html>
