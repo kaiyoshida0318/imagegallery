@@ -3332,7 +3332,92 @@
       "itemName": "トリートメントコーム フルセット",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/si/si-22-04-00set1-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838412844_3t8axb",
+          "filename": "1778838411175_jaecnh_04_si-22-04-00set1-01a.jpg",
+          "originalName": "04_si-22-04-00set1-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838411175_jaecnh_04_si-22-04-00set1-01a.jpg",
+          "sha": "659fae5939ff366fecca32649c5553d45ac6662f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838411175_jaecnh_04_si-22-04-00set1-01a.jpg",
+          "size": 92566,
+          "uploadedAt": "2026-05-15T09:46:52.844Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838415061_mr20r0",
+          "filename": "1778838412855_695dsh_05_si-22-04-00set1-02.jpg",
+          "originalName": "05_si-22-04-00set1-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838412855_695dsh_05_si-22-04-00set1-02.jpg",
+          "sha": "bbbac4aaf139810ccdfe93ea466b60adf3825895",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838412855_695dsh_05_si-22-04-00set1-02.jpg",
+          "size": 703618,
+          "uploadedAt": "2026-05-15T09:46:55.061Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838417696_k4qhj2",
+          "filename": "1778838415072_znv1y8_06_si-22-04-00set1-03.jpg",
+          "originalName": "06_si-22-04-00set1-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838415072_znv1y8_06_si-22-04-00set1-03.jpg",
+          "sha": "d986fcd1ee5acebbde548391aff91d5320fe0c3a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838415072_znv1y8_06_si-22-04-00set1-03.jpg",
+          "size": 522457,
+          "uploadedAt": "2026-05-15T09:46:57.696Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838419521_tturfq",
+          "filename": "1778838417704_pxunyv_07_si-22-04-00set1-04.jpg",
+          "originalName": "07_si-22-04-00set1-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838417704_pxunyv_07_si-22-04-00set1-04.jpg",
+          "sha": "5e2f463c4f30976277e4c05c689c1bd8229c0158",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838417704_pxunyv_07_si-22-04-00set1-04.jpg",
+          "size": 231703,
+          "uploadedAt": "2026-05-15T09:46:59.521Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838421291_aw3ecq",
+          "filename": "1778838419528_7y8f0m_08_si-22-04-00set1-05.jpg",
+          "originalName": "08_si-22-04-00set1-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838419528_7y8f0m_08_si-22-04-00set1-05.jpg",
+          "sha": "3e6968ef8338cb5244be23c5ddee1e9a79a465b3",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838419528_7y8f0m_08_si-22-04-00set1-05.jpg",
+          "size": 225423,
+          "uploadedAt": "2026-05-15T09:47:01.291Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838423890_qxtx45",
+          "filename": "1778838421303_ie8hi1_09_si-22-04-00set1-06.jpg",
+          "originalName": "09_si-22-04-00set1-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838421303_ie8hi1_09_si-22-04-00set1-06.jpg",
+          "sha": "3feefeda33b132f8cf87f8fae86e3f5849a9c101",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838421303_ie8hi1_09_si-22-04-00set1-06.jpg",
+          "size": 753755,
+          "uploadedAt": "2026-05-15T09:47:03.890Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838426116_et6ihl",
+          "filename": "1778838423896_plgef8_10_pre-mat-new.jpg",
+          "originalName": "10_pre-mat-new.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838423896_plgef8_10_pre-mat-new.jpg",
+          "sha": "81d15cdfe9db5d87c1bcedbe514451353d64f4cb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_dpymwh/1778838423896_plgef8_10_pre-mat-new.jpg",
+          "size": 158325,
+          "uploadedAt": "2026-05-15T09:47:06.116Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
