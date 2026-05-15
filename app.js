@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.2.2';
+const APP_VERSION = 'v1.2.3';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -368,6 +368,21 @@ async function loadShopData(shopId) {
 }
 
 async function saveShopData(shopId, message) {
+  // 直列化: 同じショップの保存は順番に実行 + 409エラー時はSHAを取り直してリトライ
+  if (!saveShopData._queues) saveShopData._queues = {};
+  const prev = saveShopData._queues[shopId] || Promise.resolve();
+  const next = prev.catch(() => {}).then(() => _saveShopDataOnce(shopId, message));
+  saveShopData._queues[shopId] = next;
+  try {
+    return await next;
+  } finally {
+    if (saveShopData._queues[shopId] === next) {
+      delete saveShopData._queues[shopId];
+    }
+  }
+}
+
+async function _saveShopDataOnce(shopId, message, retryCount = 0) {
   const data = dataCache[shopId];
   if (!data) return;
   const path = shopDataPath(shopId);
@@ -389,9 +404,25 @@ async function saveShopData(shopId, message) {
     method: 'PUT',
     body: JSON.stringify(body)
   });
+
   if (!res.ok) {
-    const err = await res.json();
-    throw new Error(err.message || 'GitHub保存失敗');
+    // SHA衝突(409 or 422)はSHAを取り直して1回だけリトライ
+    if ((res.status === 409 || res.status === 422) && retryCount < 1) {
+      try {
+        const head = await ghFetch(`contents/${path}?ref=${auth.branch}`);
+        if (head.ok) {
+          const headData = await head.json();
+          data.sha = headData.sha;
+          return _saveShopDataOnce(shopId, message, retryCount + 1);
+        }
+      } catch (e) { /* fall through */ }
+    }
+    let errMsg = `GitHub保存失敗 (status:${res.status})`;
+    try {
+      const err = await res.json();
+      if (err.message) errMsg = err.message;
+    } catch (e) {}
+    throw new Error(errMsg);
   }
   const result = await res.json();
   data.sha = result.content.sha;
@@ -544,7 +575,9 @@ async function fetchRakutenProducts(shop) {
 // =====================================================
 function getCurrentTags() {
   const data = dataCache[currentShopId];
-  return (data && Array.isArray(data.tags)) ? data.tags : [];
+  if (!data) return [];
+  if (!Array.isArray(data.tags)) data.tags = [];
+  return data.tags;
 }
 function findTag(tagId) {
   return getCurrentTags().find(t => t.id === tagId);
@@ -837,20 +870,72 @@ function toggleProductTagPicker(productId, anchorEl) {
     el.addEventListener('click', async (e) => {
       e.stopPropagation();
       const tid = el.dataset.tagId;
-      if (p.tagIds.includes(tid)) {
+      const hasIt = p.tagIds.includes(tid);
+      if (hasIt) {
         p.tagIds = p.tagIds.filter(x => x !== tid);
       } else {
         p.tagIds.push(tid);
       }
+      // UI即時反映 (チェックマーク&選択状態)
+      el.classList.toggle('selected');
+      const checkEl = el.querySelector('.tag-picker-check');
+      if (checkEl) checkEl.textContent = hasIt ? '' : '✓';
       try {
-        await saveShopData(currentShopId, `update tags: ${p.itemManageNumber}`);
-        render();
-        const newAnchor = document.querySelector(`[data-tag-picker-btn="${productId}"]`);
-        if (newAnchor) {
-          openTagPickerProductId = null;
-          toggleProductTagPicker(productId, newAnchor);
-        }
+        await saveShopData(currentShopId, `update tags: ${p.itemManageNumber || p.id}`);
+        // 商品行のタグチップだけ再描画(ピッカーは閉じない)
+        renderSingleProductRowTags(p.id);
       } catch (err) {
+        // ロールバック
+        if (hasIt) p.tagIds.push(tid);
+        else p.tagIds = p.tagIds.filter(x => x !== tid);
+        el.classList.toggle('selected');
+        if (checkEl) checkEl.textContent = hasIt ? '✓' : '';
+        toast('保存失敗: ' + err.message, 'error');
+      }
+    });
+  });
+}
+
+// 指定商品のタグチップ部分だけ再描画(ピッカーを閉じずに更新)
+function renderSingleProductRowTags(productId) {
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const p = data.products.find(x => x.id === productId);
+  if (!p) return;
+  const row = document.querySelector(`[data-tag-picker-btn="${productId}"]`)?.closest('.product-row');
+  if (!row) return;
+  const tagsWrap = row.querySelector('.product-row-tags');
+  if (!tagsWrap) return;
+
+  const tagIds = p.tagIds || [];
+  const allTags = getCurrentTags();
+  const productTags = tagIds.map(id => allTags.find(t => t.id === id)).filter(Boolean);
+  const tagChipsHTML = productTags.map(t => {
+    const c = getTagColor(t.color);
+    return `<span class="tag-chip tag-chip-removable" style="background:${c.bg};color:${c.fg}"
+      data-remove-tag="${t.id}" data-remove-from="${p.id}" title="クリックで外す">
+      ${escapeHtml(t.name)} <span class="tag-chip-x">×</span>
+    </span>`;
+  }).join('');
+  const addBtnHTML = `<button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>`;
+  tagsWrap.innerHTML = tagChipsHTML + addBtnHTML;
+
+  // 再バインド
+  tagsWrap.querySelector('[data-tag-picker-btn]').addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleProductTagPicker(productId, e.currentTarget);
+  });
+  tagsWrap.querySelectorAll('[data-remove-tag]').forEach(el => {
+    el.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      const tid = el.dataset.removeTag;
+      const before = p.tagIds.slice();
+      p.tagIds = p.tagIds.filter(x => x !== tid);
+      try {
+        await saveShopData(currentShopId, `remove tag from ${p.itemManageNumber || p.id}`);
+        renderSingleProductRowTags(productId);
+      } catch (err) {
+        p.tagIds = before;
         toast('保存失敗: ' + err.message, 'error');
       }
     });
