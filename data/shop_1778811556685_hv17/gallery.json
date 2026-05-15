@@ -3917,7 +3917,44 @@
       "itemName": "蝶ネクタイ 紺色",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fas/fas-16-02-navy-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836795776_9nb1sb",
+          "filename": "1778836794254_hp9s0l_1_fas-16-02-navy-1.jpg",
+          "originalName": "1_fas-16-02-navy-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836794254_hp9s0l_1_fas-16-02-navy-1.jpg",
+          "sha": "781e0de923e5223603a8c1f49212d2c501423029",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836794254_hp9s0l_1_fas-16-02-navy-1.jpg",
+          "size": 51401,
+          "uploadedAt": "2026-05-15T09:19:55.777Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836797546_2zwxvf",
+          "filename": "1778836795784_zvrs6a_2_fas-16-02-navy-2.jpg",
+          "originalName": "2_fas-16-02-navy-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836795784_zvrs6a_2_fas-16-02-navy-2.jpg",
+          "sha": "d902ca3d4bf6c902d7ec6f78553abcf719c92112",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836795784_zvrs6a_2_fas-16-02-navy-2.jpg",
+          "size": 59022,
+          "uploadedAt": "2026-05-15T09:19:57.546Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836799019_swktt7",
+          "filename": "1778836797554_qou4bb_3_fas-16-02-navy-3.jpg",
+          "originalName": "3_fas-16-02-navy-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836797554_qou4bb_3_fas-16-02-navy-3.jpg",
+          "sha": "90d5e6806f3f96a899c89272aee3195e01eaabb1",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_jb52xc/1778836797554_qou4bb_3_fas-16-02-navy-3.jpg",
+          "size": 69174,
+          "uploadedAt": "2026-05-15T09:19:59.019Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
