@@ -232,6 +232,62 @@ body {
 .filter-toggle:hover { background: var(--bg); }
 .filter-toggle input { margin: 0; cursor: pointer; }
 
+/* 表示モード切替 */
+.view-mode-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--surface);
+}
+.view-mode-btn {
+  padding: 7px 12px;
+  border: none;
+  background: transparent;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.view-mode-btn + .view-mode-btn {
+  border-left: 1px solid var(--border);
+}
+.view-mode-btn:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+.view-mode-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* 「+N」残り表示 */
+.product-row-more {
+  flex-shrink: 0;
+  min-width: 50px;
+  height: 130px;
+  border-radius: 8px;
+  border: 1px dashed var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all .15s;
+  padding: 0 8px;
+}
+.product-row-more:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary);
+  border-style: solid;
+}
+
 .btn-add {
   padding: 7px 16px;
   border-radius: var(--radius-sm);
@@ -640,10 +696,18 @@ body {
   /* overflow: hidden を外して sticky を有効化 */
 }
 
-.product-table-header,
-.product-row {
+.product-table-header.mode-basic,
+.product-row.mode-basic {
   display: grid;
-  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 220px;
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 140px;
+  align-items: center;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.product-table-header.mode-images,
+.product-row.mode-images {
+  display: grid;
+  grid-template-columns: 130px minmax(0, 1fr) 140px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -697,7 +761,7 @@ body {
   font-family: ui-monospace, 'SF Mono', Monaco, monospace;
   font-size: 12px;
   color: var(--text);
-  cursor: pointer;
+  user-select: text;
 }
 .col-manage .mono, .col-number .mono { display: inline-block; word-break: break-all; }
 .mono-placeholder {
@@ -719,14 +783,13 @@ body {
   font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
-  cursor: pointer;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   word-break: break-word;
+  user-select: text;
 }
-.product-row-name:hover { color: var(--primary); }
 
 .btn-edit-mini {
   align-self: flex-start;
