@@ -3114,7 +3114,80 @@
       "itemName": "排水口ゴミ受け 大",
       "itemPrice": 1680,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/cg/cg-22-05-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778834639248_9qk1va",
+          "filename": "1778834637446_zknxun_04_cg-22-05-01a.jpg",
+          "originalName": "04_cg-22-05-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834637446_zknxun_04_cg-22-05-01a.jpg",
+          "sha": "800cf94a52ded179acb5e6ea4dfad4a6751594f2",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834637446_zknxun_04_cg-22-05-01a.jpg",
+          "size": 101946,
+          "uploadedAt": "2026-05-15T08:43:59.248Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834641307_6va7mw",
+          "filename": "1778834639256_l3t8h7_05_cg-22-05-02.jpg",
+          "originalName": "05_cg-22-05-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834639256_l3t8h7_05_cg-22-05-02.jpg",
+          "sha": "04ada04b909543487b224652d0a7bcef73e3fd91",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834639256_l3t8h7_05_cg-22-05-02.jpg",
+          "size": 536729,
+          "uploadedAt": "2026-05-15T08:44:01.307Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834643126_alw58y",
+          "filename": "1778834641314_e2gr8w_06_cg-22-05-03.jpg",
+          "originalName": "06_cg-22-05-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834641314_e2gr8w_06_cg-22-05-03.jpg",
+          "sha": "8180cbbcc8fa8212ee8445b9e448ef690ebfc3ec",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834641314_e2gr8w_06_cg-22-05-03.jpg",
+          "size": 158426,
+          "uploadedAt": "2026-05-15T08:44:03.126Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834644918_lpgy8u",
+          "filename": "1778834643133_nq1wk8_07_cg-22-05-04.jpg",
+          "originalName": "07_cg-22-05-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834643133_nq1wk8_07_cg-22-05-04.jpg",
+          "sha": "f38e810bd167cec69530e77ec91d003f46f6ec41",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834643133_nq1wk8_07_cg-22-05-04.jpg",
+          "size": 264053,
+          "uploadedAt": "2026-05-15T08:44:04.918Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834646755_ketupf",
+          "filename": "1778834644927_5umbvi_08_cg-22-05-05a.jpg",
+          "originalName": "08_cg-22-05-05a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834644927_5umbvi_08_cg-22-05-05a.jpg",
+          "sha": "d032c1a2043daae453f67671f17261cd1e3c1975",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834644927_5umbvi_08_cg-22-05-05a.jpg",
+          "size": 256717,
+          "uploadedAt": "2026-05-15T08:44:06.755Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778834648617_25nbwz",
+          "filename": "1778834646762_jjr62l_09_cg-22-05-06.jpg",
+          "originalName": "09_cg-22-05-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834646762_jjr62l_09_cg-22-05-06.jpg",
+          "sha": "5aad0a73d0911335bee384a00b54a3e55acc8430",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_vjqlzm/1778834646762_jjr62l_09_cg-22-05-06.jpg",
+          "size": 186860,
+          "uploadedAt": "2026-05-15T08:44:08.617Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
