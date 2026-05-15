@@ -2542,78 +2542,6 @@
           "uploadedAt": "2026-05-15T08:57:20.093Z",
           "note": "",
           "tags": []
-        },
-        {
-          "id": "img_1778835441904_ne2wk7",
-          "filename": "1778835440105_j744s1_10_pre-mat-new.jpg",
-          "originalName": "10_pre-mat-new.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835440105_j744s1_10_pre-mat-new.jpg",
-          "sha": "81d15cdfe9db5d87c1bcedbe514451353d64f4cb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835440105_j744s1_10_pre-mat-new.jpg",
-          "size": 158325,
-          "uploadedAt": "2026-05-15T08:57:21.904Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835444409_ei54rb",
-          "filename": "1778835441917_fxa5x6_11_new-coupon.jpg",
-          "originalName": "11_new-coupon.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835441917_fxa5x6_11_new-coupon.jpg",
-          "sha": "7e5ac6aaba46d21a50e662fb1097fa328b3007bb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835441917_fxa5x6_11_new-coupon.jpg",
-          "size": 855878,
-          "uploadedAt": "2026-05-15T08:57:24.409Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835445690_uy76ae",
-          "filename": "1778835444417_g9mqbz_12_hai-okuri-1a.gif",
-          "originalName": "12_hai-okuri-1a.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835444417_g9mqbz_12_hai-okuri-1a.gif",
-          "sha": "0f5b21a318074190d39a9f16b3498dbcc1f72c28",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835444417_g9mqbz_12_hai-okuri-1a.gif",
-          "size": 188624,
-          "uploadedAt": "2026-05-15T08:57:25.690Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835447875_p98usl",
-          "filename": "1778835445707_g2ilfc_13_hai-okuri-2.gif",
-          "originalName": "13_hai-okuri-2.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835445707_g2ilfc_13_hai-okuri-2.gif",
-          "sha": "c15ba920429473f11d495f9928fbb41ebf5d4215",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835445707_g2ilfc_13_hai-okuri-2.gif",
-          "size": 655946,
-          "uploadedAt": "2026-05-15T08:57:27.875Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835449738_pj3s5e",
-          "filename": "1778835447882_8zq5e9_14_hai-okuri-3.gif",
-          "originalName": "14_hai-okuri-3.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835447882_8zq5e9_14_hai-okuri-3.gif",
-          "sha": "c349ed661acebdf8ba45d3f76290fb0de94172f4",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835447882_8zq5e9_14_hai-okuri-3.gif",
-          "size": 193954,
-          "uploadedAt": "2026-05-15T08:57:29.738Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835451630_vu520c",
-          "filename": "1778835449745_16zq4s_15_zensyohin-gif.gif",
-          "originalName": "15_zensyohin-gif.gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835449745_16zq4s_15_zensyohin-gif.gif",
-          "sha": "a80487d10459e7045f47b5c8b950fe92f4bf3b93",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835449745_16zq4s_15_zensyohin-gif.gif",
-          "size": 255529,
-          "uploadedAt": "2026-05-15T08:57:31.630Z",
-          "note": "",
-          "tags": []
         }
       ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
@@ -6519,30 +6447,6 @@
           "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_s7piiz/1778835590797_m9jms2_7_ep-anker-25-01-b-07.jpg",
           "size": 251392,
           "uploadedAt": "2026-05-15T08:59:52.560Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835593888_s3oq5b",
-          "filename": "1778835592564_rax99s_8_pre-mat-new.jpg",
-          "originalName": "8_pre-mat-new.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_s7piiz/1778835592564_rax99s_8_pre-mat-new.jpg",
-          "sha": "81d15cdfe9db5d87c1bcedbe514451353d64f4cb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_s7piiz/1778835592564_rax99s_8_pre-mat-new.jpg",
-          "size": 158325,
-          "uploadedAt": "2026-05-15T08:59:53.888Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835596080_qerd4v",
-          "filename": "1778835593899_klwk5h_9_new-coupon.jpg",
-          "originalName": "9_new-coupon.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_s7piiz/1778835593899_klwk5h_9_new-coupon.jpg",
-          "sha": "7e5ac6aaba46d21a50e662fb1097fa328b3007bb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_s7piiz/1778835593899_klwk5h_9_new-coupon.jpg",
-          "size": 855878,
-          "uploadedAt": "2026-05-15T08:59:56.080Z",
           "note": "",
           "tags": []
         }
