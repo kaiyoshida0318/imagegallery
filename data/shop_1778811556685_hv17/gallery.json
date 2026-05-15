@@ -633,7 +633,116 @@
       "itemName": "ショルダーベルト",
       "itemPrice": 1280,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/sb/sb-04-01a.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778838242481_1wbudc",
+          "filename": "1778838241045_9dfth9_04_sb-04-01a.jpg",
+          "originalName": "04_sb-04-01a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838241045_9dfth9_04_sb-04-01a.jpg",
+          "sha": "d7ab673ed9effd2901fb0c240e6479b51bf5b238",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838241045_9dfth9_04_sb-04-01a.jpg",
+          "size": 133342,
+          "uploadedAt": "2026-05-15T09:44:02.482Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838244348_zxswwk",
+          "filename": "1778838242489_cgl1yw_05_sb-04-02.jpg",
+          "originalName": "05_sb-04-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838242489_cgl1yw_05_sb-04-02.jpg",
+          "sha": "b0814c3ccdd8c90919b6b8b5ea6f3625c62ccd6a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838242489_cgl1yw_05_sb-04-02.jpg",
+          "size": 317857,
+          "uploadedAt": "2026-05-15T09:44:04.348Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838245906_g1kgoy",
+          "filename": "1778838244354_d2lny6_06_sb-04-03.jpg",
+          "originalName": "06_sb-04-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838244354_d2lny6_06_sb-04-03.jpg",
+          "sha": "e27c7b4248b1d660428718c916465bb4fa73e3eb",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838244354_d2lny6_06_sb-04-03.jpg",
+          "size": 136036,
+          "uploadedAt": "2026-05-15T09:44:05.906Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838247535_d1plav",
+          "filename": "1778838245915_d8rf2a_07_sb-04-04.jpg",
+          "originalName": "07_sb-04-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838245915_d8rf2a_07_sb-04-04.jpg",
+          "sha": "a9eec3ebee7656455891cd4a8560025803fdaab9",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838245915_d8rf2a_07_sb-04-04.jpg",
+          "size": 119126,
+          "uploadedAt": "2026-05-15T09:44:07.535Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838248655_db1ktv",
+          "filename": "1778838247541_s72ybm_08_sb-04-05.jpg",
+          "originalName": "08_sb-04-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838247541_s72ybm_08_sb-04-05.jpg",
+          "sha": "6ce1e9dd87059c9280dc4de4a5508cdcd6ec7f6f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838247541_s72ybm_08_sb-04-05.jpg",
+          "size": 134897,
+          "uploadedAt": "2026-05-15T09:44:08.655Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838250319_rmcyhy",
+          "filename": "1778838248665_7c8jz1_09_sb-04-06.jpg",
+          "originalName": "09_sb-04-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838248665_7c8jz1_09_sb-04-06.jpg",
+          "sha": "17382fb616c1e2a41a174fa084aebb8aff09a665",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838248665_7c8jz1_09_sb-04-06.jpg",
+          "size": 149273,
+          "uploadedAt": "2026-05-15T09:44:10.319Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838251837_feaolv",
+          "filename": "1778838250325_uytcgs_10_sb-04-07.jpg",
+          "originalName": "10_sb-04-07.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838250325_uytcgs_10_sb-04-07.jpg",
+          "sha": "a55d9298eea0959ec52649025b1ec1a9361c91ad",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838250325_uytcgs_10_sb-04-07.jpg",
+          "size": 143882,
+          "uploadedAt": "2026-05-15T09:44:11.837Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838253798_e4vek7",
+          "filename": "1778838251843_hgluhi_11_sb-04-08.jpg",
+          "originalName": "11_sb-04-08.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838251843_hgluhi_11_sb-04-08.jpg",
+          "sha": "e97588cb104e2c1c0aac90c822923250b24ce930",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838251843_hgluhi_11_sb-04-08.jpg",
+          "size": 145197,
+          "uploadedAt": "2026-05-15T09:44:13.798Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778838255453_10rykk",
+          "filename": "1778838253804_i9lexy_12_sb-04-09.jpg",
+          "originalName": "12_sb-04-09.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838253804_i9lexy_12_sb-04-09.jpg",
+          "sha": "2ef0662d781d108388a715971c9ddf06a83a9f40",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_3an565/1778838253804_i9lexy_12_sb-04-09.jpg",
+          "size": 145244,
+          "uploadedAt": "2026-05-15T09:44:15.453Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
