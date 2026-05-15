@@ -133,6 +133,15 @@ body {
 }
 .btn-icon:hover { background: var(--bg); color: var(--text); }
 .btn-icon .icon { font-size: 14px; }
+.btn-icon.btn-danger-mini {
+  border-color: rgba(220, 38, 38, 0.3);
+  color: #b91c1c;
+}
+.btn-icon.btn-danger-mini:hover {
+  background: var(--danger-bg);
+  border-color: var(--danger);
+  color: var(--danger);
+}
 
 /* ===== Category Row ===== */
 .category-row {
@@ -234,8 +243,7 @@ body {
 /* ===== Content ===== */
 .content {
   padding: 20px;
-  max-width: 1400px;
-  margin: 0 auto;
+  width: 100%;
 }
 
 /* ===== CSV Import ===== */
@@ -364,7 +372,7 @@ body {
 .product-table-header,
 .product-row {
   display: grid;
-  grid-template-columns: 140px 130px minmax(220px, 1.5fr) minmax(0, 4fr);
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr);
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
