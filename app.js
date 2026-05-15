@@ -1,7 +1,8 @@
 // =====================================================
-// ImageGallery v1.0.0
+// ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
+const APP_VERSION = 'v1.0.5';
 
 // ----- 設定キー -----
 const LS_AUTH = 'imagegallery_auth_v1';
@@ -33,9 +34,15 @@ async function init() {
   loadAuth();
   loadCurrentSelections();
   bindEvents();
+  renderVersion();
   renderShopTabs();
   await loadCurrentShopData();
   render();
+}
+
+function renderVersion() {
+  const el = document.getElementById('appVersion');
+  if (el) el.textContent = APP_VERSION;
 }
 
 function loadAuth() {
