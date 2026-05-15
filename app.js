@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.4.0';
+const APP_VERSION = 'v1.4.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1751,6 +1751,17 @@ function renderProductGrid(products) {
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
+  } else if (viewMode === 'compact') {
+    // 文字+1モード: 管理番号・商品番号・商品名・画像1枚・タグ操作 (高さ低め)
+    headerHTML = `
+      <div class="product-table-header mode-compact">
+        <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
+        <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+        <div class="col-name">商品名</div>
+        <div class="col-images">画像</div>
+        <div class="col-actions">タグ・操作</div>
+      </div>
+    `;
   } else {
     // 基礎情報モード: 管理番号・商品番号・商品名・画像5枚・タグ操作
     headerHTML = `
@@ -1826,8 +1837,15 @@ function productRowHTML(p) {
   const number = p.itemNumber || '';
 
   const sortedImages = sortImagesByName(p.images || []);
-  // basicモードは5枚まで、imagesモードは全部
-  const displayImages = viewMode === 'images' ? sortedImages : sortedImages.slice(0, 5);
+  // モード別の画像表示枚数
+  let displayImages;
+  if (viewMode === 'images') {
+    displayImages = sortedImages;
+  } else if (viewMode === 'compact') {
+    displayImages = sortedImages.slice(0, 1);
+  } else {
+    displayImages = sortedImages.slice(0, 5);
+  }
   const remaining = sortedImages.length - displayImages.length;
 
   const imgsHTML = displayImages.map(img => `
@@ -1886,6 +1904,19 @@ function productRowHTML(p) {
     // 画像全体モード: 商品番号・画像・タグ操作
     return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
+      ${imagesCellHTML}
+      ${actionsCellHTML}
+    </div>`;
+  }
+
+  if (viewMode === 'compact') {
+    // 文字+1モード: 管理番号・商品番号・商品名・画像1枚・タグ操作 (高さ低め)
+    return `<div class="product-row mode-compact ${isEmpty ? 'empty' : ''}">
+      <div class="col-manage">${manageCell}</div>
+      <div class="col-number">${numberCell}</div>
+      <div class="col-name">
+        <div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
+      </div>
       ${imagesCellHTML}
       ${actionsCellHTML}
     </div>`;
