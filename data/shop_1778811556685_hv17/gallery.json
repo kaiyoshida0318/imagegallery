@@ -7540,7 +7540,56 @@
       "itemName": "ネクタイ5cm ピンク 14",
       "itemPrice": 580,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/fas-16-01-pink-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1778836724988_4sqnx0",
+          "filename": "1778836723130_rt8hnk_1_fas-16-01-pink-1.jpg",
+          "originalName": "1_fas-16-01-pink-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836723130_rt8hnk_1_fas-16-01-pink-1.jpg",
+          "sha": "d67b25f385e9685adcd579ad80c9c6185f6923f9",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836723130_rt8hnk_1_fas-16-01-pink-1.jpg",
+          "size": 103245,
+          "uploadedAt": "2026-05-15T09:18:44.988Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836726852_08xgzy",
+          "filename": "1778836724990_5xz7ki_2_fas-16-01-pink-2.jpg",
+          "originalName": "2_fas-16-01-pink-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836724990_5xz7ki_2_fas-16-01-pink-2.jpg",
+          "sha": "e53e62e7894ce378d9761ff0035fe768e126d7fc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836724990_5xz7ki_2_fas-16-01-pink-2.jpg",
+          "size": 88193,
+          "uploadedAt": "2026-05-15T09:18:46.852Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836729016_ymlhif",
+          "filename": "1778836726862_lhuptb_3_fas-16-01-pink-3.jpg",
+          "originalName": "3_fas-16-01-pink-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836726862_lhuptb_3_fas-16-01-pink-3.jpg",
+          "sha": "22987a6a658a1038f0169540048d1c67fd9ae0d7",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836726862_lhuptb_3_fas-16-01-pink-3.jpg",
+          "size": 54890,
+          "uploadedAt": "2026-05-15T09:18:49.017Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1778836731003_8imydu",
+          "filename": "1778836729031_0gldku_4_necktie-okuri.jpg",
+          "originalName": "4_necktie-okuri.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836729031_0gldku_4_necktie-okuri.jpg",
+          "sha": "42759306c3f9c421af296b9ba6a34faa4c9ef104",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_c82u8a/1778836729031_0gldku_4_necktie-okuri.jpg",
+          "size": 177960,
+          "uploadedAt": "2026-05-15T09:18:51.003Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
