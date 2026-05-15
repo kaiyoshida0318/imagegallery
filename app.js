@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.4.1';
+const APP_VERSION = 'v1.4.2';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -213,6 +213,7 @@ function bindEvents() {
     else toast('ZIPファイルをドロップしてください', 'error');
   });
   document.getElementById('btnConfirmBulkImport').addEventListener('click', confirmBulkImport);
+  document.getElementById('btnExportCsv').addEventListener('click', exportBasicInfoCsv);
   document.getElementById('btnAddEntry').addEventListener('click', openEntryForm);
 
   document.getElementById('searchInput').addEventListener('input', (e) => {
@@ -1586,6 +1587,102 @@ async function confirmBulkImport() {
 }
 
 // =====================================================
+// 基礎情報CSVエクスポート
+// =====================================================
+function csvEscape(value) {
+  if (value === null || value === undefined) return '';
+  const s = String(value);
+  // ダブルクオート・カンマ・改行を含むならクオートする
+  if (/["\n,]/.test(s)) {
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  return s;
+}
+
+function exportBasicInfoCsv() {
+  const shop = getCurrentShop();
+  if (!shop) { toast('ショップが選択されていません', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data || !data.products || data.products.length === 0) {
+    toast('商品データがありません', 'error');
+    return;
+  }
+
+  // 現在の表示順 (ソート・検索・フィルタ) を反映したい場合、
+  // ここでは未フィルタの全商品を出力(ソートのみ反映)
+  let list = data.products.slice();
+  if (sortKey) {
+    const dir = sortDir === 'desc' ? -1 : 1;
+    list.sort((a, b) => {
+      const av = (sortKey === 'manage' ? a.itemManageNumber : a.itemNumber) || '';
+      const bv = (sortKey === 'manage' ? b.itemManageNumber : b.itemNumber) || '';
+      if (!av && !bv) return 0;
+      if (!av) return 1;
+      if (!bv) return -1;
+      const aNum = /^\d+$/.test(av);
+      const bNum = /^\d+$/.test(bv);
+      if (aNum && bNum) return (parseInt(av) - parseInt(bv)) * dir;
+      return av.localeCompare(bv, 'ja') * dir;
+    });
+  }
+
+  // タグID → タグ名のマップ
+  const tagMap = new Map();
+  (data.tags || []).forEach(t => tagMap.set(t.id, t.name));
+
+  // ヘッダー
+  const headers = [
+    '商品管理番号',
+    '商品番号',
+    '商品名',
+    'タグ',
+    '画像枚数',
+    '商品URL',
+    '楽天サムネURL'
+  ];
+  const rows = [headers.map(csvEscape).join(',')];
+
+  list.forEach(p => {
+    const tagNames = (p.tagIds || [])
+      .map(id => tagMap.get(id))
+      .filter(Boolean)
+      .join('|');  // タグ間は「|」区切り
+    const row = [
+      p.itemManageNumber || '',
+      p.itemNumber || '',
+      p.itemName || '',
+      tagNames,
+      (p.images || []).length,
+      p.itemUrl || '',
+      p.rakutenThumb || ''
+    ];
+    rows.push(row.map(csvEscape).join(','));
+  });
+
+  // BOM付きで保存(Excelで文字化け防止)
+  const bom = '\uFEFF';
+  const csv = bom + rows.join('\r\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+
+  // ファイル名: 基礎情報_{shopCode}_{YYYYMMDD-HHmm}.csv
+  const now = new Date();
+  const pad = (n) => String(n).padStart(2, '0');
+  const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+  const filename = `基礎情報_${shop.shopCode || shop.id}_${stamp}.csv`;
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  toast(`${list.length}商品の基礎情報をダウンロードしました`, 'success');
+}
+
+// =====================================================
 // ショップ管理
 // =====================================================
 function getCurrentShop() {
@@ -1751,17 +1848,6 @@ function renderProductGrid(products) {
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
-  } else if (viewMode === 'compact') {
-    // 文字+1モード: 管理番号・商品番号・商品名・画像1枚・タグ操作 (高さ低め)
-    headerHTML = `
-      <div class="product-table-header mode-compact">
-        <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
-        <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
-        <div class="col-name">商品名</div>
-        <div class="col-images">画像</div>
-        <div class="col-actions">タグ・操作</div>
-      </div>
-    `;
   } else {
     // 基礎情報モード: 管理番号・商品番号・商品名・画像5枚・タグ操作
     headerHTML = `
@@ -1837,15 +1923,8 @@ function productRowHTML(p) {
   const number = p.itemNumber || '';
 
   const sortedImages = sortImagesByName(p.images || []);
-  // モード別の画像表示枚数
-  let displayImages;
-  if (viewMode === 'images') {
-    displayImages = sortedImages;
-  } else if (viewMode === 'compact') {
-    displayImages = sortedImages.slice(0, 1);
-  } else {
-    displayImages = sortedImages.slice(0, 5);
-  }
+  // basicモードは5枚まで、imagesモードは全部
+  const displayImages = viewMode === 'images' ? sortedImages : sortedImages.slice(0, 5);
   const remaining = sortedImages.length - displayImages.length;
 
   const imgsHTML = displayImages.map(img => `
@@ -1904,19 +1983,6 @@ function productRowHTML(p) {
     // 画像全体モード: 商品番号・画像・タグ操作
     return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
-      ${imagesCellHTML}
-      ${actionsCellHTML}
-    </div>`;
-  }
-
-  if (viewMode === 'compact') {
-    // 文字+1モード: 管理番号・商品番号・商品名・画像1枚・タグ操作 (高さ低め)
-    return `<div class="product-row mode-compact ${isEmpty ? 'empty' : ''}">
-      <div class="col-manage">${manageCell}</div>
-      <div class="col-number">${numberCell}</div>
-      <div class="col-name">
-        <div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
-      </div>
       ${imagesCellHTML}
       ${actionsCellHTML}
     </div>`;
