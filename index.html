@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.0.5">
+<link rel="stylesheet" href="style.css?v=1.0.6">
 </head>
 <body>
 
@@ -231,6 +231,42 @@
   </div>
 </div>
 
+<!-- ============ Product Edit Modal ============ -->
+<div class="modal-backdrop" id="productEditModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>商品情報を編集</h2>
+      <button class="btn-close" onclick="closeModal('productEditModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="productEditId">
+      <div class="form-row">
+        <label>商品管理番号</label>
+        <input type="text" id="productEditManageNumber" placeholder="abc-001">
+        <small class="form-hint">店舗内で商品を管理する番号(自分で決める形式)</small>
+      </div>
+      <div class="form-row">
+        <label>商品番号</label>
+        <input type="text" id="productEditNumber" placeholder="10001334">
+        <small class="form-hint">楽天が自動採番する商品番号</small>
+      </div>
+      <div class="form-row">
+        <label>商品名</label>
+        <input type="text" id="productEditName" placeholder="商品名">
+      </div>
+      <div class="form-row">
+        <label>商品コード (itemCode)</label>
+        <div class="readonly-field" id="productEditItemCode"></div>
+        <small class="form-hint">楽天API由来のため編集不可</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('productEditModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveProductEditForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ Add Entry Modal (for material/boost) ============ -->
 <div class="modal-backdrop" id="entryFormModal" style="display:none">
   <div class="modal">
@@ -274,6 +310,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.0.5"></script>
+<script src="app.js?v=1.0.6"></script>
 </body>
 </html>
