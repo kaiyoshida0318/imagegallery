@@ -19242,7 +19242,116 @@
       "itemName": "DW-5600",
       "itemPrice": 880,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/wat-18-05.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779093238089_kox9yc",
+          "filename": "1779093236337_h0dnx1_1_wa-18-05.jpg",
+          "originalName": "1_wa-18-05.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093236337_h0dnx1_1_wa-18-05.jpg",
+          "sha": "9a821725622ac74724bafecb8d1f99eb917a0668",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093236337_h0dnx1_1_wa-18-05.jpg",
+          "size": 116871,
+          "uploadedAt": "2026-05-18T08:33:58.089Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093239984_cuhlon",
+          "filename": "1779093238095_ottg9a_2_wa-18-05_1.jpg",
+          "originalName": "2_wa-18-05_1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093238095_ottg9a_2_wa-18-05_1.jpg",
+          "sha": "c52117341aaf5e06a5d027e0e47a854cd6e2f9fc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093238095_ottg9a_2_wa-18-05_1.jpg",
+          "size": 78999,
+          "uploadedAt": "2026-05-18T08:33:59.984Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093241699_4xebvz",
+          "filename": "1779093239986_3blpbg_3_wa-18-05_2.jpg",
+          "originalName": "3_wa-18-05_2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093239986_3blpbg_3_wa-18-05_2.jpg",
+          "sha": "7bdc839fdcfbae69b5c514ad81f4f2b42f790c3a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093239986_3blpbg_3_wa-18-05_2.jpg",
+          "size": 138627,
+          "uploadedAt": "2026-05-18T08:34:01.699Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093243343_wt9z14",
+          "filename": "1779093241701_f5bzpc_4_wa-18-05_3.jpg",
+          "originalName": "4_wa-18-05_3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093241701_f5bzpc_4_wa-18-05_3.jpg",
+          "sha": "500b9aba47242c57a29c1b0bbef0260f81492b44",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093241701_f5bzpc_4_wa-18-05_3.jpg",
+          "size": 143304,
+          "uploadedAt": "2026-05-18T08:34:03.343Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093244832_wkl5hs",
+          "filename": "1779093243344_9kocs0_5_wa-18-05_4.jpg",
+          "originalName": "5_wa-18-05_4.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093243344_9kocs0_5_wa-18-05_4.jpg",
+          "sha": "090758fb533008848fbacfa0d72539d7939f24a8",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093243344_9kocs0_5_wa-18-05_4.jpg",
+          "size": 141512,
+          "uploadedAt": "2026-05-18T08:34:04.832Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093246760_bvgkrb",
+          "filename": "1779093244834_mh08xt_6_wa-18-05_5.jpg",
+          "originalName": "6_wa-18-05_5.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093244834_mh08xt_6_wa-18-05_5.jpg",
+          "sha": "f906ee0420fa569a98d66ad57f8a580039b0aa2d",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093244834_mh08xt_6_wa-18-05_5.jpg",
+          "size": 167371,
+          "uploadedAt": "2026-05-18T08:34:06.760Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093248627_d1s9ey",
+          "filename": "1779093246762_3bcobr_7_wa-18-05_6.jpg",
+          "originalName": "7_wa-18-05_6.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093246762_3bcobr_7_wa-18-05_6.jpg",
+          "sha": "80b8e7e9d75b32fc5cee95896b68b86637f22ee5",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093246762_3bcobr_7_wa-18-05_6.jpg",
+          "size": 168733,
+          "uploadedAt": "2026-05-18T08:34:08.627Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093250464_30hqnn",
+          "filename": "1779093248630_7x6qvq_8_wa-18-05_7.jpg",
+          "originalName": "8_wa-18-05_7.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093248630_7x6qvq_8_wa-18-05_7.jpg",
+          "sha": "31e01e70538c8fee47d1337447d74604bc0bba71",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093248630_7x6qvq_8_wa-18-05_7.jpg",
+          "size": 79287,
+          "uploadedAt": "2026-05-18T08:34:10.464Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093252375_gpv4og",
+          "filename": "1779093250468_4oycxl_9_wat-18-05_8.jpg",
+          "originalName": "9_wat-18-05_8.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093250468_4oycxl_9_wat-18-05_8.jpg",
+          "sha": "a7eb0ed5a0f1af53c51a8971de1d990bac5a0527",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823335859_56fax5/1779093250468_4oycxl_9_wat-18-05_8.jpg",
+          "size": 166023,
+          "uploadedAt": "2026-05-18T08:34:12.375Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:35.859Z"
     },
     {
