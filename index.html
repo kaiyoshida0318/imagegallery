@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.5.1">
+<link rel="stylesheet" href="style.css?v=1.6.0">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -57,6 +57,7 @@
 <div class="category-row">
   <div class="categories" id="categories">
     <button class="cat-btn active" data-cat="product">商品</button>
+    <button class="cat-btn cat-btn-unsure" data-cat="product_unsure">商品(微妙)</button>
     <button class="cat-btn" data-cat="material">素材</button>
     <button class="cat-btn" data-cat="boost">盛り上げ</button>
   </div>
@@ -72,8 +73,8 @@
     <input type="text" id="searchInput" placeholder="商品名・商品コードで検索...">
   </div>
   <div class="view-mode-toggle">
-    <button class="view-mode-btn active" data-mode="basic" id="modeBasic">📋 基礎情報</button>
-    <button class="view-mode-btn" data-mode="images" id="modeImages">🖼️ 画像全体</button>
+    <button class="view-mode-btn active" data-mode="images" id="modeImages">🖼️ 画像全体</button>
+    <button class="view-mode-btn" data-mode="basic" id="modeBasic">📋 基礎情報</button>
     <button class="view-mode-btn view-mode-btn-danger" data-mode="delete" id="modeDelete">🗑️ 削除</button>
   </div>
   <label class="filter-toggle">
@@ -445,6 +446,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.5.2"></script>
+<script src="app.js?v=1.6.0"></script>
 </body>
 </html>
