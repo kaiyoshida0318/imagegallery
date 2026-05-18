@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.6.0';
+const APP_VERSION = 'v1.6.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -52,6 +52,7 @@ let openTagPickerProductId = null;
 let viewMode = 'images';  // 'images' (画像全体, 既定) | 'basic' (基礎情報) | 'delete' (削除)
 const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
+let pendingStatusChanges = new Map();  // 保存待ちのステータス変更: productId -> 'active'|'unsure'
 
 // タグ用カラーパレット
 const TAG_COLORS = [
@@ -247,6 +248,12 @@ function bindEvents() {
     render();
   });
   document.getElementById('btnDeleteExecute').addEventListener('click', executeDeleteSelected);
+
+  // ステータス変更バー
+  const btnCommitStatus = document.getElementById('btnCommitStatus');
+  if (btnCommitStatus) btnCommitStatus.addEventListener('click', commitPendingStatusChanges);
+  const btnDiscardStatus = document.getElementById('btnDiscardStatus');
+  if (btnDiscardStatus) btnDiscardStatus.addEventListener('click', discardPendingStatusChanges);
 
   // Category tabs
   document.querySelectorAll('.cat-btn').forEach(btn => {
@@ -1920,6 +1927,7 @@ async function executeDeleteSelected() {
 function render() {
   updateTagFilterIndicator();
   updateDeleteActionBar();
+  updatePendingStatusBar();
   const shop = getCurrentShop();
   const empty = document.getElementById('emptyState');
   const content = document.getElementById('content');
@@ -2111,35 +2119,113 @@ function renderProductGrid(products) {
   content.querySelectorAll('[data-open-product]').forEach(el => {
     el.addEventListener('click', () => openProductModal(el.dataset.openProduct));
   });
-  // 現役/微妙ステータス切り替え
+  // 現役/微妙ステータス切り替え (ペンディング)
   content.querySelectorAll('[data-status-pid]').forEach(input => {
     input.addEventListener('change', (e) => {
       e.stopPropagation();
-      updateProductStatus(input.dataset.statusPid, input.value);
+      setPendingStatus(input.dataset.statusPid, input.value);
     });
   });
 }
 
-async function updateProductStatus(productId, newStatus) {
+// 商品ステータスの「ペンディング変更」を登録 (即保存しない)
+// 元の状態と一致する変更は自動でペンディングから外す
+function setPendingStatus(productId, newStatus) {
   const data = dataCache[currentShopId];
   if (!data) return;
   const p = data.products.find(x => x.id === productId);
   if (!p) return;
-  const oldStatus = p.status || 'active';
-  if (oldStatus === newStatus) return;
+  const original = p.status || 'active';
+  if (original === newStatus) {
+    // 元に戻された → ペンディング解除
+    pendingStatusChanges.delete(productId);
+  } else {
+    pendingStatusChanges.set(productId, newStatus);
+  }
+  updatePendingStatusBar();
+  // トグル見た目だけ即時更新(画面全体は再描画しない=スクロール位置維持)
+  refreshStatusToggleUI(productId);
+}
 
-  p.status = newStatus;
+// 単一商品のステータストグル見た目を更新
+function refreshStatusToggleUI(productId) {
+  const toggle = document.querySelector(`.product-status-toggle[data-pid="${productId}"]`);
+  if (!toggle) return;
+  const data = dataCache[currentShopId];
+  const p = data?.products.find(x => x.id === productId);
+  if (!p) return;
+  const original = p.status || 'active';
+  const pending = pendingStatusChanges.get(productId);
+  const displayed = pending !== undefined ? pending : original;
+  const isPending = pending !== undefined;
+
+  toggle.classList.toggle('pending', isPending);
+  toggle.querySelectorAll('.status-radio').forEach(radio => {
+    const value = radio.querySelector('input')?.value;
+    const isActive = value === displayed;
+    radio.classList.toggle('active', isActive);
+    radio.classList.toggle('unsure', value === 'unsure' && isActive);
+    const input = radio.querySelector('input');
+    if (input) input.checked = isActive;
+  });
+}
+
+// 右上の固定バー(ペンディング件数&保存ボタン)更新
+function updatePendingStatusBar() {
+  const bar = document.getElementById('pendingStatusBar');
+  if (!bar) return;
+  const count = pendingStatusChanges.size;
+  if (count === 0) {
+    bar.style.display = 'none';
+  } else {
+    bar.style.display = 'flex';
+    const cntEl = document.getElementById('pendingStatusCount');
+    if (cntEl) cntEl.textContent = count;
+  }
+}
+
+// 保存待ちのステータス変更を全部GitHubに反映
+async function commitPendingStatusChanges() {
+  if (pendingStatusChanges.size === 0) return;
+  const data = dataCache[currentShopId];
+  if (!data) return;
+
+  const count = pendingStatusChanges.size;
+  // 適用前の状態をバックアップ(失敗時のロールバック用)
+  const backup = new Map();
+  for (const [pid, newStatus] of pendingStatusChanges) {
+    const p = data.products.find(x => x.id === pid);
+    if (!p) continue;
+    backup.set(pid, p.status || 'active');
+    p.status = newStatus;
+  }
+
+  showLoading(`ステータス変更を保存中... (${count}件)`);
   try {
-    await saveShopData(currentShopId, `update status: ${p.itemManageNumber || p.id} -> ${newStatus}`);
-    // タブを切り替えると消える商品なので、再描画して反映
+    await saveShopData(currentShopId, `bulk status update: ${count} products`);
+    hideLoading();
+    pendingStatusChanges.clear();
+    updatePendingStatusBar();
+    toast(`${count}件のステータスを更新しました`, 'success');
     render();
-    toast(newStatus === 'unsure' ? '「微妙」に移動しました' : '「現役」に戻しました', 'success');
   } catch (e) {
     // ロールバック
-    p.status = oldStatus;
-    render();
+    for (const [pid, oldStatus] of backup) {
+      const p = data.products.find(x => x.id === pid);
+      if (p) p.status = oldStatus;
+    }
+    hideLoading();
     toast('保存失敗: ' + e.message, 'error');
   }
+}
+
+// ペンディング変更を全部破棄
+function discardPendingStatusChanges() {
+  if (pendingStatusChanges.size === 0) return;
+  if (!confirm(`${pendingStatusChanges.size}件の未保存のステータス変更を破棄しますか?`)) return;
+  pendingStatusChanges.clear();
+  updatePendingStatusBar();
+  render();
 }
 
 function toggleSort(key) {
@@ -2216,14 +2302,17 @@ function productRowHTML(p) {
       </button>`
     : '';
 
-  const status = p.status || 'active';
-  const statusToggleHTML = `<div class="product-status-toggle" data-pid="${p.id}">
-    <label class="status-radio ${status === 'active' ? 'active' : ''}">
-      <input type="radio" name="status_${p.id}" value="active" ${status === 'active' ? 'checked' : ''} data-status-pid="${p.id}">
+  const originalStatus = p.status || 'active';
+  const pendingStatus = pendingStatusChanges.get(p.id);
+  const displayedStatus = pendingStatus !== undefined ? pendingStatus : originalStatus;
+  const isPending = pendingStatus !== undefined;
+  const statusToggleHTML = `<div class="product-status-toggle ${isPending ? 'pending' : ''}" data-pid="${p.id}">
+    <label class="status-radio ${displayedStatus === 'active' ? 'active' : ''}">
+      <input type="radio" name="status_${p.id}" value="active" ${displayedStatus === 'active' ? 'checked' : ''} data-status-pid="${p.id}">
       <span>現役</span>
     </label>
-    <label class="status-radio ${status === 'unsure' ? 'active unsure' : ''}">
-      <input type="radio" name="status_${p.id}" value="unsure" ${status === 'unsure' ? 'checked' : ''} data-status-pid="${p.id}">
+    <label class="status-radio ${displayedStatus === 'unsure' ? 'active unsure' : ''}">
+      <input type="radio" name="status_${p.id}" value="unsure" ${displayedStatus === 'unsure' ? 'checked' : ''} data-status-pid="${p.id}">
       <span>微妙</span>
     </label>
   </div>`;
