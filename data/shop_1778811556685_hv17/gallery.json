@@ -15032,7 +15032,16 @@
     }
   ],
   "materials": [],
-  "boosts": [],
+  "boosts": [
+    {
+      "id": "ent_1779089601203_2i86rv",
+      "name": "かっさ",
+      "productId": null,
+      "note": "",
+      "images": [],
+      "createdAt": "2026-05-18T07:33:21.203Z"
+    }
+  ],
   "tags": [
     {
       "id": "tag_1778825355927_dygx",
