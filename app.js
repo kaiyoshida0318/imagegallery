@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.5.0';
+const APP_VERSION = 'v1.5.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1847,7 +1847,7 @@ function render() {
   } else if (currentCategory === 'material') {
     renderMaterialGrid(data.materials);
   } else if (currentCategory === 'boost') {
-    renderMaterialGrid(data.boosts);
+    renderBoostTable(data.boosts);
   }
 
   updateCategoryMeta(data);
@@ -2165,6 +2165,86 @@ function materialTileHTML(e) {
     <div class="material-tile-info">
       <div class="material-tile-name">${escapeHtml(e.name)}</div>
       <div class="material-tile-count">${imgCount}枚</div>
+    </div>
+  </div>`;
+}
+
+// 盛り上げ用テーブル形式 (タイトル + 画像横並び)
+function renderBoostTable(entries) {
+  const content = document.getElementById('content');
+  let list = entries.slice();
+  if (searchQuery) {
+    list = list.filter(e => (e.name || '').toLowerCase().includes(searchQuery));
+  }
+  if (filterUnregistered) {
+    list = list.filter(e => !e.images || e.images.length === 0);
+  }
+
+  if (list.length === 0) {
+    content.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🎉</div>
+      <div class="empty-title">${entries.length === 0 ? '盛り上げデータがありません' : '該当データがありません'}</div>
+      <div class="empty-desc">${entries.length === 0 ? '右上の「+ 追加」から登録してください' : '検索条件を変えてみてください'}</div>
+    </div>`;
+    return;
+  }
+
+  const headerHTML = `
+    <div class="product-table-header mode-boost">
+      <div class="col-name">タイトル</div>
+      <div class="col-images">画像</div>
+    </div>
+  `;
+
+  const rowsHTML = list.map(e => boostRowHTML(e)).join('');
+
+  content.innerHTML = `<div class="product-table">${headerHTML}${rowsHTML}</div>`;
+
+  // 画像クリック → モーダル
+  content.querySelectorAll('[data-open-boost]').forEach(el => {
+    el.addEventListener('click', () => openMaterialModal(el.dataset.openBoost));
+  });
+  // タイトルクリック → モーダル
+  content.querySelectorAll('[data-boost-title]').forEach(el => {
+    el.addEventListener('click', () => openMaterialModal(el.dataset.boostTitle));
+  });
+  // 画像追加ボタン
+  content.querySelectorAll('[data-add-boost-img]').forEach(btn => {
+    btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      openMaterialModal(btn.dataset.addBoostImg);
+    });
+  });
+}
+
+function boostRowHTML(e) {
+  const sortedImages = sortImagesByName(e.images || []);
+  const imgCount = sortedImages.length;
+  const isEmpty = imgCount === 0;
+
+  const imgsHTML = sortedImages.map(img => `
+    <div class="product-row-thumb" data-open-boost="${e.id}" title="${escapeHtml(getImageSortKey(img))}">
+      <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
+    </div>
+  `).join('');
+
+  const addBtnHTML = isEmpty
+    ? `<button class="thumb-add" data-add-boost-img="${e.id}" title="画像を追加">
+        <span class="thumb-add-icon">＋</span>
+        <span class="thumb-add-empty">未登録</span>
+      </button>`
+    : '';
+
+  return `<div class="product-row mode-boost ${isEmpty ? 'empty' : ''}">
+    <div class="col-name">
+      <div class="product-row-name" data-boost-title="${e.id}" title="${escapeHtml(e.name)}">${escapeHtml(e.name)}</div>
+      ${e.note ? `<div class="boost-note">${escapeHtml(e.note)}</div>` : ''}
+    </div>
+    <div class="col-images">
+      <div class="product-row-images">
+        ${addBtnHTML}
+        ${imgsHTML}
+      </div>
     </div>
   </div>`;
 }
