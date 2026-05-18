@@ -18848,7 +18848,44 @@
       "itemName": "Fitbit Charge 5 カバー",
       "itemPrice": 680,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fitbit/wat-fb-21-00-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779095250805_utbvst",
+          "filename": "1779095249083_7gk5h9_1_wat-fb-21-00-01.jpg",
+          "originalName": "1_wat-fb-21-00-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_iytvrm/1779095249083_7gk5h9_1_wat-fb-21-00-01.jpg",
+          "sha": "73f2cbfbfae33ca8abb5c37c54e303c9c0b3ab35",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_iytvrm/1779095249083_7gk5h9_1_wat-fb-21-00-01.jpg",
+          "size": 81015,
+          "uploadedAt": "2026-05-18T09:07:30.805Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779095252668_ggf7kb",
+          "filename": "1779095250809_aog3c0_2_wat-fb-21-00-02.jpg",
+          "originalName": "2_wat-fb-21-00-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_iytvrm/1779095250809_aog3c0_2_wat-fb-21-00-02.jpg",
+          "sha": "e80b433830981e8d1553ff4419544d2613a6ce68",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_iytvrm/1779095250809_aog3c0_2_wat-fb-21-00-02.jpg",
+          "size": 103140,
+          "uploadedAt": "2026-05-18T09:07:32.668Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779095254595_3a421l",
+          "filename": "1779095252671_jtadd0_3_wat-fb-21-00-03.jpg",
+          "originalName": "3_wat-fb-21-00-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_iytvrm/1779095252671_jtadd0_3_wat-fb-21-00-03.jpg",
+          "sha": "ba0a959804c6b46826ecac4bf697e2ff19a9d2aa",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_iytvrm/1779095252671_jtadd0_3_wat-fb-21-00-03.jpg",
+          "size": 99990,
+          "uploadedAt": "2026-05-18T09:07:34.595Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
