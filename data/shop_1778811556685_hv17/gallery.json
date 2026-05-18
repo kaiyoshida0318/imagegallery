@@ -13601,7 +13601,56 @@
       "itemName": "腕時計 ベルト交換 工具 バネ棒 外し",
       "itemPrice": 298,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/watch/wat-18-01a_1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779093220768_lk3obt",
+          "filename": "1779093219417_sjayr7_1_wat-18-01a_1.jpg",
+          "originalName": "1_wat-18-01a_1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093219417_sjayr7_1_wat-18-01a_1.jpg",
+          "sha": "93ef57628136aef0f81aba355bd7139b51fb097a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093219417_sjayr7_1_wat-18-01a_1.jpg",
+          "size": 39004,
+          "uploadedAt": "2026-05-18T08:33:40.768Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093222196_houmss",
+          "filename": "1779093220782_knltpl_2_wat-18-01a_2.jpg",
+          "originalName": "2_wat-18-01a_2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093220782_knltpl_2_wat-18-01a_2.jpg",
+          "sha": "f41a0d4ec316b5dbd9446c516587d1cc68d93ed4",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093220782_knltpl_2_wat-18-01a_2.jpg",
+          "size": 56416,
+          "uploadedAt": "2026-05-18T08:33:42.196Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093223948_6qtifd",
+          "filename": "1779093222199_dttlzw_3_wat-18-01a_3.jpg",
+          "originalName": "3_wat-18-01a_3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093222199_dttlzw_3_wat-18-01a_3.jpg",
+          "sha": "d812185273cf71e339c5e9ddc23e2957fa92c8b3",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093222199_dttlzw_3_wat-18-01a_3.jpg",
+          "size": 96588,
+          "uploadedAt": "2026-05-18T08:33:43.949Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093225363_7hra0y",
+          "filename": "1779093223950_11ne0h_4_wat-18-01a_4.jpg",
+          "originalName": "4_wat-18-01a_4.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093223950_11ne0h_4_wat-18-01a_4.jpg",
+          "sha": "125db2cf30edaf709d45c235206c41ede40537d1",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_ni194f/1779093223950_11ne0h_4_wat-18-01a_4.jpg",
+          "size": 59733,
+          "uploadedAt": "2026-05-18T08:33:45.363Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
