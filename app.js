@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.6.2';
+const APP_VERSION = 'v1.6.3';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1928,6 +1928,7 @@ function render() {
   updateTagFilterIndicator();
   updateDeleteActionBar();
   updatePendingStatusBar();
+  updateCategoryTabCounts();
   const shop = getCurrentShop();
   const empty = document.getElementById('emptyState');
   const content = document.getElementById('content');
@@ -2143,6 +2144,7 @@ function setPendingStatus(productId, newStatus) {
     pendingStatusChanges.set(productId, newStatus);
   }
   updatePendingStatusBar();
+  updateCategoryTabCounts();
   // トグル見た目だけ即時更新(画面全体は再描画しない=スクロール位置維持)
   refreshStatusToggleUI(productId);
 }
@@ -2226,6 +2228,40 @@ function discardPendingStatusChanges() {
   pendingStatusChanges.clear();
   updatePendingStatusBar();
   render();
+}
+
+// カテゴリタブに件数バッジを表示 (ペンディングステータス変更も反映)
+function updateCategoryTabCounts() {
+  const data = dataCache[currentShopId];
+  if (!data) {
+    document.querySelectorAll('.cat-btn .cat-count').forEach(el => el.remove());
+    return;
+  }
+
+  // ペンディングを加味した「現役/微妙」判定
+  const effectiveStatus = (p) => {
+    if (pendingStatusChanges.has(p.id)) return pendingStatusChanges.get(p.id);
+    return p.status || 'active';
+  };
+
+  const counts = {
+    product: data.products.filter(p => effectiveStatus(p) === 'active').length,
+    product_unsure: data.products.filter(p => effectiveStatus(p) === 'unsure').length,
+    material: (data.materials || []).length,
+    boost: (data.boosts || []).length
+  };
+
+  document.querySelectorAll('.cat-btn').forEach(btn => {
+    const cat = btn.dataset.cat;
+    if (!(cat in counts)) return;
+    let cntEl = btn.querySelector('.cat-count');
+    if (!cntEl) {
+      cntEl = document.createElement('span');
+      cntEl.className = 'cat-count';
+      btn.appendChild(cntEl);
+    }
+    cntEl.textContent = `(${counts[cat]})`;
+  });
 }
 
 function toggleSort(key) {
