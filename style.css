@@ -173,6 +173,20 @@ body {
   background: var(--text);
   color: var(--surface);
 }
+
+/* 「商品(微妙)」タブ専用スタイル */
+.cat-btn.cat-btn-unsure {
+  color: #b45309;
+}
+.cat-btn.cat-btn-unsure:hover {
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+.cat-btn.cat-btn-unsure.active {
+  background: var(--warning-text);
+  color: var(--warning-bg);
+}
+
 .category-meta { font-size: 12px; color: var(--text-light); }
 .category-meta .badge-warning {
   background: var(--warning-bg);
@@ -352,6 +366,55 @@ body {
 .col-actions .btn-edit-mini {
   align-self: stretch;
   text-align: center;
+}
+
+/* ===== 現役/微妙 ステータストグル (v1.6.0) ===== */
+.product-status-toggle {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+  align-self: stretch;
+}
+.product-status-toggle .status-radio {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  font-size: 10px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all .12s;
+  font-weight: 500;
+  user-select: none;
+  white-space: nowrap;
+}
+.product-status-toggle .status-radio + .status-radio {
+  border-left: 1px solid var(--border);
+}
+.product-status-toggle .status-radio:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+.product-status-toggle .status-radio input {
+  /* ラジオは見せずクリックだけ通す */
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+/* 現役選択中 */
+.product-status-toggle .status-radio.active {
+  background: #059669;
+  color: #fff;
+}
+/* 微妙選択中 */
+.product-status-toggle .status-radio.active.unsure {
+  background: var(--warning-text);
+  color: var(--warning-bg);
 }
 
 .btn-tag-add {
@@ -756,7 +819,7 @@ body {
 .product-table-header.mode-basic,
 .product-row.mode-basic {
   display: grid;
-  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 140px;
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 160px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -764,7 +827,7 @@ body {
 .product-table-header.mode-images,
 .product-row.mode-images {
   display: grid;
-  grid-template-columns: 130px minmax(0, 1fr) 140px;
+  grid-template-columns: 130px minmax(0, 1fr) 160px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
