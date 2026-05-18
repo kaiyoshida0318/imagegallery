@@ -358,31 +358,37 @@ body {
 .col-actions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  align-items: flex-start;
-  padding: 4px 14px;
+  gap: 5px;
+  align-items: stretch;
+  padding: 4px 12px;
   border-left: 1px solid var(--border-light);
+  min-width: 0;
 }
 .col-actions .btn-edit-mini {
   align-self: stretch;
   text-align: center;
+}
+.col-actions .product-row-tags {
+  margin-top: 1px;
 }
 
 /* ===== 現役/微妙 ステータストグル (v1.6.0) ===== */
 .product-status-toggle {
   display: inline-flex;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 5px;
   overflow: hidden;
   background: var(--surface);
   align-self: stretch;
+  width: 100%;
+  max-width: 130px;
 }
 .product-status-toggle .status-radio {
   flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 8px;
+  padding: 3px 4px;
   font-size: 10px;
   color: var(--text-muted);
   cursor: pointer;
@@ -390,6 +396,7 @@ body {
   font-weight: 500;
   user-select: none;
   white-space: nowrap;
+  min-width: 0;
 }
 .product-status-toggle .status-radio + .status-radio {
   border-left: 1px solid var(--border);
@@ -866,7 +873,7 @@ body {
 .product-table-header.mode-basic,
 .product-row.mode-basic {
   display: grid;
-  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 160px;
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -874,7 +881,7 @@ body {
 .product-table-header.mode-images,
 .product-row.mode-images {
   display: grid;
-  grid-template-columns: 130px minmax(0, 1fr) 160px;
+  grid-template-columns: 130px minmax(0, 1fr) 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -1054,8 +1061,8 @@ body {
 }
 
 .btn-edit-mini {
-  align-self: flex-start;
-  padding: 2px 8px;
+  align-self: stretch;
+  padding: 3px 8px;
   border-radius: 5px;
   border: 1px solid var(--border);
   background: var(--surface);
