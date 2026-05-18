@@ -4071,7 +4071,104 @@
       "itemName": "SW シリコン 取手一体型",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/sma/wat-sma-08-01.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779094500178_cm1k72",
+          "filename": "1779094498437_h8a8yj_01_wat-sma-08-01.jpg",
+          "originalName": "01_wat-sma-08-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094498437_h8a8yj_01_wat-sma-08-01.jpg",
+          "sha": "379af44fdd767f9d833f69b8925f78bb67ed931f",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094498437_h8a8yj_01_wat-sma-08-01.jpg",
+          "size": 274125,
+          "uploadedAt": "2026-05-18T08:55:00.178Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094502331_704o5r",
+          "filename": "1779094500185_j5lbnl_02_wat-sma-08-02.jpg",
+          "originalName": "02_wat-sma-08-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094500185_j5lbnl_02_wat-sma-08-02.jpg",
+          "sha": "5e1f7fe0313be72e18d9a49181b558ef7fc75178",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094500185_j5lbnl_02_wat-sma-08-02.jpg",
+          "size": 262020,
+          "uploadedAt": "2026-05-18T08:55:02.331Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094504310_znm8o0",
+          "filename": "1779094502338_f746ae_03_wat-sma-08-03.jpg",
+          "originalName": "03_wat-sma-08-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094502338_f746ae_03_wat-sma-08-03.jpg",
+          "sha": "1959b7218320f856d81b3bd90fc587f5aa513766",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094502338_f746ae_03_wat-sma-08-03.jpg",
+          "size": 241085,
+          "uploadedAt": "2026-05-18T08:55:04.310Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094506181_mu6iv9",
+          "filename": "1779094504316_tf66dd_04_wat-sma-08-04.jpg",
+          "originalName": "04_wat-sma-08-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094504316_tf66dd_04_wat-sma-08-04.jpg",
+          "sha": "32eb95733d1371f25607ddfeb593991616d1dcfd",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094504316_tf66dd_04_wat-sma-08-04.jpg",
+          "size": 188314,
+          "uploadedAt": "2026-05-18T08:55:06.182Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094507654_fwnb6d",
+          "filename": "1779094506187_xoc9c0_05_wat-sma-08-05a.jpg",
+          "originalName": "05_wat-sma-08-05a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094506187_xoc9c0_05_wat-sma-08-05a.jpg",
+          "sha": "0da938887f7a3223b0cbd36a0dfbb5486afe72e1",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094506187_xoc9c0_05_wat-sma-08-05a.jpg",
+          "size": 151072,
+          "uploadedAt": "2026-05-18T08:55:07.654Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094509731_d00vzw",
+          "filename": "1779094507661_c649e4_06_wat-sma-08-06.jpg",
+          "originalName": "06_wat-sma-08-06.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094507661_c649e4_06_wat-sma-08-06.jpg",
+          "sha": "c901ca590bc79ea8789a900725cad72c13c438dc",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094507661_c649e4_06_wat-sma-08-06.jpg",
+          "size": 210785,
+          "uploadedAt": "2026-05-18T08:55:09.731Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094511293_xueup7",
+          "filename": "1779094509735_w2w9x6_07_wat-sma-08-07a.jpg",
+          "originalName": "07_wat-sma-08-07a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094509735_w2w9x6_07_wat-sma-08-07a.jpg",
+          "sha": "0a21fa3d70ea7f0a864b81e0d866dfc47b56248a",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094509735_w2w9x6_07_wat-sma-08-07a.jpg",
+          "size": 61296,
+          "uploadedAt": "2026-05-18T08:55:11.293Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094512510_idh8ww",
+          "filename": "1779094511298_ioosfj_08_wat-sma-08-08.jpg",
+          "originalName": "08_wat-sma-08-08.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094511298_ioosfj_08_wat-sma-08-08.jpg",
+          "sha": "6d20b9ea1ad546e3d666cbbff0a65a51136fc780",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_v4i4c8/1779094511298_ioosfj_08_wat-sma-08-08.jpg",
+          "size": 104647,
+          "uploadedAt": "2026-05-18T08:55:12.510Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
