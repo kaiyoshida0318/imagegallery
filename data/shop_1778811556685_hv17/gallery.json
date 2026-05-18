@@ -15864,7 +15864,68 @@
       "itemName": "fitbit inspire 交換 バンド",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/fitbit/wat-fb-12-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779093300674_bywhhj",
+          "filename": "1779093298972_q8t6d1_1_wat-fb-12-1.jpg",
+          "originalName": "1_wat-fb-12-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093298972_q8t6d1_1_wat-fb-12-1.jpg",
+          "sha": "e6aa0b1f4a2e79fa2279c027b6f5bb9da2925cc4",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093298972_q8t6d1_1_wat-fb-12-1.jpg",
+          "size": 99844,
+          "uploadedAt": "2026-05-18T08:35:00.674Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093302098_m2c2qg",
+          "filename": "1779093300677_2vi908_2_wat-fb-12-2.jpg",
+          "originalName": "2_wat-fb-12-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093300677_2vi908_2_wat-fb-12-2.jpg",
+          "sha": "e6ab93f0f3005253834c9b4996cc8141cef21ce2",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093300677_2vi908_2_wat-fb-12-2.jpg",
+          "size": 78001,
+          "uploadedAt": "2026-05-18T08:35:02.098Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093303780_9t5797",
+          "filename": "1779093302101_pvlfr1_3_wat-fb-12-3.jpg",
+          "originalName": "3_wat-fb-12-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093302101_pvlfr1_3_wat-fb-12-3.jpg",
+          "sha": "79ad774e9b13b4d03771de2bf3f969cc3c69d88c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093302101_pvlfr1_3_wat-fb-12-3.jpg",
+          "size": 95765,
+          "uploadedAt": "2026-05-18T08:35:03.780Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093305230_vz4xbh",
+          "filename": "1779093303784_iiw401_4_wat-fb-12-4.jpg",
+          "originalName": "4_wat-fb-12-4.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093303784_iiw401_4_wat-fb-12-4.jpg",
+          "sha": "06676aa14575115a4ede3882d1e080bb67225434",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093303784_iiw401_4_wat-fb-12-4.jpg",
+          "size": 106039,
+          "uploadedAt": "2026-05-18T08:35:05.230Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093306570_yayf5d",
+          "filename": "1779093305240_yb55xn_5_wat-fb-12-5.jpg",
+          "originalName": "5_wat-fb-12-5.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093305240_yb55xn_5_wat-fb-12-5.jpg",
+          "sha": "81d72e34f456d3d61a4b3d787c9183156f5fb660",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_zhw9zm/1779093305240_yb55xn_5_wat-fb-12-5.jpg",
+          "size": 101180,
+          "uploadedAt": "2026-05-18T08:35:06.570Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
