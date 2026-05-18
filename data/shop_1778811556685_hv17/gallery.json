@@ -15038,7 +15038,56 @@
       "name": "かっさ",
       "productId": null,
       "note": "",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779089611989_629qly",
+          "filename": "1779089610224_0hzkik_04_si-23-13-a-04a.jpg",
+          "originalName": "04_si-23-13-a-04a.jpg",
+          "path": "data/shop_1778811556685_hv17/images/common/1779089610224_0hzkik_04_si-23-13-a-04a.jpg",
+          "sha": "21257f56692a027d2fcef64f060c581385ce5ddf",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/common/1779089610224_0hzkik_04_si-23-13-a-04a.jpg",
+          "size": 206959,
+          "uploadedAt": "2026-05-18T07:33:31.989Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779089613793_d7k9oc",
+          "filename": "1779089611990_7j3uhu_01_si-23-13-a-01.jpg",
+          "originalName": "01_si-23-13-a-01.jpg",
+          "path": "data/shop_1778811556685_hv17/images/common/1779089611990_7j3uhu_01_si-23-13-a-01.jpg",
+          "sha": "234aebe12ef1670cbae05245a4996f8178f94d74",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/common/1779089611990_7j3uhu_01_si-23-13-a-01.jpg",
+          "size": 175897,
+          "uploadedAt": "2026-05-18T07:33:33.793Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779089615645_lp4gxb",
+          "filename": "1779089613793_w22osp_02_si-23-13-a-02.jpg",
+          "originalName": "02_si-23-13-a-02.jpg",
+          "path": "data/shop_1778811556685_hv17/images/common/1779089613793_w22osp_02_si-23-13-a-02.jpg",
+          "sha": "c399c9b28510cd7e763326724ad62496f85fbe7b",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/common/1779089613793_w22osp_02_si-23-13-a-02.jpg",
+          "size": 226829,
+          "uploadedAt": "2026-05-18T07:33:35.645Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779089617422_zh829z",
+          "filename": "1779089615645_8f23hr_03_si-23-13-a-03.jpg",
+          "originalName": "03_si-23-13-a-03.jpg",
+          "path": "data/shop_1778811556685_hv17/images/common/1779089615645_8f23hr_03_si-23-13-a-03.jpg",
+          "sha": "e85b1095deecf88488cbe5d19e78b42f535e2de7",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/common/1779089615645_8f23hr_03_si-23-13-a-03.jpg",
+          "size": 234882,
+          "uploadedAt": "2026-05-18T07:33:37.422Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "createdAt": "2026-05-18T07:33:21.203Z"
     }
   ],
