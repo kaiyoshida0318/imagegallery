@@ -417,6 +417,53 @@ body {
   color: var(--warning-bg);
 }
 
+/* ペンディング状態 (保存待ち) */
+.product-status-toggle.pending {
+  outline: 2px dashed var(--warning-text);
+  outline-offset: 1px;
+  opacity: 0.78;
+  animation: pendingPulse 1.6s ease-in-out infinite;
+}
+@keyframes pendingPulse {
+  0%, 100% { opacity: 0.78; }
+  50% { opacity: 1; }
+}
+
+/* 右上固定: ステータス変更バー */
+.pending-status-bar {
+  position: fixed;
+  top: 76px;
+  right: 20px;
+  background: var(--surface);
+  border: 2px solid var(--warning-text);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 600;
+  font-size: 13px;
+}
+.pending-status-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  white-space: nowrap;
+}
+.pending-status-icon { font-size: 18px; }
+.pending-status-info strong {
+  color: var(--warning-text);
+  font-size: 16px;
+  font-weight: 700;
+}
+.pending-status-buttons { display: flex; gap: 6px; }
+.btn-mini {
+  padding: 5px 12px !important;
+  font-size: 12px !important;
+}
+
 .btn-tag-add {
   padding: 2px 8px;
   border-radius: 4px;
