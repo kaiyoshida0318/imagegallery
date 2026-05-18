@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.5.2';
+const APP_VERSION = 'v1.5.3';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -363,6 +363,19 @@ function shopDataPath(shopId) {
   return `data/${shopId}/gallery.json`;
 }
 
+// gallery.json を raw.githubusercontent.com から直接フェッチ (1MB制限回避用)
+// 公開リポジトリ前提。Privateリポジトリの場合は ghFetch で /git/blobs を使うように変更が必要。
+async function fetchRawGalleryJson(shopId) {
+  const path = shopDataPath(shopId);
+  const branch = auth.branch || 'main';
+  const url = `https://raw.githubusercontent.com/${auth.owner}/${auth.repo}/${encodeURIComponent(branch)}/${path}?t=${Date.now()}`;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) {
+    throw new Error(`raw fetch ${res.status}: ${url}`);
+  }
+  return await res.text();
+}
+
 async function loadShopData(shopId) {
   const path = shopDataPath(shopId);
   try {
@@ -373,12 +386,31 @@ async function loadShopData(shopId) {
     const data = await res.json();
 
     // base64デコード → JSON.parseの安全処理
-    let json;
     let decoded = '';
+    let usedRawFallback = false;
+
     try {
       decoded = b64decode((data.content || '').replace(/\n/g, '')).trim();
     } catch (decErr) {
-      console.error('[ImageGallery] base64デコード失敗', decErr);
+      console.warn('[ImageGallery] base64デコード失敗。raw fallback を試します', decErr);
+    }
+
+    // === v1.5.3 追加: 1MB超え対応 ===
+    // GitHub Contents API は 1MB超えのファイルだと content フィールドを空文字で返す仕様。
+    // その場合は raw.githubusercontent.com から直接フェッチする。
+    if (!decoded) {
+      try {
+        console.info(
+          `[ImageGallery] Contents APIのcontentが空 (size=${data.size}). ` +
+          `raw.githubusercontent.com から取得します`
+        );
+        const rawText = await fetchRawGalleryJson(shopId);
+        decoded = (rawText || '').trim();
+        usedRawFallback = true;
+      } catch (rawErr) {
+        console.error('[ImageGallery] raw fallback 失敗', rawErr);
+        // raw も失敗 → 空のまま下のチェックで _wasEmpty 扱いに落ちる
+      }
     }
 
     if (!decoded) {
@@ -392,6 +424,7 @@ async function loadShopData(shopId) {
       };
     }
 
+    let json;
     try {
       json = JSON.parse(decoded);
     } catch (parseErr) {
@@ -402,6 +435,13 @@ async function loadShopData(shopId) {
         sha: data.sha,
         _parseError: true
       };
+    }
+
+    if (usedRawFallback) {
+      console.info(
+        `[ImageGallery] raw fallback で正常に読み込み完了 ` +
+        `(products: ${(json.products || []).length}件)`
+      );
     }
 
     let products = Array.isArray(json.products) ? json.products : [];
@@ -462,7 +502,8 @@ async function loadShopData(shopId) {
       boosts: Array.isArray(json.boosts) ? json.boosts : [],
       tags: Array.isArray(json.tags) ? json.tags : [],  // ショップのタグマスタ
       sha: data.sha,
-      _mergedCount: mergedCount
+      _mergedCount: mergedCount,
+      _loadedViaRaw: usedRawFallback  // デバッグ用
     };
   } catch (e) {
     console.error('loadShopData failed', e);
