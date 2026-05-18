@@ -161,7 +161,56 @@
       "itemName": "LUMINOX ルミノックス ベルト",
       "itemPrice": 1288,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/wat-18-04.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779093229182_6ggiqc",
+          "filename": "1779093227450_ow3ly2_1_wat-18-04.jpg",
+          "originalName": "1_wat-18-04.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093227450_ow3ly2_1_wat-18-04.jpg",
+          "sha": "c7a3824185455096d8456242848f2326e4618d41",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093227450_ow3ly2_1_wat-18-04.jpg",
+          "size": 89048,
+          "uploadedAt": "2026-05-18T08:33:49.182Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093230876_7em3ld",
+          "filename": "1779093229184_x8n25g_2_wat-18-04_1.jpg",
+          "originalName": "2_wat-18-04_1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093229184_x8n25g_2_wat-18-04_1.jpg",
+          "sha": "53f722ee1bde583b28f475fa04b9ff5489177c67",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093229184_x8n25g_2_wat-18-04_1.jpg",
+          "size": 85532,
+          "uploadedAt": "2026-05-18T08:33:50.876Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093232494_wcwyzj",
+          "filename": "1779093230879_49we82_3_wat-18-04_2.jpg",
+          "originalName": "3_wat-18-04_2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093230879_49we82_3_wat-18-04_2.jpg",
+          "sha": "fa6a02861f22e2602658ea71cf4826eeb9fc33c0",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093230879_49we82_3_wat-18-04_2.jpg",
+          "size": 91813,
+          "uploadedAt": "2026-05-18T08:33:52.494Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093234186_i70jy7",
+          "filename": "1779093232497_46xr73_4_wat-18-04_3.jpg",
+          "originalName": "4_wat-18-04_3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093232497_46xr73_4_wat-18-04_3.jpg",
+          "sha": "85d4c10543abed7586b5b481bf360538009782ed",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_mso6qk/1779093232497_46xr73_4_wat-18-04_3.jpg",
+          "size": 86549,
+          "uploadedAt": "2026-05-18T08:33:54.186Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
