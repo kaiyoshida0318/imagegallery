@@ -17921,7 +17921,56 @@
       "itemName": "G-SHOCK ベルト",
       "itemPrice": 980,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/top/wat-18-22-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779093989609_3wn0y0",
+          "filename": "1779093987930_ha882b_1_wat-18-22-1.jpg",
+          "originalName": "1_wat-18-22-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093987930_ha882b_1_wat-18-22-1.jpg",
+          "sha": "7583594dc5cf97da3d5c62c97e24cb1b023c653e",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093987930_ha882b_1_wat-18-22-1.jpg",
+          "size": 152110,
+          "uploadedAt": "2026-05-18T08:46:29.609Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093990805_2m84g5",
+          "filename": "1779093989613_lhwtfx_2_wat-18-22-2.jpg",
+          "originalName": "2_wat-18-22-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093989613_lhwtfx_2_wat-18-22-2.jpg",
+          "sha": "9f2158d4790c9818d900b29bdb5bfd49506776b4",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093989613_lhwtfx_2_wat-18-22-2.jpg",
+          "size": 62159,
+          "uploadedAt": "2026-05-18T08:46:30.805Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093992449_f2kf53",
+          "filename": "1779093990810_u8uvhe_3_wat-18-22-3.jpg",
+          "originalName": "3_wat-18-22-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093990810_u8uvhe_3_wat-18-22-3.jpg",
+          "sha": "c4599f13162c4aacea7067c679718d6a005dc880",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093990810_u8uvhe_3_wat-18-22-3.jpg",
+          "size": 95873,
+          "uploadedAt": "2026-05-18T08:46:32.449Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779093994097_wik4ax",
+          "filename": "1779093992454_m14dqg_4_wat-18-22-4.jpg",
+          "originalName": "4_wat-18-22-4.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093992454_m14dqg_4_wat-18-22-4.jpg",
+          "sha": "2cbd8c17465c263c7114c89e5ff0f6da99d1f8e0",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_s687r9/1779093992454_m14dqg_4_wat-18-22-4.jpg",
+          "size": 108802,
+          "uploadedAt": "2026-05-18T08:46:34.097Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
