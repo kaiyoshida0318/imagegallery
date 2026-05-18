@@ -2825,7 +2825,44 @@
       "itemName": "スマートウォッチ ケース",
       "itemPrice": 990,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/sma/wat-sma-05-1.jpg?_ex=128x128",
-      "images": [],
+      "images": [
+        {
+          "id": "img_1779094091383_8yt7b0",
+          "filename": "1779094088972_82eilv_04_wat-sma-05-1.jpg",
+          "originalName": "04_wat-sma-05-1.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_5o7auc/1779094088972_82eilv_04_wat-sma-05-1.jpg",
+          "sha": "471bebd19bf4d61064cd7c278eacb83293e83922",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_5o7auc/1779094088972_82eilv_04_wat-sma-05-1.jpg",
+          "size": 337387,
+          "uploadedAt": "2026-05-18T08:48:11.383Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094093575_xi71tk",
+          "filename": "1779094091391_m5vhra_05_wat-sma-05-2.jpg",
+          "originalName": "05_wat-sma-05-2.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_5o7auc/1779094091391_m5vhra_05_wat-sma-05-2.jpg",
+          "sha": "183333d5cf7b2eb929dcf228d4ffbdc46275ef14",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_5o7auc/1779094091391_m5vhra_05_wat-sma-05-2.jpg",
+          "size": 540101,
+          "uploadedAt": "2026-05-18T08:48:13.575Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1779094095707_dkmbj0",
+          "filename": "1779094093583_tdvd0r_06_wat-sma-05-3.jpg",
+          "originalName": "06_wat-sma-05-3.jpg",
+          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_5o7auc/1779094093583_tdvd0r_06_wat-sma-05-3.jpg",
+          "sha": "64d57cdd7f2b83ec561b5acda1ba070bf0fa8ef2",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_5o7auc/1779094093583_tdvd0r_06_wat-sma-05-3.jpg",
+          "size": 539318,
+          "uploadedAt": "2026-05-18T08:48:15.707Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
