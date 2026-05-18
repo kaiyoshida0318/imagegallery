@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.5.1';
+const APP_VERSION = 'v1.5.2';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -371,7 +371,39 @@ async function loadShopData(shopId) {
       return { products: [], materials: [], boosts: [], tags: [], sha: null };
     }
     const data = await res.json();
-    const json = JSON.parse(b64decode(data.content.replace(/\n/g, '')));
+
+    // base64デコード → JSON.parseの安全処理
+    let json;
+    let decoded = '';
+    try {
+      decoded = b64decode((data.content || '').replace(/\n/g, '')).trim();
+    } catch (decErr) {
+      console.error('[ImageGallery] base64デコード失敗', decErr);
+    }
+
+    if (!decoded) {
+      // 空ファイル: 警告して既存SHAを保持(上書き保存できるように)
+      console.warn('[ImageGallery] gallery.jsonが空でした。空データで起動します。SHA:', data.sha);
+      toast('⚠️ データファイルが空です。GitHub上のJSONを確認してください', 'error');
+      return {
+        products: [], materials: [], boosts: [], tags: [],
+        sha: data.sha,
+        _wasEmpty: true
+      };
+    }
+
+    try {
+      json = JSON.parse(decoded);
+    } catch (parseErr) {
+      console.error('[ImageGallery] JSON.parse失敗', parseErr, 'content head:', decoded.slice(0, 200));
+      toast('⚠️ データJSONが壊れています。GitHubで内容を確認してください', 'error');
+      return {
+        products: [], materials: [], boosts: [], tags: [],
+        sha: data.sha,
+        _parseError: true
+      };
+    }
+
     let products = Array.isArray(json.products) ? json.products : [];
 
     // === マイグレーション (v1.1.5) ===
@@ -456,6 +488,14 @@ async function saveShopData(shopId, message) {
 async function _saveShopDataOnce(shopId, message, retryCount = 0) {
   const data = dataCache[shopId];
   if (!data) return;
+  // 空データ警告状態のままでの上書き保存を防止
+  if ((data._wasEmpty || data._parseError) &&
+      data.products.length === 0 &&
+      data.materials.length === 0 &&
+      data.boosts.length === 0 &&
+      (!data.tags || data.tags.length === 0)) {
+    throw new Error('データロード時に空/破損を検出したため、上書き保存を中止しました。GitHub上のgallery.jsonを確認してください。');
+  }
   const path = shopDataPath(shopId);
   const content = JSON.stringify({
     products: data.products,
@@ -1733,8 +1773,18 @@ async function loadCurrentShopData() {
   showLoading('データを読み込み中...');
   try {
     dataCache[currentShopId] = await loadShopData(currentShopId);
+    const cache = dataCache[currentShopId];
+
+    // 空/破損検出時の警告 (上書き保存はしない)
+    if (cache._wasEmpty || cache._parseError) {
+      hideLoading();
+      const cause = cache._wasEmpty ? '空でした' : '破損しています';
+      toast(`⚠️ データファイルが${cause}。バックアップから復元するか「商品同期」で取り直してください`, 'error');
+      return;
+    }
+
     // マイグレーションでマージが発生した場合は自動保存
-    const merged = dataCache[currentShopId]._mergedCount || 0;
+    const merged = cache._mergedCount || 0;
     if (merged > 0) {
       hideLoading();
       showLoading(`重複した${merged}件をマージ中...`);
