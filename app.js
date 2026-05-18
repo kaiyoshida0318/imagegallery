@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.5.3';
+const APP_VERSION = 'v1.6.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -37,7 +37,7 @@ let auth = {
 };
 let shops = [];        // [{id, name, mall, shopCode, appId, accessKey}]
 let currentShopId = null;
-let currentCategory = 'product';  // 'product' | 'material' | 'boost'
+let currentCategory = 'product';  // 'product' | 'product_unsure' | 'material' | 'boost'
 let dataCache = {};    // {shopId: {products: [...], materials: [...], boosts: [...], shaMap: {}}}
 let currentProductId = null;     // open product modal target
 let currentImageId = null;       // open image detail target
@@ -49,7 +49,7 @@ const LS_SORT_KEY = 'imagegallery_sort_key_v1';
 const LS_SORT_DIR = 'imagegallery_sort_dir_v1';
 let filterTagIds = new Set();
 let openTagPickerProductId = null;
-let viewMode = 'basic';  // 'basic' (基礎情報) | 'images' (画像全体) | 'delete' (削除)
+let viewMode = 'images';  // 'images' (画像全体, 既定) | 'basic' (基礎情報) | 'delete' (削除)
 const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 
@@ -109,7 +109,7 @@ function saveAuth() {
 function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
   currentCategory = localStorage.getItem(LS_CURRENT_CAT) || 'product';
-  viewMode = localStorage.getItem(LS_VIEW_MODE) || 'basic';
+  viewMode = localStorage.getItem(LS_VIEW_MODE) || 'images';
   // ソート状態を復元 (なければデフォルト)
   const savedSortKey = localStorage.getItem(LS_SORT_KEY);
   const savedSortDir = localStorage.getItem(LS_SORT_DIR);
@@ -1182,6 +1182,7 @@ async function syncProducts() {
           itemPrice: it.itemPrice,
           rakutenThumb: it.mediumImageUrl,
           images: [],
+          status: 'active',
           syncedAt: new Date().toISOString()
         });
         added++;
@@ -1934,7 +1935,13 @@ function render() {
   const data = dataCache[currentShopId] || { products: [], materials: [], boosts: [] };
 
   if (currentCategory === 'product') {
-    renderProductGrid(data.products);
+    // 現役のみ表示(status未設定 or 'active')
+    const activeProducts = data.products.filter(p => (p.status || 'active') === 'active');
+    renderProductGrid(activeProducts);
+  } else if (currentCategory === 'product_unsure') {
+    // 微妙のみ表示
+    const unsureProducts = data.products.filter(p => p.status === 'unsure');
+    renderProductGrid(unsureProducts);
   } else if (currentCategory === 'material') {
     renderMaterialGrid(data.materials);
   } else if (currentCategory === 'boost') {
@@ -1946,11 +1953,14 @@ function render() {
 
 function updateCategoryMeta(data) {
   const meta = document.getElementById('unregisteredCount');
-  if (currentCategory === 'product') {
-    const empty = data.products.filter(p => !p.images || p.images.length === 0).length;
+  if (currentCategory === 'product' || currentCategory === 'product_unsure') {
+    const targetStatus = currentCategory === 'product' ? 'active' : 'unsure';
+    const target = data.products.filter(p => (p.status || 'active') === targetStatus);
+    const empty = target.filter(p => !p.images || p.images.length === 0).length;
+    const label = currentCategory === 'product' ? '商品' : '商品(微妙)';
     meta.innerHTML = empty > 0
-      ? `<span class="badge-warning">📷 未登録: ${empty}件</span>`
-      : `<span>全商品に画像登録済み 🎉</span>`;
+      ? `<span class="badge-warning">📷 ${label} 未登録: ${empty}件</span>`
+      : `<span>${label}: 全商品に画像登録済み 🎉</span>`;
   } else {
     meta.textContent = '';
   }
@@ -2101,6 +2111,35 @@ function renderProductGrid(products) {
   content.querySelectorAll('[data-open-product]').forEach(el => {
     el.addEventListener('click', () => openProductModal(el.dataset.openProduct));
   });
+  // 現役/微妙ステータス切り替え
+  content.querySelectorAll('[data-status-pid]').forEach(input => {
+    input.addEventListener('change', (e) => {
+      e.stopPropagation();
+      updateProductStatus(input.dataset.statusPid, input.value);
+    });
+  });
+}
+
+async function updateProductStatus(productId, newStatus) {
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const p = data.products.find(x => x.id === productId);
+  if (!p) return;
+  const oldStatus = p.status || 'active';
+  if (oldStatus === newStatus) return;
+
+  p.status = newStatus;
+  try {
+    await saveShopData(currentShopId, `update status: ${p.itemManageNumber || p.id} -> ${newStatus}`);
+    // タブを切り替えると消える商品なので、再描画して反映
+    render();
+    toast(newStatus === 'unsure' ? '「微妙」に移動しました' : '「現役」に戻しました', 'success');
+  } catch (e) {
+    // ロールバック
+    p.status = oldStatus;
+    render();
+    toast('保存失敗: ' + e.message, 'error');
+  }
 }
 
 function toggleSort(key) {
@@ -2177,7 +2216,20 @@ function productRowHTML(p) {
       </button>`
     : '';
 
+  const status = p.status || 'active';
+  const statusToggleHTML = `<div class="product-status-toggle" data-pid="${p.id}">
+    <label class="status-radio ${status === 'active' ? 'active' : ''}">
+      <input type="radio" name="status_${p.id}" value="active" ${status === 'active' ? 'checked' : ''} data-status-pid="${p.id}">
+      <span>現役</span>
+    </label>
+    <label class="status-radio ${status === 'unsure' ? 'active unsure' : ''}">
+      <input type="radio" name="status_${p.id}" value="unsure" ${status === 'unsure' ? 'checked' : ''} data-status-pid="${p.id}">
+      <span>微妙</span>
+    </label>
+  </div>`;
+
   const actionsCellHTML = `<div class="col-actions">
+    ${statusToggleHTML}
     <div class="product-row-tags">
       ${tagChipsHTML}
       <button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>
