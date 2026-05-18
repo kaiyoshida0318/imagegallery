@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.6.0">
+<link rel="stylesheet" href="style.css?v=1.6.1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -101,6 +101,18 @@
   <div class="empty-title">まだショップがありません</div>
   <div class="empty-desc">右上の ⚙️ から設定を開いて、ショップを追加してください</div>
   <button class="btn-primary" onclick="openSettings()">⚙️ 設定を開く</button>
+</div>
+
+<!-- ============ Pending Status Change Bar (右上固定) ============ -->
+<div class="pending-status-bar" id="pendingStatusBar" style="display:none">
+  <div class="pending-status-info">
+    <span class="pending-status-icon">💾</span>
+    <span>ステータス変更: <strong id="pendingStatusCount">0</strong> 件</span>
+  </div>
+  <div class="pending-status-buttons">
+    <button class="btn-secondary btn-mini" id="btnDiscardStatus">破棄</button>
+    <button class="btn-primary btn-mini" id="btnCommitStatus">保存</button>
+  </div>
 </div>
 
 <!-- ============ Delete Mode Action Bar ============ -->
@@ -446,6 +458,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.6.0"></script>
+<script src="app.js?v=1.6.1"></script>
 </body>
 </html>
