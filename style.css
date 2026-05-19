@@ -187,6 +187,19 @@ body {
   color: var(--warning-bg);
 }
 
+/* 「商品(全体)」タブ専用スタイル */
+.cat-btn.cat-btn-all {
+  color: var(--primary-dark);
+}
+.cat-btn.cat-btn-all:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+}
+.cat-btn.cat-btn-all.active {
+  background: var(--primary);
+  color: #fff;
+}
+
 /* カテゴリタブの件数バッジ */
 .cat-btn .cat-count {
   margin-left: 6px;
@@ -994,9 +1007,15 @@ body {
 .product-table-header.mode-images,
 .product-row.mode-images {
   display: grid;
-  grid-template-columns: 130px minmax(0, 1fr) 80px 180px;
+  grid-template-columns: 130px minmax(0, 1fr) 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
+}
+
+/* 商品(全体)タブのみ: 現役/微妙列を追加した4列構成 */
+.product-table-header.mode-images.mode-images-with-status,
+.product-row.mode-images.mode-images-with-status {
+  grid-template-columns: 130px minmax(0, 1fr) 80px 180px;
 }
 
 /* 画像全体モードの現役/微妙専用列 */
