@@ -994,9 +994,33 @@ body {
 .product-table-header.mode-images,
 .product-row.mode-images {
   display: grid;
-  grid-template-columns: 130px minmax(0, 1fr) 180px;
+  grid-template-columns: 130px minmax(0, 1fr) 80px 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
+}
+
+/* 画像全体モードの現役/微妙専用列 */
+.product-row.mode-images .col-status {
+  padding: 4px 8px;
+  display: flex;
+  align-items: stretch;
+  border-left: 1px solid var(--border-light);
+}
+.product-row.mode-images .col-status .product-status-toggle {
+  max-width: none;
+  width: 100%;
+  flex-direction: column;
+}
+.product-row.mode-images .col-status .product-status-toggle .status-radio + .status-radio {
+  border-left: none;
+  border-top: 1px solid var(--border);
+}
+.product-row.mode-images .col-status .product-status-toggle .status-radio {
+  padding: 5px 4px;
+  font-size: 11px;
+}
+.product-table-header.mode-images .col-status {
+  border-left: 1px solid var(--border-light);
 }
 
 /* 削除モード: 商品番号 + 画像のみ */
