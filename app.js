@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.6.3';
+const APP_VERSION = 'v1.7.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -131,19 +131,6 @@ function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
   document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
-  document.getElementById('btnTagManage').addEventListener('click', openTagManageModal);
-  document.getElementById('btnAddTag').addEventListener('click', createTagFromForm);
-  const saveTagEditBtn = document.getElementById('btnSaveTagEdit');
-  if (saveTagEditBtn) saveTagEditBtn.addEventListener('click', saveTagEdit);
-  const tagEditNameEl = document.getElementById('tagEditName');
-  if (tagEditNameEl) {
-    tagEditNameEl.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') { e.preventDefault(); saveTagEdit(); }
-    });
-  }
-  document.getElementById('newTagName').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') { e.preventDefault(); createTagFromForm(); }
-  });
   document.getElementById('btnTagFilterToggle').addEventListener('click', toggleTagFilterDropdown);
 
   // ドキュメントクリックでドロップダウン閉じる
@@ -151,14 +138,6 @@ function bindEvents() {
     const filterWrap = document.getElementById('tagFilterWrap');
     if (filterWrap && !filterWrap.contains(e.target)) {
       document.getElementById('tagFilterDropdown').style.display = 'none';
-    }
-    // タグピッカーも閉じる
-    if (openTagPickerProductId) {
-      const picker = document.querySelector(`.tag-picker[data-pid="${openTagPickerProductId}"]`);
-      if (picker && !picker.contains(e.target) && !e.target.closest(`[data-tag-picker-btn="${openTagPickerProductId}"]`)) {
-        picker.remove();
-        openTagPickerProductId = null;
-      }
     }
   });
   document.getElementById('btnImportCsv').addEventListener('click', openCsvImportModal);
@@ -1030,99 +1009,6 @@ function updateTagFilterIndicator() {
   c.textContent = filterTagIds.size > 0 ? `(${filterTagIds.size})` : '';
   const btn = document.getElementById('btnTagFilterToggle');
   if (btn) btn.classList.toggle('active', filterTagIds.size > 0);
-}
-
-function toggleProductTagPicker(productId, anchorEl) {
-  document.querySelectorAll('.tag-picker').forEach(el => el.remove());
-  if (openTagPickerProductId === productId) {
-    openTagPickerProductId = null;
-    return;
-  }
-  openTagPickerProductId = productId;
-  const tags = getCurrentTags();
-  const data = dataCache[currentShopId];
-  const p = data.products.find(x => x.id === productId);
-  if (!p) return;
-  if (!p.tagIds) p.tagIds = [];
-
-  const picker = document.createElement('div');
-  picker.className = 'tag-picker';
-  picker.dataset.pid = productId;
-  if (tags.length === 0) {
-    picker.innerHTML = '<div class="tag-picker-empty">タグがありません。<br>🏷️タグ管理から追加してください</div>';
-  } else {
-    picker.innerHTML = tags.map(t => {
-      const c = getTagColor(t.color);
-      const has = p.tagIds.includes(t.id);
-      return `<div class="tag-picker-item ${has ? 'selected' : ''}" data-tag-id="${t.id}">
-        <span class="tag-picker-check">${has ? '✓' : ''}</span>
-        <span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>
-      </div>`;
-    }).join('');
-  }
-
-  const rect = anchorEl.getBoundingClientRect();
-  picker.style.position = 'fixed';
-  picker.style.top = (rect.bottom + 4) + 'px';
-  picker.style.left = rect.left + 'px';
-  document.body.appendChild(picker);
-
-  picker.querySelectorAll('[data-tag-id]').forEach(el => {
-    el.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const tid = el.dataset.tagId;
-      const hasIt = p.tagIds.includes(tid);
-      if (hasIt) {
-        p.tagIds = p.tagIds.filter(x => x !== tid);
-      } else {
-        p.tagIds.push(tid);
-      }
-      // UI即時反映 (チェックマーク&選択状態)
-      el.classList.toggle('selected');
-      const checkEl = el.querySelector('.tag-picker-check');
-      if (checkEl) checkEl.textContent = hasIt ? '' : '✓';
-      try {
-        await saveShopData(currentShopId, `update tags: ${p.itemManageNumber || p.id}`);
-        // 商品行のタグチップだけ再描画(ピッカーは閉じない)
-        renderSingleProductRowTags(p.id);
-      } catch (err) {
-        // ロールバック
-        if (hasIt) p.tagIds.push(tid);
-        else p.tagIds = p.tagIds.filter(x => x !== tid);
-        el.classList.toggle('selected');
-        if (checkEl) checkEl.textContent = hasIt ? '✓' : '';
-        toast('保存失敗: ' + err.message, 'error');
-      }
-    });
-  });
-}
-
-// 指定商品のタグチップ部分だけ再描画(ピッカーを閉じずに更新)
-function renderSingleProductRowTags(productId) {
-  const data = dataCache[currentShopId];
-  if (!data) return;
-  const p = data.products.find(x => x.id === productId);
-  if (!p) return;
-  const row = document.querySelector(`[data-tag-picker-btn="${productId}"]`)?.closest('.product-row');
-  if (!row) return;
-  const tagsWrap = row.querySelector('.product-row-tags');
-  if (!tagsWrap) return;
-
-  const tagIds = p.tagIds || [];
-  const allTags = getCurrentTags();
-  const productTags = tagIds.map(id => allTags.find(t => t.id === id)).filter(Boolean);
-  const tagChipsHTML = productTags.map(t => {
-    const c = getTagColor(t.color);
-    return `<span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>`;
-  }).join('');
-  const addBtnHTML = `<button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>`;
-  tagsWrap.innerHTML = tagChipsHTML + addBtnHTML;
-
-  // 再バインド
-  tagsWrap.querySelector('[data-tag-picker-btn]').addEventListener('click', (e) => {
-    e.stopPropagation();
-    toggleProductTagPicker(productId, e.currentTarget);
-  });
 }
 
 async function clearAllProducts() {
@@ -2081,11 +1967,11 @@ function renderProductGrid(products) {
       openProductEditForm(btn.dataset.editProduct);
     });
   });
-  // タグ追加ボタン
-  content.querySelectorAll('[data-tag-picker-btn]').forEach(btn => {
+  // タグ・グリッド: ワンクリックでタグON/OFF
+  content.querySelectorAll('[data-tag-toggle]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      toggleProductTagPicker(btn.dataset.tagPickerBtn, btn);
+      toggleProductTag(btn.dataset.pid, btn.dataset.tagToggle, btn);
     });
   });
   // 削除モード: 画像クリックで予約トグル
@@ -2264,6 +2150,43 @@ function updateCategoryTabCounts() {
   });
 }
 
+// タグのワンクリックON/OFF (即GitHub保存、ボタン見た目だけ即時反転)
+async function toggleProductTag(productId, tagId, btnEl) {
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const p = data.products.find(x => x.id === productId);
+  if (!p) return;
+  if (!Array.isArray(p.tagIds)) p.tagIds = [];
+  const hasIt = p.tagIds.includes(tagId);
+
+  // 見た目を即時反転
+  if (hasIt) {
+    p.tagIds = p.tagIds.filter(x => x !== tagId);
+    btnEl?.classList.remove('on');
+    btnEl?.classList.add('off');
+  } else {
+    p.tagIds.push(tagId);
+    btnEl?.classList.remove('off');
+    btnEl?.classList.add('on');
+  }
+
+  try {
+    await saveShopData(currentShopId, `toggle tag: ${p.itemManageNumber || p.id}`);
+  } catch (err) {
+    // ロールバック
+    if (hasIt) {
+      p.tagIds.push(tagId);
+      btnEl?.classList.remove('off');
+      btnEl?.classList.add('on');
+    } else {
+      p.tagIds = p.tagIds.filter(x => x !== tagId);
+      btnEl?.classList.remove('on');
+      btnEl?.classList.add('off');
+    }
+    toast('保存失敗: ' + err.message, 'error');
+  }
+}
+
 function toggleSort(key) {
   if (sortKey !== key) {
     sortKey = key;
@@ -2320,16 +2243,21 @@ function productRowHTML(p) {
     ? `<span class="mono">${escapeHtml(number)}</span>`
     : `<span class="mono mono-placeholder">cab-16-01</span>`;
 
-  // タグ表示
+  // タグ表示 (2x2格子 - 全タグを常時表示してワンクリックON/OFF)
   const tagIds = p.tagIds || [];
   const allTags = getCurrentTags();
-  const productTags = tagIds
-    .map(id => allTags.find(t => t.id === id))
-    .filter(Boolean);
-  const tagChipsHTML = productTags.map(t => {
-    const c = getTagColor(t.color);
-    return `<span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>`;
-  }).join('');
+  const tagGridHTML = allTags.length > 0
+    ? `<div class="tag-grid" data-pid="${p.id}">
+        ${allTags.map(t => {
+          const c = getTagColor(t.color);
+          const has = tagIds.includes(t.id);
+          return `<button class="tag-grid-item ${has ? 'on' : 'off'}"
+            data-tag-toggle="${t.id}" data-pid="${p.id}"
+            style="--tag-bg:${c.bg};--tag-fg:${c.fg}"
+            title="${escapeHtml(t.name)}">${escapeHtml(t.name)}</button>`;
+        }).join('')}
+      </div>`
+    : '';
 
   const addBtnHTML = isEmpty
     ? `<button class="thumb-add" data-add-img="${p.id}" title="画像を追加">
@@ -2355,10 +2283,7 @@ function productRowHTML(p) {
 
   const actionsCellHTML = `<div class="col-actions">
     ${statusToggleHTML}
-    <div class="product-row-tags">
-      ${tagChipsHTML}
-      <button class="btn-tag-add" data-tag-picker-btn="${p.id}" title="タグを追加">🏷️ +タグ</button>
-    </div>
+    ${tagGridHTML}
     <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
   </div>`;
 
