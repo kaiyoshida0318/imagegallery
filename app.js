@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.7.1';
+const APP_VERSION = 'v1.7.3';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1919,11 +1919,12 @@ function renderProductGrid(products) {
 
   let headerHTML;
   if (viewMode === 'images') {
-    // 画像全体モード: 商品番号・画像・タグ操作
+    // 画像全体モード: 商品番号・画像・現役/微妙・タグ操作
     headerHTML = `
       <div class="product-table-header mode-images">
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-images">画像</div>
+        <div class="col-status">現役/微妙</div>
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
@@ -2341,11 +2342,16 @@ function productRowHTML(p) {
   </div>`;
 
   if (viewMode === 'images') {
-    // 画像全体モード: 商品番号・画像・タグ操作
+    // 画像全体モード: 商品番号・画像・現役/微妙(専用列)・タグ操作
+    const actionsForImagesMode = `<div class="col-actions">
+      ${tagGridHTML}
+      <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+    </div>`;
     return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
-      ${actionsCellHTML}
+      <div class="col-status">${statusToggleHTML}</div>
+      ${actionsForImagesMode}
     </div>`;
   }
 
