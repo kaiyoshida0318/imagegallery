@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.7.3';
+const APP_VERSION = 'v1.7.4';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -37,7 +37,7 @@ let auth = {
 };
 let shops = [];        // [{id, name, mall, shopCode, appId, accessKey}]
 let currentShopId = null;
-let currentCategory = 'product';  // 'product' | 'product_unsure' | 'material' | 'boost'
+let currentCategory = 'product';  // 'product' | 'product_unsure' | 'product_all' | 'material' | 'boost'
 let dataCache = {};    // {shopId: {products: [...], materials: [...], boosts: [...], shaMap: {}}}
 let currentProductId = null;     // open product modal target
 let currentImageId = null;       // open image detail target
@@ -1837,6 +1837,9 @@ function render() {
     // 微妙のみ表示
     const unsureProducts = data.products.filter(p => p.status === 'unsure');
     renderProductGrid(unsureProducts);
+  } else if (currentCategory === 'product_all') {
+    // 全商品表示(現役+微妙)
+    renderProductGrid(data.products);
   } else if (currentCategory === 'material') {
     renderMaterialGrid(data.materials);
   } else if (currentCategory === 'boost') {
@@ -1852,10 +1855,15 @@ function updateCategoryMeta(data) {
     const targetStatus = currentCategory === 'product' ? 'active' : 'unsure';
     const target = data.products.filter(p => (p.status || 'active') === targetStatus);
     const empty = target.filter(p => !p.images || p.images.length === 0).length;
-    const label = currentCategory === 'product' ? '商品' : '商品(微妙)';
+    const label = currentCategory === 'product' ? '商品(現役)' : '商品(微妙)';
     meta.innerHTML = empty > 0
       ? `<span class="badge-warning">📷 ${label} 未登録: ${empty}件</span>`
       : `<span>${label}: 全商品に画像登録済み 🎉</span>`;
+  } else if (currentCategory === 'product_all') {
+    const empty = data.products.filter(p => !p.images || p.images.length === 0).length;
+    meta.innerHTML = empty > 0
+      ? `<span class="badge-warning">📷 商品(全体) 未登録: ${empty}件</span>`
+      : `<span>商品(全体): 全商品に画像登録済み 🎉</span>`;
   } else {
     meta.textContent = '';
   }
@@ -1919,15 +1927,27 @@ function renderProductGrid(products) {
 
   let headerHTML;
   if (viewMode === 'images') {
-    // 画像全体モード: 商品番号・画像・現役/微妙・タグ操作
-    headerHTML = `
-      <div class="product-table-header mode-images">
-        <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
-        <div class="col-images">画像</div>
-        <div class="col-status">現役/微妙</div>
-        <div class="col-actions">タグ・操作</div>
-      </div>
-    `;
+    const showStatusCol = currentCategory === 'product_all';
+    if (showStatusCol) {
+      // 商品(全体)モード: 商品番号・画像・現役/微妙・タグ操作
+      headerHTML = `
+        <div class="product-table-header mode-images mode-images-with-status">
+          <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+          <div class="col-images">画像</div>
+          <div class="col-status">現役/微妙</div>
+          <div class="col-actions">タグ・操作</div>
+        </div>
+      `;
+    } else {
+      // 商品(現役) or 商品(微妙): 商品番号・画像・タグ操作 (現役/微妙列なし)
+      headerHTML = `
+        <div class="product-table-header mode-images">
+          <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+          <div class="col-images">画像</div>
+          <div class="col-actions">タグ・操作</div>
+        </div>
+      `;
+    }
   } else if (viewMode === 'delete') {
     // 削除モード: 商品番号・画像 (画像クリックで削除予約)
     headerHTML = `
@@ -2138,6 +2158,7 @@ function updateCategoryTabCounts() {
   const counts = {
     product: data.products.filter(p => effectiveStatus(p) === 'active').length,
     product_unsure: data.products.filter(p => effectiveStatus(p) === 'unsure').length,
+    product_all: data.products.length,
     material: (data.materials || []).length,
     boost: (data.boosts || []).length
   };
@@ -2342,15 +2363,24 @@ function productRowHTML(p) {
   </div>`;
 
   if (viewMode === 'images') {
-    // 画像全体モード: 商品番号・画像・現役/微妙(専用列)・タグ操作
+    const showStatusCol = currentCategory === 'product_all';
     const actionsForImagesMode = `<div class="col-actions">
       ${tagGridHTML}
       <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
     </div>`;
+    if (showStatusCol) {
+      // 商品(全体): 4列構成
+      return `<div class="product-row mode-images mode-images-with-status ${isEmpty ? 'empty' : ''}">
+        <div class="col-number">${numberCell}</div>
+        ${imagesCellHTML}
+        <div class="col-status">${statusToggleHTML}</div>
+        ${actionsForImagesMode}
+      </div>`;
+    }
+    // 商品(現役) or 商品(微妙): 3列構成 (現役/微妙列なし)
     return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
-      <div class="col-status">${statusToggleHTML}</div>
       ${actionsForImagesMode}
     </div>`;
   }
