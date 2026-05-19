@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.7.0';
+const APP_VERSION = 'v1.7.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -2002,9 +2002,13 @@ function renderProductGrid(products) {
       openProductModal(btn.dataset.addImg);
     });
   });
-  // 画像クリック → 商品モーダル開く
+  // 画像クリック → 商品モーダル開く (現在は「+N」「+未登録」ボタンのみ)
   content.querySelectorAll('[data-open-product]').forEach(el => {
     el.addEventListener('click', () => openProductModal(el.dataset.openProduct));
+  });
+  // 画像クリック → ライトボックスで拡大表示 (v1.7.1)
+  content.querySelectorAll('[data-open-lightbox]').forEach(el => {
+    el.addEventListener('click', () => openLightbox(el.dataset.openLightbox));
   });
   // 現役/微妙ステータス切り替え (ペンディング)
   content.querySelectorAll('[data-status-pid]').forEach(input => {
@@ -2187,6 +2191,47 @@ async function toggleProductTag(productId, tagId, btnEl) {
   }
 }
 
+// ===== ライトボックス (v1.7.1): 画像をドーンと拡大表示 =====
+function openLightbox(imageUrl) {
+  if (!imageUrl) return;
+  let box = document.getElementById('lightbox');
+  if (!box) {
+    box = document.createElement('div');
+    box.id = 'lightbox';
+    box.className = 'lightbox';
+    box.innerHTML = `
+      <button class="lightbox-close" aria-label="閉じる">×</button>
+      <img class="lightbox-img" src="" alt="">
+    `;
+    document.body.appendChild(box);
+    // 背景クリックで閉じる
+    box.addEventListener('click', (e) => {
+      if (e.target === box || e.target.classList.contains('lightbox-close')) {
+        closeLightbox();
+      }
+    });
+  }
+  box.querySelector('.lightbox-img').src = imageUrl;
+  box.classList.add('open');
+  // ESCで閉じる
+  document.addEventListener('keydown', _lightboxEscHandler);
+  // 背景スクロール抑制
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const box = document.getElementById('lightbox');
+  if (!box) return;
+  box.classList.remove('open');
+  // src は空にしないでおく (次回開いたとき即表示できるように)
+  document.removeEventListener('keydown', _lightboxEscHandler);
+  document.body.style.overflow = '';
+}
+
+function _lightboxEscHandler(e) {
+  if (e.key === 'Escape') closeLightbox();
+}
+
 function toggleSort(key) {
   if (sortKey !== key) {
     sortKey = key;
@@ -2226,12 +2271,12 @@ function productRowHTML(p) {
         ${isMarked ? '<div class="delete-mark-overlay">✕</div>' : ''}
       </div>`;
     }
-    return `<div class="product-row-thumb" data-open-product="${p.id}" title="${escapeHtml(getImageSortKey(img))}">
+    return `<div class="product-row-thumb" data-open-lightbox="${escapeHtml(img.url)}" title="${escapeHtml(getImageSortKey(img))}">
       <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
     </div>`;
   }).join('');
 
-  // 残り表示(basicモードで5枚超え)
+  // 残り表示(basicモードで5枚超え) — 「+N」は商品モーダルを開く
   const moreHTML = remaining > 0
     ? `<div class="product-row-more" data-open-product="${p.id}" title="残り${remaining}枚">+${remaining}</div>`
     : '';
