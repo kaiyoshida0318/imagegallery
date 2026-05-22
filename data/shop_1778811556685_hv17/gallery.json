@@ -1956,18 +1956,6 @@
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/eq/eq-22-02-b-01.jpg?_ex=128x128",
       "images": [
         {
-          "id": "img_1778835388993_24h4ht",
-          "filename": "1778835387775_5c1xan_01_eq-22-02-mori-b01b.jpg",
-          "originalName": "01_eq-22-02-mori-b01b.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_fynzvh/1778835387775_5c1xan_01_eq-22-02-mori-b01b.jpg",
-          "sha": "90d00ad24fb36ae64a1390733323b4c6f320d9cd",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_fynzvh/1778835387775_5c1xan_01_eq-22-02-mori-b01b.jpg",
-          "size": 152846,
-          "uploadedAt": "2026-05-15T08:56:28.993Z",
-          "note": "",
-          "tags": []
-        },
-        {
           "id": "img_1778835396447_lm3nvn",
           "filename": "1778835394858_yukpdw_06_eq-22-02-b-01.jpg",
           "originalName": "06_eq-22-02-b-01.jpg",
@@ -6049,42 +6037,6 @@
       "itemPrice": 680,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/cg/cg-22-06-01.jpg?_ex=128x128",
       "images": [
-        {
-          "id": "img_1778835426778_29zwoz",
-          "filename": "1778835424946_r9o94g_01_cg-22-06-rank-1.jpg",
-          "originalName": "01_cg-22-06-rank-1.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835424946_r9o94g_01_cg-22-06-rank-1.jpg",
-          "sha": "b6cefd95751059898adb8eda11331ee7dd21a127",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835424946_r9o94g_01_cg-22-06-rank-1.jpg",
-          "size": 298287,
-          "uploadedAt": "2026-05-15T08:57:06.778Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835428777_bb7v7r",
-          "filename": "1778835426788_97fdfv_02_cg-22-06-rank-2.jpg",
-          "originalName": "02_cg-22-06-rank-2.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835426788_97fdfv_02_cg-22-06-rank-2.jpg",
-          "sha": "db15cbedc0767045f7ee6cce2aaa0ae853d7ab34",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835426788_97fdfv_02_cg-22-06-rank-2.jpg",
-          "size": 250759,
-          "uploadedAt": "2026-05-15T08:57:08.777Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1778835430624_mygoeu",
-          "filename": "1778835428786_6s69jd_03_cg-22-06-rank-3.jpg",
-          "originalName": "03_cg-22-06-rank-3.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835428786_6s69jd_03_cg-22-06-rank-3.jpg",
-          "sha": "74982dc80e24b6fd5c09e8287947a37b3cf0a736",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_idu9n9/1778835428786_6s69jd_03_cg-22-06-rank-3.jpg",
-          "size": 348614,
-          "uploadedAt": "2026-05-15T08:57:10.624Z",
-          "note": "",
-          "tags": []
-        },
         {
           "id": "img_1778835432069_mp9nax",
           "filename": "1778835430629_suev57_04_cg-22-06-01.jpg",
