@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.7.4';
+const APP_VERSION = 'v1.7.5';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -131,15 +131,8 @@ function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
   document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
-  document.getElementById('btnTagFilterToggle').addEventListener('click', toggleTagFilterDropdown);
 
-  // ドキュメントクリックでドロップダウン閉じる
-  document.addEventListener('click', (e) => {
-    const filterWrap = document.getElementById('tagFilterWrap');
-    if (filterWrap && !filterWrap.contains(e.target)) {
-      document.getElementById('tagFilterDropdown').style.display = 'none';
-    }
-  });
+  // ドキュメントクリックでドロップダウン閉じる処理は廃止(タグフィルタは常時表示に)
   document.getElementById('btnImportCsv').addEventListener('click', openCsvImportModal);
   document.getElementById('btnPickCsv').addEventListener('click', (e) => {
     e.stopPropagation();
@@ -950,66 +943,51 @@ async function deleteTag(tagId) {
   }
 }
 
-function toggleTagFilterDropdown() {
-  const dd = document.getElementById('tagFilterDropdown');
-  if (dd.style.display === 'none') {
-    renderTagFilterDropdown();
-    dd.style.display = 'block';
-  } else {
-    dd.style.display = 'none';
-  }
-}
-
-function renderTagFilterDropdown() {
-  const dd = document.getElementById('tagFilterDropdown');
+// 検索行に常時表示するタグフィルタ (v1.7.5)
+// クリックでそのタグの絞り込みをON/OFF
+function renderTagFilterInline() {
+  const wrap = document.getElementById('tagFilterInline');
+  if (!wrap) return;
   const tags = getCurrentTags();
   if (tags.length === 0) {
-    dd.innerHTML = '<div class="tag-filter-empty">タグがまだありません。<br>🏷️タグ管理から追加してください</div>';
+    wrap.innerHTML = '';
     return;
   }
-  const allBtn = filterTagIds.size > 0
-    ? '<button class="tag-filter-clear" id="btnClearTagFilter">フィルタをクリア</button>'
+  const clearBtn = filterTagIds.size > 0
+    ? `<button class="tag-filter-inline-clear" id="btnClearTagFilter" title="フィルタ解除">✕</button>`
     : '';
-  dd.innerHTML = `
-    ${allBtn}
-    <div class="tag-filter-list">
-      ${tags.map(t => {
-        const c = getTagColor(t.color);
-        const active = filterTagIds.has(t.id);
-        return `<label class="tag-filter-item ${active ? 'active' : ''}">
-          <input type="checkbox" data-filter-tag="${t.id}" ${active ? 'checked' : ''}>
-          <span class="tag-chip" style="background:${c.bg};color:${c.fg}">${escapeHtml(t.name)}</span>
-        </label>`;
-      }).join('')}
-    </div>
-  `;
-  dd.querySelectorAll('[data-filter-tag]').forEach(cb => {
-    cb.addEventListener('change', () => {
-      const id = cb.dataset.filterTag;
-      if (cb.checked) filterTagIds.add(id);
-      else filterTagIds.delete(id);
-      updateTagFilterIndicator();
+  wrap.innerHTML = tags.map(t => {
+    const c = getTagColor(t.color);
+    const active = filterTagIds.has(t.id);
+    return `<button class="tag-filter-chip ${active ? 'on' : 'off'}"
+      data-filter-tag="${t.id}"
+      style="--tag-bg:${c.bg};--tag-fg:${c.fg}"
+      title="${escapeHtml(t.name)}でフィルタ">${escapeHtml(t.name)}</button>`;
+  }).join('') + clearBtn;
+
+  wrap.querySelectorAll('[data-filter-tag]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.filterTag;
+      if (filterTagIds.has(id)) filterTagIds.delete(id);
+      else filterTagIds.add(id);
+      renderTagFilterInline();
       render();
     });
   });
-  const clearBtn = document.getElementById('btnClearTagFilter');
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
+  const cb = document.getElementById('btnClearTagFilter');
+  if (cb) {
+    cb.addEventListener('click', () => {
       filterTagIds.clear();
-      renderTagFilterDropdown();
-      updateTagFilterIndicator();
+      renderTagFilterInline();
       render();
     });
   }
 }
 
-function updateTagFilterIndicator() {
-  const c = document.getElementById('tagFilterCount');
-  if (!c) return;
-  c.textContent = filterTagIds.size > 0 ? `(${filterTagIds.size})` : '';
-  const btn = document.getElementById('btnTagFilterToggle');
-  if (btn) btn.classList.toggle('active', filterTagIds.size > 0);
-}
+// 旧名互換ラッパー (他から呼ばれても安全に動くように)
+function renderTagFilterDropdown() { renderTagFilterInline(); }
+function updateTagFilterIndicator() { renderTagFilterInline(); }
+function toggleTagFilterDropdown() { /* ドロップダウン廃止のため何もしない */ }
 
 async function clearAllProducts() {
   const shop = getCurrentShop();
