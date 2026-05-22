@@ -233,8 +233,73 @@ body {
   top: 100px;
   z-index: 90;
 }
-.search-box {
+
+/* 検索行の常時表示タグフィルタ (v1.7.5) */
+.tag-filter-inline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
   flex: 1;
+  min-width: 0;
+}
+.tag-filter-chip {
+  appearance: none;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .12s;
+}
+/* 未選択(フィルタOFF): 薄い */
+.tag-filter-chip.off {
+  background: var(--tag-bg);
+  color: var(--tag-fg);
+  opacity: 0.5;
+  filter: saturate(0.6);
+}
+.tag-filter-chip.off:hover {
+  opacity: 0.85;
+  filter: saturate(0.9);
+}
+/* 選択中(フィルタON): 濃い */
+.tag-filter-chip.on {
+  background: var(--tag-fg);
+  color: #fff;
+  opacity: 1;
+  border-color: var(--tag-fg);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+.tag-filter-chip.on:hover {
+  filter: brightness(1.08);
+}
+.tag-filter-inline-clear {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text-muted);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.tag-filter-inline-clear:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.search-box {
+  flex: 0 0 280px;
+  width: 280px;
   position: relative;
 }
 .search-icon {
