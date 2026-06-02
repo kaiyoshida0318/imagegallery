@@ -635,8 +635,11 @@ body {
   object-fit: contain;
   display: block;
   box-shadow: 0 8px 40px rgba(0,0,0,0.6);
-  user-select: none;
-  pointer-events: none; /* 画像自体ではなく背景クリックで閉じる */
+  cursor: grab;
+  -webkit-user-drag: element;
+}
+.lightbox-img:active {
+  cursor: grabbing;
 }
 .lightbox-close {
   position: absolute;
