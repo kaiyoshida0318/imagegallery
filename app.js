@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.8.1';
+const APP_VERSION = 'v1.8.2';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1908,24 +1908,22 @@ function renderProductGrid(products) {
   if (viewMode === 'images') {
     const showStatusCol = currentCategory === 'product_all';
     if (showStatusCol) {
-      // 商品(全体)モード: 商品番号・タグ・画像・現役/微妙・操作
+      // 商品(全体)モード: 商品番号・画像・現役/微妙・タグ操作
       headerHTML = `
         <div class="product-table-header mode-images mode-images-with-status">
           <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
-          <div class="col-tags-left">タグ</div>
           <div class="col-images">画像</div>
           <div class="col-status">現役/微妙</div>
-          <div class="col-actions">操作</div>
+          <div class="col-actions">タグ・操作</div>
         </div>
       `;
     } else {
-      // 商品(現役) or 商品(微妙): 商品番号・タグ・画像・操作 (現役/微妙列なし)
+      // 商品(現役) or 商品(微妙): 商品番号・画像・タグ操作 (現役/微妙列なし)
       headerHTML = `
         <div class="product-table-header mode-images">
           <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
-          <div class="col-tags-left">タグ</div>
           <div class="col-images">画像</div>
-          <div class="col-actions">操作</div>
+          <div class="col-actions">タグ・操作</div>
         </div>
       `;
     }
@@ -1938,15 +1936,14 @@ function renderProductGrid(products) {
       </div>
     `;
   } else {
-    // 基礎情報モード: 商品管理番号・商品番号・商品名・タグ・画像5枚・操作
+    // 基礎情報モード
     headerHTML = `
       <div class="product-table-header mode-basic">
         <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-name">商品名</div>
-        <div class="col-tags-left">タグ</div>
         <div class="col-images">画像 (最大5枚)</div>
-        <div class="col-actions">操作</div>
+        <div class="col-actions">タグ・操作</div>
       </div>
     `;
   }
@@ -2479,14 +2476,6 @@ function productRowHTML(p) {
     </label>
   </div>`;
 
-  // タグセル(画像の左に配置)
-  const tagsCellHTML = `<div class="col-tags-left">${tagGridHTML}</div>`;
-
-  // 操作セル(編集ボタンだけ)
-  const actionsOnlyHTML = `<div class="col-actions">
-    <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
-  </div>`;
-
   const imagesCellHTML = `<div class="col-images">
     <div class="product-row-images">
       ${addBtnHTML}
@@ -2497,22 +2486,24 @@ function productRowHTML(p) {
 
   if (viewMode === 'images') {
     const showStatusCol = currentCategory === 'product_all';
+    const actionsForImagesMode = `<div class="col-actions">
+      ${tagGridHTML}
+      <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+    </div>`;
     if (showStatusCol) {
-      // 商品(全体): 商品番号・タグ・画像・現役/微妙・操作
+      // 商品(全体): 4列構成
       return `<div class="product-row mode-images mode-images-with-status ${isEmpty ? 'empty' : ''}">
         <div class="col-number">${numberCell}</div>
-        ${tagsCellHTML}
         ${imagesCellHTML}
         <div class="col-status">${statusToggleHTML}</div>
-        ${actionsOnlyHTML}
+        ${actionsForImagesMode}
       </div>`;
     }
-    // 商品(現役) or 商品(微妙): 商品番号・タグ・画像・操作
+    // 商品(現役) or 商品(微妙): 3列構成 (現役/微妙列なし)
     return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
-      ${tagsCellHTML}
       ${imagesCellHTML}
-      ${actionsOnlyHTML}
+      ${actionsForImagesMode}
     </div>`;
   }
 
@@ -2524,10 +2515,10 @@ function productRowHTML(p) {
     </div>`;
   }
 
-  // 基礎情報モード: 管理番号・商品番号・商品名・タグ・画像・現役/微妙(セル内)・操作
-  // 現役/微妙トグルは操作セル内に残す (基礎情報モードは元から操作セル右)
-  const actionsForBasicHTML = `<div class="col-actions">
+  // 基礎情報モード
+  const actionsCellHTML = `<div class="col-actions">
     ${statusToggleHTML}
+    ${tagGridHTML}
     <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
   </div>`;
   return `<div class="product-row mode-basic ${isEmpty ? 'empty' : ''}">
@@ -2536,9 +2527,8 @@ function productRowHTML(p) {
     <div class="col-name">
       <div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
     </div>
-    ${tagsCellHTML}
     ${imagesCellHTML}
-    ${actionsForBasicHTML}
+    ${actionsCellHTML}
   </div>`;
 }
 
