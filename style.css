@@ -1067,7 +1067,8 @@ body {
 .product-table-header.mode-basic,
 .product-row.mode-basic {
   display: grid;
-  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 180px;
+  /* 管理番号 / 商品番号 / 商品名 / 画像 / 現役/微妙 / タグ操作 */
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 80px 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -1080,33 +1081,27 @@ body {
   border-bottom: 1px solid var(--border-light);
 }
 
-/* 商品(全体)タブのみ: 現役/微妙列を追加した4列構成 */
-.product-table-header.mode-images.mode-images-with-status,
-.product-row.mode-images.mode-images-with-status {
-  grid-template-columns: 130px minmax(0, 1fr) 80px 180px;
-}
-
-/* 画像全体モードの現役/微妙専用列 */
-.product-row.mode-images .col-status {
+/* 現役/微妙専用列のスタイル (画像全体モード&基礎情報モードで共通) */
+.product-row .col-status {
   padding: 4px 8px;
   display: flex;
   align-items: stretch;
   border-left: 1px solid var(--border-light);
 }
-.product-row.mode-images .col-status .product-status-toggle {
+.product-row .col-status .product-status-toggle {
   max-width: none;
   width: 100%;
   flex-direction: column;
 }
-.product-row.mode-images .col-status .product-status-toggle .status-radio + .status-radio {
+.product-row .col-status .product-status-toggle .status-radio + .status-radio {
   border-left: none;
   border-top: 1px solid var(--border);
 }
-.product-row.mode-images .col-status .product-status-toggle .status-radio {
+.product-row .col-status .product-status-toggle .status-radio {
   padding: 5px 4px;
   font-size: 11px;
 }
-.product-table-header.mode-images .col-status {
+.product-table-header .col-status {
   border-left: 1px solid var(--border-light);
 }
 
