@@ -569,22 +569,6 @@ body {
   width: 100%;
   max-width: 130px;
 }
-
-/* ===== col-tags-left (v1.8.1): タグ専用列(画像の左) ===== */
-.col-tags-left {
-  padding: 4px 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-left: 1px solid var(--border-light);
-  border-right: 1px solid var(--border-light);
-}
-.product-table-header .col-tags-left {
-  text-align: center;
-}
-.col-tags-left .tag-grid {
-  max-width: 120px;
-}
 .tag-grid-item {
   appearance: none;
   border: 1px solid transparent;
@@ -1083,8 +1067,7 @@ body {
 .product-table-header.mode-basic,
 .product-row.mode-basic {
   display: grid;
-  /* 管理番号 / 商品番号 / 商品名 / タグ / 画像5枚 / 操作(現役/微妙+編集) */
-  grid-template-columns: 130px 130px 220px 140px minmax(0, 1fr) 180px;
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -1092,17 +1075,15 @@ body {
 .product-table-header.mode-images,
 .product-row.mode-images {
   display: grid;
-  /* 商品番号 / タグ(2x2) / 画像 / 操作 */
-  grid-template-columns: 130px 140px minmax(0, 1fr) 120px;
+  grid-template-columns: 130px minmax(0, 1fr) 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
 
-/* 商品(全体)タブのみ: 現役/微妙列を追加した5列構成 */
+/* 商品(全体)タブのみ: 現役/微妙列を追加した4列構成 */
 .product-table-header.mode-images.mode-images-with-status,
 .product-row.mode-images.mode-images-with-status {
-  /* 商品番号 / タグ(2x2) / 画像 / 現役/微妙 / 操作 */
-  grid-template-columns: 130px 140px minmax(0, 1fr) 80px 120px;
+  grid-template-columns: 130px minmax(0, 1fr) 80px 180px;
 }
 
 /* 画像全体モードの現役/微妙専用列 */
