@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.8.2';
+const APP_VERSION = 'v1.8.3';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1906,27 +1906,14 @@ function renderProductGrid(products) {
 
   let headerHTML;
   if (viewMode === 'images') {
-    const showStatusCol = currentCategory === 'product_all';
-    if (showStatusCol) {
-      // 商品(全体)モード: 商品番号・画像・現役/微妙・タグ操作
-      headerHTML = `
-        <div class="product-table-header mode-images mode-images-with-status">
-          <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
-          <div class="col-images">画像</div>
-          <div class="col-status">現役/微妙</div>
-          <div class="col-actions">タグ・操作</div>
-        </div>
-      `;
-    } else {
-      // 商品(現役) or 商品(微妙): 商品番号・画像・タグ操作 (現役/微妙列なし)
-      headerHTML = `
-        <div class="product-table-header mode-images">
-          <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
-          <div class="col-images">画像</div>
-          <div class="col-actions">タグ・操作</div>
-        </div>
-      `;
-    }
+    // 画像全体モード: 商品番号・画像・タグ操作 (現役/微妙列はなし)
+    headerHTML = `
+      <div class="product-table-header mode-images">
+        <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+        <div class="col-images">画像</div>
+        <div class="col-actions">タグ・操作</div>
+      </div>
+    `;
   } else if (viewMode === 'delete') {
     // 削除モード: 商品番号・画像 (画像クリックで削除予約)
     headerHTML = `
@@ -1936,13 +1923,14 @@ function renderProductGrid(products) {
       </div>
     `;
   } else {
-    // 基礎情報モード
+    // 基礎情報モード: 現役/微妙を画像の右隣に専用列で配置
     headerHTML = `
       <div class="product-table-header mode-basic">
         <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-name">商品名</div>
         <div class="col-images">画像 (最大5枚)</div>
+        <div class="col-status">現役/微妙</div>
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
@@ -2485,21 +2473,13 @@ function productRowHTML(p) {
   </div>`;
 
   if (viewMode === 'images') {
-    const showStatusCol = currentCategory === 'product_all';
+    // 画像全体モード: タグ・操作セル内に現役/微妙トグルも残す
+    // (商品(全体)タブでもステータス変更できるように)
     const actionsForImagesMode = `<div class="col-actions">
+      ${statusToggleHTML}
       ${tagGridHTML}
       <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
     </div>`;
-    if (showStatusCol) {
-      // 商品(全体): 4列構成
-      return `<div class="product-row mode-images mode-images-with-status ${isEmpty ? 'empty' : ''}">
-        <div class="col-number">${numberCell}</div>
-        ${imagesCellHTML}
-        <div class="col-status">${statusToggleHTML}</div>
-        ${actionsForImagesMode}
-      </div>`;
-    }
-    // 商品(現役) or 商品(微妙): 3列構成 (現役/微妙列なし)
     return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
@@ -2508,16 +2488,16 @@ function productRowHTML(p) {
   }
 
   if (viewMode === 'delete') {
-    // 削除モード: 商品番号・画像のみ (タグ・操作なし)
+    // 削除モード: 商品番号・画像のみ
     return `<div class="product-row mode-delete ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
     </div>`;
   }
 
-  // 基礎情報モード
-  const actionsCellHTML = `<div class="col-actions">
-    ${statusToggleHTML}
+  // 基礎情報モード: 現役/微妙を画像の右隣に専用列で
+  // タグ・操作セルからは現役/微妙トグルを外す
+  const actionsCellForBasic = `<div class="col-actions">
     ${tagGridHTML}
     <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
   </div>`;
@@ -2528,7 +2508,8 @@ function productRowHTML(p) {
       <div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
     </div>
     ${imagesCellHTML}
-    ${actionsCellHTML}
+    <div class="col-status">${statusToggleHTML}</div>
+    ${actionsCellForBasic}
   </div>`;
 }
 
