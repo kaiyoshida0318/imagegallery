@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.7.6">
+<link rel="stylesheet" href="style.css?v=1.8.1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -45,6 +45,7 @@
     <button class="btn-icon btn-danger-mini" id="btnClearProducts" title="商品データを全クリア">
       <span class="icon">🗑️</span><span class="label">全クリア</span>
     </button>
+    <button class="btn-icon" id="btnStorage" title="容量確認">📊</button>
     <button class="btn-icon" id="btnSettings" title="設定">⚙️</button>
   </div>
   <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none">
@@ -398,6 +399,80 @@
   </div>
 </div>
 
+<!-- ============ Storage Modal ============ -->
+<div class="modal-backdrop" id="storageModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>📊 容量確認</h2>
+      <button class="btn-close" onclick="closeModal('storageModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="storage-loading" id="storageLoading">
+        <div class="spinner"></div>
+        <div>リポジトリの情報を取得中...</div>
+      </div>
+      <div class="storage-content" id="storageContent" style="display:none">
+
+        <!-- 全体サイズ -->
+        <section class="storage-section">
+          <h3>リポジトリ全体のサイズ</h3>
+          <div class="storage-total">
+            <div class="storage-total-num" id="storageTotalSize">—</div>
+            <div class="storage-total-meta">推奨上限 1GB</div>
+          </div>
+          <div class="storage-bar-wrap">
+            <div class="storage-bar" id="storageBar"></div>
+          </div>
+          <div class="storage-bar-legend">
+            <span class="legend-item"><span class="legend-dot green"></span>〜1GB: 余裕あり</span>
+            <span class="legend-item"><span class="legend-dot orange"></span>1〜5GB: 注意</span>
+            <span class="legend-item"><span class="legend-dot red"></span>5GB超: 整理推奨</span>
+          </div>
+        </section>
+
+        <!-- 画像フォルダ集計 -->
+        <section class="storage-section">
+          <h3>画像フォルダの内訳</h3>
+          <div class="storage-stats">
+            <div class="storage-stat">
+              <div class="storage-stat-label">画像ファイル数</div>
+              <div class="storage-stat-num" id="storageImageCount">—</div>
+            </div>
+            <div class="storage-stat">
+              <div class="storage-stat-label">画像合計サイズ</div>
+              <div class="storage-stat-num" id="storageImageSize">—</div>
+            </div>
+            <div class="storage-stat">
+              <div class="storage-stat-label">その他のファイル</div>
+              <div class="storage-stat-num" id="storageOtherSize">—</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ショップ別 -->
+        <section class="storage-section">
+          <h3>ショップ別</h3>
+          <div class="storage-shop-list" id="storageShopList"></div>
+        </section>
+
+        <!-- 大きいファイル トップ10 -->
+        <section class="storage-section">
+          <h3>大きいファイル トップ10</h3>
+          <div class="storage-top-list" id="storageTopList"></div>
+        </section>
+
+        <!-- 圧縮機能(今は無効) -->
+        <section class="storage-section storage-future">
+          <h3>📦 既存の画像を一括圧縮</h3>
+          <button class="btn-primary" id="btnBulkCompress" disabled>一括圧縮を実行</button>
+          <div class="storage-future-note">必要な時期がきたら実装</div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ Toast ============ -->
 <div class="toast" id="toast"></div>
 
@@ -409,6 +484,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.7.6"></script>
+<script src="app.js?v=1.8.1"></script>
 </body>
 </html>
