@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.7.6';
+const APP_VERSION = 'v1.8.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -129,6 +129,7 @@ function loadCurrentSelections() {
 
 function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
+  document.getElementById('btnStorage').addEventListener('click', openStorageModal);
   document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
 
@@ -1907,22 +1908,24 @@ function renderProductGrid(products) {
   if (viewMode === 'images') {
     const showStatusCol = currentCategory === 'product_all';
     if (showStatusCol) {
-      // 商品(全体)モード: 商品番号・画像・現役/微妙・タグ操作
+      // 商品(全体)モード: 商品番号・タグ・画像・現役/微妙・操作
       headerHTML = `
         <div class="product-table-header mode-images mode-images-with-status">
           <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+          <div class="col-tags-left">タグ</div>
           <div class="col-images">画像</div>
           <div class="col-status">現役/微妙</div>
-          <div class="col-actions">タグ・操作</div>
+          <div class="col-actions">操作</div>
         </div>
       `;
     } else {
-      // 商品(現役) or 商品(微妙): 商品番号・画像・タグ操作 (現役/微妙列なし)
+      // 商品(現役) or 商品(微妙): 商品番号・タグ・画像・操作 (現役/微妙列なし)
       headerHTML = `
         <div class="product-table-header mode-images">
           <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+          <div class="col-tags-left">タグ</div>
           <div class="col-images">画像</div>
-          <div class="col-actions">タグ・操作</div>
+          <div class="col-actions">操作</div>
         </div>
       `;
     }
@@ -1935,14 +1938,15 @@ function renderProductGrid(products) {
       </div>
     `;
   } else {
-    // 基礎情報モード
+    // 基礎情報モード: 商品管理番号・商品番号・商品名・タグ・画像5枚・操作
     headerHTML = `
       <div class="product-table-header mode-basic">
         <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-name">商品名</div>
+        <div class="col-tags-left">タグ</div>
         <div class="col-images">画像 (最大5枚)</div>
-        <div class="col-actions">タグ・操作</div>
+        <div class="col-actions">操作</div>
       </div>
     `;
   }
@@ -2232,6 +2236,155 @@ function _lightboxEscHandler(e) {
   if (e.key === 'Escape') closeLightbox();
 }
 
+// ===== 容量確認モーダル (v1.8.0) =====
+function formatBytes(bytes) {
+  if (bytes === 0 || bytes == null) return '0 B';
+  const k = 1024;
+  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.min(Math.floor(Math.log(bytes) / Math.log(k)), units.length - 1);
+  return (bytes / Math.pow(k, i)).toFixed(i === 0 ? 0 : 2) + ' ' + units[i];
+}
+
+async function openStorageModal() {
+  const modal = document.getElementById('storageModal');
+  const loading = document.getElementById('storageLoading');
+  const content = document.getElementById('storageContent');
+  modal.style.display = 'flex';
+  loading.style.display = 'flex';
+  content.style.display = 'none';
+
+  try {
+    await loadStorageData();
+    loading.style.display = 'none';
+    content.style.display = 'block';
+  } catch (e) {
+    console.error('Storage data fetch failed', e);
+    loading.innerHTML = `<div style="color:var(--danger);text-align:center;padding:20px;">
+      容量情報の取得に失敗しました<br><small>${escapeHtml(e.message)}</small>
+    </div>`;
+  }
+}
+
+async function loadStorageData() {
+  if (!auth.pat || !auth.owner || !auth.repo) {
+    throw new Error('GitHub設定が未入力です');
+  }
+  // Trees APIで全ファイルを一発取得 (再帰)
+  const branch = auth.branch || 'main';
+  const res = await ghFetch(`git/trees/${branch}?recursive=1`);
+  if (!res.ok) {
+    throw new Error(`Trees API ${res.status}`);
+  }
+  const data = await res.json();
+  const tree = data.tree || [];
+  // truncated の場合は警告
+  const truncated = data.truncated === true;
+
+  // 集計
+  let totalSize = 0;
+  let imageCount = 0;
+  let imageSize = 0;
+  let otherSize = 0;
+  const imageExtRe = /\.(jpe?g|png|webp|gif|bmp|svg|avif|heic)$/i;
+  const files = [];           // {path, size, shopId, isImage}
+  const shopAgg = new Map();  // shopId -> {count, size}
+
+  for (const node of tree) {
+    if (node.type !== 'blob') continue;
+    const size = node.size || 0;
+    totalSize += size;
+    const path = node.path;
+    const isImage = imageExtRe.test(path) && path.includes('/images/');
+    let shopId = null;
+    const m = path.match(/^data\/([^/]+)\//);
+    if (m) shopId = m[1];
+
+    if (isImage) {
+      imageCount++;
+      imageSize += size;
+      if (shopId) {
+        const agg = shopAgg.get(shopId) || { count: 0, size: 0 };
+        agg.count++;
+        agg.size += size;
+        shopAgg.set(shopId, agg);
+      }
+    } else {
+      otherSize += size;
+    }
+    files.push({ path, size, shopId, isImage });
+  }
+
+  // 全体サイズ表示
+  document.getElementById('storageTotalSize').textContent = formatBytes(totalSize);
+
+  // バー
+  const bar = document.getElementById('storageBar');
+  const GB = 1024 * 1024 * 1024;
+  let percent, color;
+  if (totalSize < GB) {
+    percent = (totalSize / GB) * 100;
+    color = '#059669'; // green
+  } else if (totalSize < 5 * GB) {
+    percent = ((totalSize - GB) / (4 * GB)) * 100;
+    color = '#ea580c'; // orange
+  } else {
+    percent = 100;
+    color = '#dc2626'; // red
+  }
+  bar.style.width = Math.min(100, Math.max(2, percent)) + '%';
+  bar.style.background = color;
+
+  // 画像フォルダ集計
+  document.getElementById('storageImageCount').textContent = imageCount.toLocaleString() + ' 件';
+  document.getElementById('storageImageSize').textContent = formatBytes(imageSize);
+  document.getElementById('storageOtherSize').textContent = formatBytes(otherSize);
+
+  // ショップ別
+  const shopListEl = document.getElementById('storageShopList');
+  const shopRows = [...shopAgg.entries()].map(([shopId, agg]) => {
+    const shop = shops.find(s => s.id === shopId);
+    const name = shop ? shop.name : shopId;
+    return { shopId, name, count: agg.count, size: agg.size };
+  }).sort((a, b) => b.size - a.size);
+
+  if (shopRows.length === 0) {
+    shopListEl.innerHTML = '<div class="storage-empty">ショップ別の画像データがありません</div>';
+  } else {
+    shopListEl.innerHTML = shopRows.map(r => `
+      <div class="storage-shop-row">
+        <div class="storage-shop-name">${escapeHtml(r.name)}</div>
+        <div class="storage-shop-count">${r.count.toLocaleString()} 件</div>
+        <div class="storage-shop-size">${formatBytes(r.size)}</div>
+      </div>
+    `).join('');
+  }
+
+  // トップ10
+  const topListEl = document.getElementById('storageTopList');
+  const top = files.slice().sort((a, b) => b.size - a.size).slice(0, 10);
+  if (top.length === 0) {
+    topListEl.innerHTML = '<div class="storage-empty">ファイルがありません</div>';
+  } else {
+    topListEl.innerHTML = top.map((f, i) => {
+      const shop = f.shopId ? (shops.find(s => s.id === f.shopId)?.name || f.shopId) : '—';
+      const filename = f.path.split('/').pop();
+      return `<div class="storage-top-row">
+        <div class="storage-top-rank">${i + 1}</div>
+        <div class="storage-top-meta">
+          <div class="storage-top-name" title="${escapeHtml(f.path)}">${escapeHtml(filename)}</div>
+          <div class="storage-top-shop">${escapeHtml(shop)}</div>
+        </div>
+        <div class="storage-top-size">${formatBytes(f.size)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  if (truncated) {
+    topListEl.insertAdjacentHTML('beforeend',
+      '<div class="storage-warn">⚠️ ファイル数が多すぎて一部のみ取得しました(GitHub Trees API制限)</div>');
+  }
+}
+
 function toggleSort(key) {
   if (sortKey !== key) {
     sortKey = key;
@@ -2326,9 +2479,11 @@ function productRowHTML(p) {
     </label>
   </div>`;
 
-  const actionsCellHTML = `<div class="col-actions">
-    ${statusToggleHTML}
-    ${tagGridHTML}
+  // タグセル(画像の左に配置)
+  const tagsCellHTML = `<div class="col-tags-left">${tagGridHTML}</div>`;
+
+  // 操作セル(編集ボタンだけ)
+  const actionsOnlyHTML = `<div class="col-actions">
     <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
   </div>`;
 
@@ -2342,24 +2497,22 @@ function productRowHTML(p) {
 
   if (viewMode === 'images') {
     const showStatusCol = currentCategory === 'product_all';
-    const actionsForImagesMode = `<div class="col-actions">
-      ${tagGridHTML}
-      <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
-    </div>`;
     if (showStatusCol) {
-      // 商品(全体): 4列構成
+      // 商品(全体): 商品番号・タグ・画像・現役/微妙・操作
       return `<div class="product-row mode-images mode-images-with-status ${isEmpty ? 'empty' : ''}">
         <div class="col-number">${numberCell}</div>
+        ${tagsCellHTML}
         ${imagesCellHTML}
         <div class="col-status">${statusToggleHTML}</div>
-        ${actionsForImagesMode}
+        ${actionsOnlyHTML}
       </div>`;
     }
-    // 商品(現役) or 商品(微妙): 3列構成 (現役/微妙列なし)
+    // 商品(現役) or 商品(微妙): 商品番号・タグ・画像・操作
     return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
       <div class="col-number">${numberCell}</div>
+      ${tagsCellHTML}
       ${imagesCellHTML}
-      ${actionsForImagesMode}
+      ${actionsOnlyHTML}
     </div>`;
   }
 
@@ -2371,15 +2524,21 @@ function productRowHTML(p) {
     </div>`;
   }
 
-  // 基礎情報モード
+  // 基礎情報モード: 管理番号・商品番号・商品名・タグ・画像・現役/微妙(セル内)・操作
+  // 現役/微妙トグルは操作セル内に残す (基礎情報モードは元から操作セル右)
+  const actionsForBasicHTML = `<div class="col-actions">
+    ${statusToggleHTML}
+    <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+  </div>`;
   return `<div class="product-row mode-basic ${isEmpty ? 'empty' : ''}">
     <div class="col-manage">${manageCell}</div>
     <div class="col-number">${numberCell}</div>
     <div class="col-name">
       <div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
     </div>
+    ${tagsCellHTML}
     ${imagesCellHTML}
-    ${actionsCellHTML}
+    ${actionsForBasicHTML}
   </div>`;
 }
 
