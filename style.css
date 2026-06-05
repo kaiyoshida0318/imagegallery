@@ -1067,8 +1067,8 @@ body {
 .product-table-header.mode-basic,
 .product-row.mode-basic {
   display: grid;
-  /* 管理番号 / 商品番号 / 商品名 / 画像 / 現役/微妙 / タグ操作 */
-  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 80px 180px;
+  /* 管理番号 / 商品番号 / 商品名 / 画像 / お気に入り / タグ操作 */
+  grid-template-columns: 130px 130px 260px minmax(0, 1fr) 60px 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -1076,7 +1076,8 @@ body {
 .product-table-header.mode-images,
 .product-row.mode-images {
   display: grid;
-  grid-template-columns: 130px minmax(0, 1fr) 180px;
+  /* 商品番号 / 画像 / お気に入り / タグ操作 */
+  grid-template-columns: 130px minmax(0, 1fr) 60px 180px;
   align-items: center;
   border-bottom: 1px solid var(--border-light);
 }
@@ -1103,6 +1104,95 @@ body {
 }
 .product-table-header .col-status {
   border-left: 1px solid var(--border-light);
+}
+
+/* ===== お気に入り専用列 (v1.9.0) ===== */
+.col-favorite {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px solid var(--border-light);
+  padding: 4px;
+}
+.product-table-header .col-favorite {
+  font-size: 16px;
+  color: #d4af37;
+}
+.favorite-btn {
+  appearance: none;
+  border: none;
+  background: transparent;
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+  transition: transform .15s, color .15s;
+  font-family: inherit;
+}
+.favorite-btn.off {
+  color: #cbd5e1;
+}
+.favorite-btn.off:hover {
+  color: #fbbf24;
+  transform: scale(1.15);
+}
+.favorite-btn.on {
+  color: #f59e0b;
+  text-shadow: 0 0 8px rgba(245,158,11,0.4);
+}
+.favorite-btn.on:hover {
+  transform: scale(1.15);
+}
+
+/* タグフィルタチップ: お気に入りはピンク強調 */
+.tag-filter-chip.is-favorite.off {
+  border: 1px dashed currentColor;
+}
+
+/* 編集モーダルのステータスラジオ (v1.9.0) */
+.status-radio-group {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.status-radio-option {
+  margin: 0 !important;
+  cursor: pointer;
+  position: relative;
+}
+.status-radio-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+.status-radio-label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 24px;
+  font-size: 13px;
+  color: var(--text-muted);
+  transition: all .15s;
+  user-select: none;
+  font-weight: 500;
+}
+.status-radio-option + .status-radio-option .status-radio-label {
+  border-left: 1px solid var(--border);
+}
+.status-radio-option:hover .status-radio-label {
+  background: var(--bg);
+}
+.status-radio-option input:checked + .status-active {
+  background: #059669;
+  color: #fff;
+}
+.status-radio-option input:checked + .status-unsure {
+  background: var(--warning-text);
+  color: var(--warning-bg);
 }
 
 /* 削除モード: 商品番号 + 画像のみ */
@@ -1208,7 +1298,7 @@ body {
 /* with-export時のグリッド調整 — 各モードで先頭に40pxを追加 */
 .product-table-header.mode-images.with-export,
 .product-row.mode-images.with-export {
-  grid-template-columns: 40px 130px minmax(0, 1fr) 180px;
+  grid-template-columns: 40px 130px minmax(0, 1fr) 60px 180px;
 }
 .product-table-header.mode-delete.with-export,
 .product-row.mode-delete.with-export {
@@ -1216,7 +1306,7 @@ body {
 }
 .product-table-header.mode-basic.with-export,
 .product-row.mode-basic.with-export {
-  grid-template-columns: 40px 130px 130px 260px minmax(0, 1fr) 80px 180px;
+  grid-template-columns: 40px 130px 130px 260px minmax(0, 1fr) 60px 180px;
 }
 /* エクスポート選択中の行ハイライト */
 .product-row.with-export:has(.export-checkbox:checked) {
