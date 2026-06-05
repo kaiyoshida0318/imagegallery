@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.8.5';
+const APP_VERSION = 'v1.8.6';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -218,10 +218,16 @@ function bindEvents() {
   // 表示モード切替
   document.querySelectorAll('.view-mode-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      viewMode = btn.dataset.mode;
+      const targetMode = btn.dataset.mode;
+      // 削除モードはトグル動作 (v1.8.6): もう一度押すと画像全体モードに戻る
+      if (targetMode === 'delete' && viewMode === 'delete') {
+        viewMode = 'images';
+      } else {
+        viewMode = targetMode;
+      }
       localStorage.setItem(LS_VIEW_MODE, viewMode);
       document.querySelectorAll('.view-mode-btn').forEach(b =>
-        b.classList.toggle('active', b === btn));
+        b.classList.toggle('active', b.dataset.mode === viewMode));
       // モード切替で削除予約は一旦リセット
       deleteSelection.clear();
       updateDeleteActionBar();
