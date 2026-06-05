@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.8.3';
+const APP_VERSION = 'v1.8.5';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -54,6 +54,12 @@ const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 let pendingStatusChanges = new Map();  // 保存待ちのステータス変更: productId -> 'active'|'unsure'
 
+// エクスポートモード関連 (v1.8.4)
+const SS_EXPORT_MODE = 'imagegallery_export_mode_v1';
+const SS_EXPORT_SELECTION = 'imagegallery_export_selection_v1';
+let exportMode = false;
+let exportSelection = new Set();  // 選択された商品ID
+
 // タグ用カラーパレット
 const TAG_COLORS = [
   { id: 'gray',   bg: '#e5e7eb', fg: '#374151' },
@@ -77,6 +83,12 @@ window.addEventListener('DOMContentLoaded', init);
 async function init() {
   loadAuth();
   loadCurrentSelections();
+  // エクスポートモード状態をsessionStorageから復元
+  try {
+    exportMode = sessionStorage.getItem(SS_EXPORT_MODE) === '1';
+    const sel = sessionStorage.getItem(SS_EXPORT_SELECTION);
+    if (sel) exportSelection = new Set(JSON.parse(sel));
+  } catch (e) { console.warn('export state load failed', e); }
   bindEvents();
   renderVersion();
   // 表示モードのボタンを初期化
@@ -130,6 +142,9 @@ function loadCurrentSelections() {
 function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
   document.getElementById('btnStorage').addEventListener('click', openStorageModal);
+  document.getElementById('btnExportMode').addEventListener('click', toggleExportMode);
+  document.getElementById('btnExportExecute').addEventListener('click', executeExport);
+  document.getElementById('btnExportClear').addEventListener('click', clearExportSelection);
   document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
 
@@ -1794,6 +1809,8 @@ function render() {
   updateDeleteActionBar();
   updatePendingStatusBar();
   updateCategoryTabCounts();
+  updateExportModeButton();
+  updateExportBar();
   const shop = getCurrentShop();
   const empty = document.getElementById('emptyState');
   const content = document.getElementById('content');
@@ -1904,11 +1921,15 @@ function renderProductGrid(products) {
       : '<span class="sort-indicator active">▼</span>';
   };
 
+  // エクスポート列ヘッダーHTML
+  const exportHeaderHTML = exportMode ? '<div class="col-export"></div>' : '';
+
   let headerHTML;
   if (viewMode === 'images') {
     // 画像全体モード: 商品番号・画像・タグ操作 (現役/微妙列はなし)
     headerHTML = `
-      <div class="product-table-header mode-images">
+      <div class="product-table-header mode-images ${exportMode ? 'with-export' : ''}">
+        ${exportHeaderHTML}
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-images">画像</div>
         <div class="col-actions">タグ・操作</div>
@@ -1917,7 +1938,8 @@ function renderProductGrid(products) {
   } else if (viewMode === 'delete') {
     // 削除モード: 商品番号・画像 (画像クリックで削除予約)
     headerHTML = `
-      <div class="product-table-header mode-delete">
+      <div class="product-table-header mode-delete ${exportMode ? 'with-export' : ''}">
+        ${exportHeaderHTML}
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-images">画像 (クリックで削除予約)</div>
       </div>
@@ -1925,7 +1947,8 @@ function renderProductGrid(products) {
   } else {
     // 基礎情報モード: 現役/微妙を画像の右隣に専用列で配置
     headerHTML = `
-      <div class="product-table-header mode-basic">
+      <div class="product-table-header mode-basic ${exportMode ? 'with-export' : ''}">
+        ${exportHeaderHTML}
         <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-name">商品名</div>
@@ -2003,6 +2026,13 @@ function renderProductGrid(products) {
     input.addEventListener('change', (e) => {
       e.stopPropagation();
       setPendingStatus(input.dataset.statusPid, input.value);
+    });
+  });
+  // エクスポートモード: チェックボックス
+  content.querySelectorAll('[data-export-pid]').forEach(cb => {
+    cb.addEventListener('change', (e) => {
+      e.stopPropagation();
+      toggleExportSelection(cb.dataset.exportPid);
     });
   });
 }
@@ -2370,6 +2400,140 @@ async function loadStorageData() {
   }
 }
 
+// ===== エクスポート機能 (v1.8.4) =====
+
+function saveExportState() {
+  try {
+    sessionStorage.setItem(SS_EXPORT_MODE, exportMode ? '1' : '0');
+    sessionStorage.setItem(SS_EXPORT_SELECTION, JSON.stringify([...exportSelection]));
+  } catch (e) { /* ignore */ }
+}
+
+function toggleExportMode() {
+  exportMode = !exportMode;
+  if (!exportMode) exportSelection.clear();
+  saveExportState();
+  updateExportModeButton();
+  updateExportBar();
+  render();
+}
+
+function updateExportModeButton() {
+  const btn = document.getElementById('btnExportMode');
+  if (!btn) return;
+  btn.classList.toggle('active', exportMode);
+  btn.title = exportMode ? 'エクスポート用モードを終了' : 'エクスポート用';
+}
+
+function toggleExportSelection(productId) {
+  if (exportSelection.has(productId)) exportSelection.delete(productId);
+  else exportSelection.add(productId);
+  saveExportState();
+  updateExportBar();
+  // チェックボックスの見た目だけ更新(スクロール位置を維持)
+  const cb = document.querySelector(`input[data-export-pid="${productId}"]`);
+  if (cb) cb.checked = exportSelection.has(productId);
+}
+
+function updateExportBar() {
+  const bar = document.getElementById('exportBar');
+  if (!bar) return;
+  if (exportMode && exportSelection.size > 0) {
+    bar.style.display = 'flex';
+    const cnt = document.getElementById('exportCount');
+    if (cnt) cnt.textContent = exportSelection.size;
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+async function executeExport() {
+  if (exportSelection.size === 0) return;
+  if (typeof JSZip === 'undefined') {
+    toast('JSZipライブラリが読み込まれていません', 'error');
+    return;
+  }
+  const shop = getCurrentShop();
+  if (!shop) { toast('ショップが選択されていません', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) { toast('データが読み込まれていません', 'error'); return; }
+
+  const targets = data.products.filter(p => exportSelection.has(p.id));
+  if (targets.length === 0) {
+    toast('エクスポート対象の商品がありません', 'error');
+    return;
+  }
+
+  // 画像枚数の合計を出す
+  let totalImages = 0;
+  targets.forEach(p => { totalImages += (p.images || []).length; });
+  if (totalImages === 0) {
+    toast('選択商品に画像がありません', 'error');
+    return;
+  }
+
+  const shopCode = (shop.shopCode || 'shop').toLowerCase();
+  const zip = new JSZip();
+  showLoading(`画像を取得中... 0/${totalImages}`);
+
+  let okCount = 0;
+  let failCount = 0;
+  let processed = 0;
+
+  for (const p of targets) {
+    const manage = p.itemManageNumber || p.id;
+    const folderName = `${shopCode}_${manage}`;
+    const folder = zip.folder(folderName);
+    const sorted = sortImagesByName(p.images || []);
+    for (const img of sorted) {
+      processed++;
+      showLoading(`画像を取得中... ${processed}/${totalImages}`);
+      try {
+        const res = await fetch(img.url, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        const filename = img.originalName || img.filename;
+        folder.file(filename, blob);
+        okCount++;
+      } catch (e) {
+        console.error('Image fetch failed', img.url, e);
+        failCount++;
+      }
+    }
+  }
+
+  showLoading('ZIPを生成中...');
+  try {
+    const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const filename = `export_${shopCode}_${targets.length}items_${stamp}.zip`;
+
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    hideLoading();
+    toast(`${okCount}枚をエクスポートしました${failCount ? ` / 失敗${failCount}件` : ''}`, failCount ? 'error' : 'success');
+  } catch (e) {
+    hideLoading();
+    toast('ZIP生成失敗: ' + e.message, 'error');
+  }
+}
+
+function clearExportSelection() {
+  if (exportSelection.size === 0) return;
+  exportSelection.clear();
+  saveExportState();
+  updateExportBar();
+  render();
+}
+
 function toggleSort(key) {
   if (sortKey !== key) {
     sortKey = key;
@@ -2391,6 +2555,11 @@ function productRowHTML(p) {
   const isEmpty = imgCount === 0;
   const manage = p.itemManageNumber || '';
   const number = p.itemNumber || '';
+
+  // エクスポートモード用のチェックボックスセル
+  const exportCellHTML = exportMode
+    ? `<div class="col-export"><input type="checkbox" class="export-checkbox" data-export-pid="${p.id}" ${exportSelection.has(p.id) ? 'checked' : ''}></div>`
+    : '';
 
   const sortedImages = sortImagesByName(p.images || []);
   // basicモードは5枚まで、imagesとdeleteは全部
@@ -2480,7 +2649,8 @@ function productRowHTML(p) {
       ${tagGridHTML}
       <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
     </div>`;
-    return `<div class="product-row mode-images ${isEmpty ? 'empty' : ''}">
+    return `<div class="product-row mode-images ${exportMode ? 'with-export' : ''} ${isEmpty ? 'empty' : ''}">
+      ${exportCellHTML}
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
       ${actionsForImagesMode}
@@ -2489,7 +2659,8 @@ function productRowHTML(p) {
 
   if (viewMode === 'delete') {
     // 削除モード: 商品番号・画像のみ
-    return `<div class="product-row mode-delete ${isEmpty ? 'empty' : ''}">
+    return `<div class="product-row mode-delete ${exportMode ? 'with-export' : ''} ${isEmpty ? 'empty' : ''}">
+      ${exportCellHTML}
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
     </div>`;
@@ -2501,7 +2672,8 @@ function productRowHTML(p) {
     ${tagGridHTML}
     <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
   </div>`;
-  return `<div class="product-row mode-basic ${isEmpty ? 'empty' : ''}">
+  return `<div class="product-row mode-basic ${exportMode ? 'with-export' : ''} ${isEmpty ? 'empty' : ''}">
+    ${exportCellHTML}
     <div class="col-manage">${manageCell}</div>
     <div class="col-number">${numberCell}</div>
     <div class="col-name">
