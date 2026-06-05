@@ -1183,6 +1183,76 @@ body {
   gap: 20px;
   z-index: 500;
 }
+
+/* ===== エクスポート用 (v1.8.4) ===== */
+/* ヘッダーボタンのアクティブ状態 */
+.btn-icon#btnExportMode.active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+/* チェックボックス列(40px固定) */
+.col-export {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  width: 40px;
+}
+.export-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+/* with-export時のグリッド調整 — 各モードで先頭に40pxを追加 */
+.product-table-header.mode-images.with-export,
+.product-row.mode-images.with-export {
+  grid-template-columns: 40px 130px minmax(0, 1fr) 180px;
+}
+.product-table-header.mode-delete.with-export,
+.product-row.mode-delete.with-export {
+  grid-template-columns: 40px 130px minmax(0, 1fr);
+}
+.product-table-header.mode-basic.with-export,
+.product-row.mode-basic.with-export {
+  grid-template-columns: 40px 130px 130px 260px minmax(0, 1fr) 80px 180px;
+}
+/* エクスポート選択中の行ハイライト */
+.product-row.with-export:has(.export-checkbox:checked) {
+  background: var(--primary-light);
+}
+
+/* エクスポート選択中の下部フローティングバー */
+.export-action-bar {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 500;
+}
+.export-action-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text);
+}
+.export-action-icon { font-size: 20px; }
+.export-action-info strong {
+  color: var(--primary-dark);
+  font-size: 18px;
+  font-weight: 700;
+}
+.export-action-buttons { display: flex; gap: 8px; }
 .delete-action-info {
   display: flex;
   align-items: center;
@@ -1202,6 +1272,22 @@ body {
 .view-mode-btn.view-mode-btn-danger.active {
   background: var(--danger);
   color: white;
+}
+/* 削除ボタン単独配置(検索行で独立して置く場合) */
+.view-mode-btn.view-mode-btn-standalone {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+.view-mode-btn.view-mode-btn-standalone:hover {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.view-mode-btn.view-mode-btn-standalone.active {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
 }
 .product-row:last-child {
   border-bottom: none;
