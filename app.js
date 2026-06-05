@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.8.7';
+const APP_VERSION = 'v1.9.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -376,6 +376,40 @@ async function fileToBase64(file) {
 }
 
 // ===== gallery.json の保存/読み込み =====
+// お気に入りタグ (v1.9.0) — 固定名
+const FAVORITE_TAG_NAME = 'お気に入り';
+const FAVORITE_TAG_COLOR = 'pink';
+
+// 起動時に「お気に入り」タグがなければ自動作成
+async function ensureFavoriteTag(shopId) {
+  const data = dataCache[shopId];
+  if (!data) return;
+  if (!Array.isArray(data.tags)) data.tags = [];
+  const existing = data.tags.find(t => t.name === FAVORITE_TAG_NAME);
+  if (existing) return;
+  // 追加
+  const newTag = {
+    id: 'tag_fav_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    name: FAVORITE_TAG_NAME,
+    color: FAVORITE_TAG_COLOR,
+    createdAt: new Date().toISOString()
+  };
+  data.tags.push(newTag);
+  try {
+    await saveShopData(shopId, 'auto: add favorite tag');
+    console.info('[ImageGallery] お気に入りタグを自動追加');
+  } catch (e) {
+    console.warn('お気に入りタグの保存失敗', e);
+    data.tags = data.tags.filter(t => t.id !== newTag.id);
+  }
+}
+
+// 現在のお気に入りタグIDを取得
+function getFavoriteTagId() {
+  const tags = getCurrentTags();
+  return tags.find(t => t.name === FAVORITE_TAG_NAME)?.id || null;
+}
+
 function shopDataPath(shopId) {
   return `data/${shopId}/gallery.json`;
 }
@@ -991,16 +1025,24 @@ function renderTagFilterInline() {
     wrap.innerHTML = '';
     return;
   }
+  // お気に入りを先頭に並び替え
+  const favTagId = getFavoriteTagId();
+  const sortedTags = tags.slice().sort((a, b) => {
+    if (a.id === favTagId) return -1;
+    if (b.id === favTagId) return 1;
+    return 0;
+  });
   const clearBtn = filterTagIds.size > 0
     ? `<button class="tag-filter-inline-clear" id="btnClearTagFilter" title="フィルタ解除">✕</button>`
     : '';
-  wrap.innerHTML = tags.map(t => {
+  wrap.innerHTML = sortedTags.map(t => {
     const c = getTagColor(t.color);
     const active = filterTagIds.has(t.id);
-    return `<button class="tag-filter-chip ${active ? 'on' : 'off'}"
+    const isFav = t.id === favTagId;
+    return `<button class="tag-filter-chip ${active ? 'on' : 'off'} ${isFav ? 'is-favorite' : ''}"
       data-filter-tag="${t.id}"
       style="--tag-bg:${c.bg};--tag-fg:${c.fg}"
-      title="${escapeHtml(t.name)}でフィルタ">${escapeHtml(t.name)}</button>`;
+      title="${escapeHtml(t.name)}でフィルタ">${isFav ? '★ ' : ''}${escapeHtml(t.name)}</button>`;
   }).join('') + clearBtn;
 
   wrap.querySelectorAll('[data-filter-tag]').forEach(btn => {
@@ -1751,6 +1793,8 @@ async function loadCurrentShopData() {
     dataCache[currentShopId] = { products: [], materials: [], boosts: [], tags: [], sha: null };
   }
   hideLoading();
+  // v1.9.0: お気に入りタグを自動確保
+  ensureFavoriteTag(currentShopId);
 }
 
 // =====================================================
@@ -1948,12 +1992,13 @@ function renderProductGrid(products) {
 
   let headerHTML;
   if (viewMode === 'images') {
-    // 画像全体モード: 商品番号・画像・タグ操作 (現役/微妙列はなし)
+    // 画像全体モード: 商品番号・画像・お気に入り(★)・タグ操作
     headerHTML = `
       <div class="product-table-header mode-images ${exportMode ? 'with-export' : ''}">
         ${exportHeaderHTML}
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-images">画像</div>
+        <div class="col-favorite">★</div>
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
@@ -1967,7 +2012,7 @@ function renderProductGrid(products) {
       </div>
     `;
   } else {
-    // 基礎情報モード: 現役/微妙を画像の右隣に専用列で配置
+    // 基礎情報モード: お気に入り(★)を画像の右隣に専用列で配置
     headerHTML = `
       <div class="product-table-header mode-basic ${exportMode ? 'with-export' : ''}">
         ${exportHeaderHTML}
@@ -1975,7 +2020,7 @@ function renderProductGrid(products) {
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-name">商品名</div>
         <div class="col-images">画像 (最大5枚)</div>
-        <div class="col-status">現役/微妙</div>
+        <div class="col-favorite">★</div>
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
@@ -2055,6 +2100,13 @@ function renderProductGrid(products) {
     cb.addEventListener('change', (e) => {
       e.stopPropagation();
       toggleExportSelection(cb.dataset.exportPid);
+    });
+  });
+  // お気に入りボタン (v1.9.0)
+  content.querySelectorAll('[data-fav-pid]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFavorite(btn.dataset.favPid, btn);
     });
   });
 }
@@ -2556,6 +2608,47 @@ function clearExportSelection() {
   render();
 }
 
+// お気に入りON/OFF切替 (v1.9.0)
+async function toggleFavorite(productId, btnEl) {
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const p = data.products.find(x => x.id === productId);
+  if (!p) return;
+  const favId = getFavoriteTagId();
+  if (!favId) { toast('お気に入りタグが見つかりません', 'error'); return; }
+  if (!Array.isArray(p.tagIds)) p.tagIds = [];
+  const wasFav = p.tagIds.includes(favId);
+  // 見た目を即時反転
+  if (wasFav) {
+    p.tagIds = p.tagIds.filter(x => x !== favId);
+    btnEl?.classList.remove('on');
+    btnEl?.classList.add('off');
+    if (btnEl) btnEl.textContent = '☆';
+  } else {
+    p.tagIds.push(favId);
+    btnEl?.classList.remove('off');
+    btnEl?.classList.add('on');
+    if (btnEl) btnEl.textContent = '★';
+  }
+  try {
+    await saveShopData(currentShopId, `toggle favorite: ${p.itemManageNumber || p.id}`);
+  } catch (err) {
+    // ロールバック
+    if (wasFav) {
+      p.tagIds.push(favId);
+      btnEl?.classList.remove('off');
+      btnEl?.classList.add('on');
+      if (btnEl) btnEl.textContent = '★';
+    } else {
+      p.tagIds = p.tagIds.filter(x => x !== favId);
+      btnEl?.classList.remove('on');
+      btnEl?.classList.add('off');
+      if (btnEl) btnEl.textContent = '☆';
+    }
+    toast('保存失敗: ' + err.message, 'error');
+  }
+}
+
 function toggleSort(key) {
   if (sortKey !== key) {
     sortKey = key;
@@ -2617,12 +2710,14 @@ function productRowHTML(p) {
     ? `<span class="mono">${escapeHtml(number)}</span>`
     : `<span class="mono mono-placeholder">cab-16-01</span>`;
 
-  // タグ表示 (2x2格子 - 全タグを常時表示してワンクリックON/OFF)
+  // タグ表示 (2x2格子 - ただし「お気に入り」は別UIにするため除外)
   const tagIds = p.tagIds || [];
+  const favTagId = getFavoriteTagId();
   const allTags = getCurrentTags();
-  const tagGridHTML = allTags.length > 0
+  const visibleTags = allTags.filter(t => t.id !== favTagId);
+  const tagGridHTML = visibleTags.length > 0
     ? `<div class="tag-grid" data-pid="${p.id}">
-        ${allTags.map(t => {
+        ${visibleTags.map(t => {
           const c = getTagColor(t.color);
           const has = tagIds.includes(t.id);
           return `<button class="tag-grid-item ${has ? 'on' : 'off'}"
@@ -2631,6 +2726,12 @@ function productRowHTML(p) {
             title="${escapeHtml(t.name)}">${escapeHtml(t.name)}</button>`;
         }).join('')}
       </div>`
+    : '';
+
+  // お気に入り専用ボタン (現役/微妙の位置に置く)
+  const isFavorite = favTagId && tagIds.includes(favTagId);
+  const favoriteCellHTML = favTagId
+    ? `<button class="favorite-btn ${isFavorite ? 'on' : 'off'}" data-fav-pid="${p.id}" title="お気に入り">${isFavorite ? '★' : '☆'}</button>`
     : '';
 
   const addBtnHTML = isEmpty
@@ -2664,10 +2765,9 @@ function productRowHTML(p) {
   </div>`;
 
   if (viewMode === 'images') {
-    // 画像全体モード: タグ・操作セル内に現役/微妙トグルも残す
-    // (商品(全体)タブでもステータス変更できるように)
+    // 画像全体モード: 商品番号・画像・お気に入り・タグ操作
+    // (現役/微妙は編集モーダルで操作)
     const actionsForImagesMode = `<div class="col-actions">
-      ${statusToggleHTML}
       ${tagGridHTML}
       <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
     </div>`;
@@ -2675,6 +2775,7 @@ function productRowHTML(p) {
       ${exportCellHTML}
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
+      <div class="col-favorite">${favoriteCellHTML}</div>
       ${actionsForImagesMode}
     </div>`;
   }
@@ -2688,8 +2789,7 @@ function productRowHTML(p) {
     </div>`;
   }
 
-  // 基礎情報モード: 現役/微妙を画像の右隣に専用列で
-  // タグ・操作セルからは現役/微妙トグルを外す
+  // 基礎情報モード: お気に入りを画像の右隣に専用列、現役/微妙は編集モーダルへ
   const actionsCellForBasic = `<div class="col-actions">
     ${tagGridHTML}
     <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
@@ -2702,7 +2802,7 @@ function productRowHTML(p) {
       <div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div>
     </div>
     ${imagesCellHTML}
-    <div class="col-status">${statusToggleHTML}</div>
+    <div class="col-favorite">${favoriteCellHTML}</div>
     ${actionsCellForBasic}
   </div>`;
 }
@@ -2849,6 +2949,12 @@ function openProductEditForm(productId) {
   document.getElementById('productEditNumber').value = p.itemNumber || '';
   document.getElementById('productEditName').value = p.itemName || '';
   document.getElementById('productEditItemCode').textContent = p.itemCode || '—';
+  // ステータス(現役/微妙)を反映 (v1.9.0)
+  const status = p.status || 'active';
+  const statusInputs = document.querySelectorAll('input[name="productEditStatus"]');
+  statusInputs.forEach(input => {
+    input.checked = input.value === status;
+  });
   document.getElementById('productEditModal').style.display = 'flex';
 }
 
@@ -2860,6 +2966,9 @@ async function saveProductEditForm() {
   p.itemManageNumber = document.getElementById('productEditManageNumber').value.trim();
   p.itemNumber = document.getElementById('productEditNumber').value.trim();
   p.itemName = document.getElementById('productEditName').value.trim();
+  // ステータス(現役/微妙)も保存 (v1.9.0)
+  const checkedStatus = document.querySelector('input[name="productEditStatus"]:checked');
+  if (checkedStatus) p.status = checkedStatus.value;
 
   showLoading('保存中...');
   try {
