@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.9.0';
+const APP_VERSION = 'v1.9.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -2084,9 +2084,19 @@ function renderProductGrid(products) {
   content.querySelectorAll('[data-open-product]').forEach(el => {
     el.addEventListener('click', () => openProductModal(el.dataset.openProduct));
   });
-  // 画像クリック → ライトボックスで拡大表示 (v1.7.1)
-  content.querySelectorAll('[data-open-lightbox]').forEach(el => {
-    el.addEventListener('click', () => openLightbox(el.dataset.openLightbox));
+  // 画像クリック → ライトボックスで拡大表示 (v1.9.1: 商品の全画像で切替可能)
+  content.querySelectorAll('[data-lb-pid]').forEach(el => {
+    el.addEventListener('click', () => {
+      const pid = el.dataset.lbPid;
+      const idx = parseInt(el.dataset.lbIndex, 10) || 0;
+      const data = dataCache[currentShopId];
+      const p = data?.products.find(x => x.id === pid);
+      if (!p || !p.images || p.images.length === 0) return;
+      const sorted = sortImagesByName(p.images);
+      // basicモードは5枚までしか表示してないけど、ライトボックスでは全画像見れる
+      const urls = sorted.map(img => img.url);
+      openLightbox(urls, idx);
+    });
   });
   // 現役/微妙ステータス切り替え (ペンディング)
   content.querySelectorAll('[data-status-pid]').forEach(input => {
@@ -2284,9 +2294,21 @@ async function toggleProductTag(productId, tagId, btnEl) {
   }
 }
 
-// ===== ライトボックス (v1.7.1): 画像をドーンと拡大表示 =====
-function openLightbox(imageUrl) {
-  if (!imageUrl) return;
+// ===== ライトボックス (v1.9.1): ギャラリー対応 (左右クリック&矢印キーで切り替え) =====
+let lightboxState = { urls: [], index: 0 };
+
+// openLightbox: 単一URLでも、URL配列+startIndexでも呼べる
+function openLightbox(imageUrlOrList, startIndex = 0) {
+  let urls;
+  if (Array.isArray(imageUrlOrList)) {
+    urls = imageUrlOrList.filter(Boolean);
+  } else {
+    urls = imageUrlOrList ? [imageUrlOrList] : [];
+  }
+  if (urls.length === 0) return;
+  lightboxState.urls = urls;
+  lightboxState.index = Math.max(0, Math.min(startIndex, urls.length - 1));
+
   let box = document.getElementById('lightbox');
   if (!box) {
     box = document.createElement('div');
@@ -2294,36 +2316,102 @@ function openLightbox(imageUrl) {
     box.className = 'lightbox';
     box.innerHTML = `
       <button class="lightbox-close" aria-label="閉じる">×</button>
-      <img class="lightbox-img" src="" alt="">
+      <button class="lightbox-nav lightbox-prev" aria-label="前の画像" type="button">‹</button>
+      <button class="lightbox-nav lightbox-next" aria-label="次の画像" type="button">›</button>
+      <img class="lightbox-img" src="" alt="" draggable="true">
+      <div class="lightbox-counter"></div>
     `;
     document.body.appendChild(box);
-    // 背景クリックで閉じる
+
+    // 背景クリック/×で閉じる
     box.addEventListener('click', (e) => {
-      if (e.target === box || e.target.classList.contains('lightbox-close')) {
+      // ナビボタン上のクリックは別ハンドラで処理
+      if (e.target.closest('.lightbox-nav')) return;
+      // 閉じるボタン
+      if (e.target.classList.contains('lightbox-close')) {
         closeLightbox();
+        return;
       }
+      // 画像クリック: 左半分=前、右半分=次
+      if (e.target.classList.contains('lightbox-img')) {
+        const rect = e.target.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        if (x < rect.width / 2) {
+          lightboxPrev();
+        } else {
+          lightboxNext();
+        }
+        return;
+      }
+      // 背景クリックで閉じる
+      if (e.target === box) closeLightbox();
+    });
+
+    // ナビボタン
+    box.querySelector('.lightbox-prev').addEventListener('click', (e) => {
+      e.stopPropagation();
+      lightboxPrev();
+    });
+    box.querySelector('.lightbox-next').addEventListener('click', (e) => {
+      e.stopPropagation();
+      lightboxNext();
     });
   }
-  box.querySelector('.lightbox-img').src = imageUrl;
+  updateLightboxImage();
   box.classList.add('open');
-  // ESCで閉じる
-  document.addEventListener('keydown', _lightboxEscHandler);
-  // 背景スクロール抑制
+  document.addEventListener('keydown', _lightboxKeyHandler);
   document.body.style.overflow = 'hidden';
+}
+
+function updateLightboxImage() {
+  const box = document.getElementById('lightbox');
+  if (!box) return;
+  const url = lightboxState.urls[lightboxState.index];
+  if (!url) return;
+  box.querySelector('.lightbox-img').src = url;
+  // カウンター表示
+  const counter = box.querySelector('.lightbox-counter');
+  if (counter) {
+    if (lightboxState.urls.length > 1) {
+      counter.style.display = 'block';
+      counter.textContent = `${lightboxState.index + 1} / ${lightboxState.urls.length}`;
+    } else {
+      counter.style.display = 'none';
+    }
+  }
+  // 1枚しかないときはナビボタンを隠す
+  const hide = lightboxState.urls.length <= 1;
+  box.querySelector('.lightbox-prev').style.display = hide ? 'none' : '';
+  box.querySelector('.lightbox-next').style.display = hide ? 'none' : '';
+}
+
+function lightboxPrev() {
+  if (lightboxState.urls.length <= 1) return;
+  lightboxState.index = (lightboxState.index - 1 + lightboxState.urls.length) % lightboxState.urls.length;
+  updateLightboxImage();
+}
+function lightboxNext() {
+  if (lightboxState.urls.length <= 1) return;
+  lightboxState.index = (lightboxState.index + 1) % lightboxState.urls.length;
+  updateLightboxImage();
 }
 
 function closeLightbox() {
   const box = document.getElementById('lightbox');
   if (!box) return;
   box.classList.remove('open');
-  // src は空にしないでおく (次回開いたとき即表示できるように)
-  document.removeEventListener('keydown', _lightboxEscHandler);
+  document.removeEventListener('keydown', _lightboxKeyHandler);
   document.body.style.overflow = '';
 }
 
-function _lightboxEscHandler(e) {
+function _lightboxKeyHandler(e) {
   if (e.key === 'Escape') closeLightbox();
+  else if (e.key === 'ArrowRight') lightboxNext();
+  else if (e.key === 'ArrowLeft') lightboxPrev();
 }
+
+// 旧名互換 (もし他で呼ばれていても動くように)
+function _lightboxEscHandler(e) { _lightboxKeyHandler(e); }
 
 // ===== 容量確認モーダル (v1.8.0) =====
 function formatBytes(bytes) {
@@ -2683,7 +2771,7 @@ function productRowHTML(p) {
     : sortedImages.slice(0, 5);
   const remaining = sortedImages.length - displayImages.length;
 
-  const imgsHTML = displayImages.map(img => {
+  const imgsHTML = displayImages.map((img, idx) => {
     const isMarked = deleteSelection.has(img.id);
     if (viewMode === 'delete') {
       return `<div class="product-row-thumb delete-mark ${isMarked ? 'marked' : ''}"
@@ -2693,7 +2781,7 @@ function productRowHTML(p) {
         ${isMarked ? '<div class="delete-mark-overlay">✕</div>' : ''}
       </div>`;
     }
-    return `<div class="product-row-thumb" data-open-lightbox="${escapeHtml(img.url)}" title="${escapeHtml(getImageSortKey(img))}">
+    return `<div class="product-row-thumb" data-lb-pid="${p.id}" data-lb-index="${idx}" title="${escapeHtml(getImageSortKey(img))}">
       <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
     </div>`;
   }).join('');
