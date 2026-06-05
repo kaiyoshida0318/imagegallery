@@ -1253,6 +1253,61 @@ body {
   font-weight: 700;
 }
 .export-action-buttons { display: flex; gap: 8px; }
+
+/* ===== 商品追加ハブモーダル (v1.8.7) ===== */
+.add-hub-section {
+  margin-bottom: 24px;
+}
+.add-hub-section:last-child {
+  margin-bottom: 0;
+}
+.add-hub-section h3 {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-light);
+}
+.add-hub-cards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.add-hub-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 16px 18px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  transition: all .15s;
+}
+.add-hub-card:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
+}
+.add-hub-card-icon {
+  font-size: 28px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.add-hub-card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.add-hub-card-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+}
 .delete-action-info {
   display: flex;
   align-items: center;
