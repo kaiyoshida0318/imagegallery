@@ -4652,54 +4652,6 @@
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/ih/ih-22-10-0set-b-01.jpg?_ex=128x128",
       "images": [
         {
-          "id": "img_1780640164755_4vjkpo",
-          "filename": "1780640163004_cvnxn5_01_ih-22-10-mori1-01b.jpg",
-          "originalName": "01_ih-22-10-mori1-01b.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640163004_cvnxn5_01_ih-22-10-mori1-01b.jpg",
-          "sha": "2b94bf716b20dfec9c625b3e4ad208c8f8859c2e",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640163004_cvnxn5_01_ih-22-10-mori1-01b.jpg",
-          "size": 153631,
-          "uploadedAt": "2026-06-05T06:16:04.755Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1780640166484_bpjyzq",
-          "filename": "1780640164761_d7ixko_02_ih-22-10-mori1-02.jpg",
-          "originalName": "02_ih-22-10-mori1-02.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640164761_d7ixko_02_ih-22-10-mori1-02.jpg",
-          "sha": "212b3b52771270793272c0ae5439f63598df585d",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640164761_d7ixko_02_ih-22-10-mori1-02.jpg",
-          "size": 131966,
-          "uploadedAt": "2026-06-05T06:16:06.484Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1780640167813_zm4as0",
-          "filename": "1780640166494_ymirvi_03_ih-22-10-mori1-03.jpg",
-          "originalName": "03_ih-22-10-mori1-03.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640166494_ymirvi_03_ih-22-10-mori1-03.jpg",
-          "sha": "e051dd3e63cb387be31c5c981c647d592b5d2f7c",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640166494_ymirvi_03_ih-22-10-mori1-03.jpg",
-          "size": 242984,
-          "uploadedAt": "2026-06-05T06:16:07.813Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1780640169631_6duyy0",
-          "filename": "1780640167818_w5r6y3_04_saikyo.jpg",
-          "originalName": "04_saikyo.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640167818_w5r6y3_04_saikyo.jpg",
-          "sha": "7f894528c1d1dadb8837daa8ab25935df632a22a",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640167818_w5r6y3_04_saikyo.jpg",
-          "size": 216689,
-          "uploadedAt": "2026-06-05T06:16:09.631Z",
-          "note": "",
-          "tags": []
-        },
-        {
           "id": "img_1780640171094_2tlb9s",
           "filename": "1780640169635_wbfm6z_05_ih-22-10-0set-b-01.jpg",
           "originalName": "05_ih-22-10-0set-b-01.jpg",
@@ -4852,18 +4804,6 @@
           "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640189480_3ru6cw_17_ih-22-10-0set-b-13.jpg",
           "size": 153983,
           "uploadedAt": "2026-06-05T06:16:31.044Z",
-          "note": "",
-          "tags": []
-        },
-        {
-          "id": "img_1780640193203_6jlzci",
-          "filename": "1780640191062_1u562w_18_new-coupon.jpg",
-          "originalName": "18_new-coupon.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640191062_1u562w_18_new-coupon.jpg",
-          "sha": "7e5ac6aaba46d21a50e662fb1097fa328b3007bb",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_duf6ox/1780640191062_1u562w_18_new-coupon.jpg",
-          "size": 855878,
-          "uploadedAt": "2026-06-05T06:16:33.203Z",
           "note": "",
           "tags": []
         }
