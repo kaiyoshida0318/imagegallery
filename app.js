@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.8.6';
+const APP_VERSION = 'v1.8.7';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -145,8 +145,17 @@ function bindEvents() {
   document.getElementById('btnExportMode').addEventListener('click', toggleExportMode);
   document.getElementById('btnExportExecute').addEventListener('click', executeExport);
   document.getElementById('btnExportClear').addEventListener('click', clearExportSelection);
-  document.getElementById('btnSyncProducts').addEventListener('click', syncProducts);
   document.getElementById('btnClearProducts').addEventListener('click', clearAllProducts);
+
+  // 商品追加ハブモーダルのボタン (v1.8.7)
+  document.getElementById('btnHubSyncProducts').addEventListener('click', () => {
+    closeModal('addHubModal');
+    syncProducts();
+  });
+  document.getElementById('btnHubBulkImages').addEventListener('click', () => {
+    closeModal('addHubModal');
+    openBulkImagesModal();
+  });
 
   // ドキュメントクリックでドロップダウン閉じる処理は廃止(タグフィルタは常時表示に)
   document.getElementById('btnImportCsv').addEventListener('click', openCsvImportModal);
@@ -179,7 +188,7 @@ function bindEvents() {
   document.getElementById('btnConfirmCsvImport').addEventListener('click', confirmCsvImport);
 
   // ZIP一括アップロード
-  document.getElementById('btnBulkImages').addEventListener('click', openBulkImagesModal);
+  // ZIP一括アップロード (画像一括アップロード) — +追加モーダルから呼ばれるため直接バインドは無し
   document.getElementById('btnPickBulkZip').addEventListener('click', (e) => {
     e.stopPropagation();
     document.getElementById('bulkZipInput').click();
@@ -204,7 +213,14 @@ function bindEvents() {
   });
   document.getElementById('btnConfirmBulkImport').addEventListener('click', confirmBulkImport);
   document.getElementById('btnExportCsv').addEventListener('click', exportBasicInfoCsv);
-  document.getElementById('btnAddEntry').addEventListener('click', openEntryForm);
+  document.getElementById('btnAddEntry').addEventListener('click', () => {
+    // 商品系タブ → 追加ハブモーダル / 素材・盛り上げ → 名前入力モーダル
+    if (currentCategory === 'product' || currentCategory === 'product_unsure' || currentCategory === 'product_all') {
+      document.getElementById('addHubModal').style.display = 'flex';
+    } else {
+      openEntryForm();
+    }
+  });
 
   document.getElementById('searchInput').addEventListener('input', (e) => {
     searchQuery = e.target.value.trim().toLowerCase();
