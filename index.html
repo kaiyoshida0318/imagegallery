@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.8.7">
+<link rel="stylesheet" href="style.css?v=1.9.0">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -382,6 +382,20 @@
     <div class="modal-body">
       <input type="hidden" id="productEditId">
       <div class="form-row">
+        <label>ステータス</label>
+        <div class="status-radio-group">
+          <label class="status-radio-option">
+            <input type="radio" name="productEditStatus" value="active" checked>
+            <span class="status-radio-label status-active">現役</span>
+          </label>
+          <label class="status-radio-option">
+            <input type="radio" name="productEditStatus" value="unsure">
+            <span class="status-radio-label status-unsure">微妙</span>
+          </label>
+        </div>
+        <small class="form-hint">「微妙」にすると商品(微妙)タブに移動します</small>
+      </div>
+      <div class="form-row">
         <label>商品管理番号</label>
         <input type="text" id="productEditManageNumber" placeholder="10000176">
         <small class="form-hint">楽天で自動採番される管理番号</small>
@@ -525,6 +539,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.8.7"></script>
+<script src="app.js?v=1.9.0"></script>
 </body>
 </html>
