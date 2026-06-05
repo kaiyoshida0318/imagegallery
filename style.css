@@ -660,9 +660,63 @@ body {
   font-family: inherit;
   line-height: 1;
   transition: background .15s;
+  z-index: 2;
 }
 .lightbox-close:hover {
   background: rgba(255,255,255,0.25);
+}
+
+/* ライトボックス: 前/次ナビボタン (v1.9.1) */
+.lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  font-size: 40px;
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  line-height: 0.6;
+  padding-bottom: 6px;
+  transition: background .15s, transform .15s;
+  z-index: 2;
+}
+.lightbox-nav:hover {
+  background: rgba(255,255,255,0.3);
+}
+.lightbox-nav:active {
+  transform: translateY(-50%) scale(0.92);
+}
+.lightbox-prev {
+  left: 24px;
+}
+.lightbox-next {
+  right: 24px;
+}
+
+/* ライトボックス: カウンター (1/N) */
+.lightbox-counter {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  font-family: ui-monospace, monospace;
+  letter-spacing: 0.5px;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .btn-tag-add {
