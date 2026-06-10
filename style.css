@@ -1765,6 +1765,36 @@ body {
   border-color: var(--primary);
 }
 .form-row textarea { resize: vertical; min-height: 70px; }
+
+/* 入力フィールド + 表示トグルボタン (v1.9.2) */
+.input-with-toggle {
+  display: flex;
+  gap: 6px;
+  align-items: stretch;
+}
+.input-with-toggle input {
+  flex: 1;
+  min-width: 0;
+}
+.input-toggle-btn {
+  flex-shrink: 0;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.input-toggle-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  border-color: var(--primary);
+}
 .form-row-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .form-hint { display: block; margin-top: 4px; font-size: 11px; color: var(--text-light); }
 .readonly-field {
