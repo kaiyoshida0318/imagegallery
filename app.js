@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.9.1';
+const APP_VERSION = 'v1.9.2';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -141,6 +141,20 @@ function loadCurrentSelections() {
 
 function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
+  // PAT表示/非表示トグル (v1.9.2)
+  const btnTogglePat = document.getElementById('btnTogglePat');
+  if (btnTogglePat) {
+    btnTogglePat.addEventListener('click', () => {
+      const input = document.getElementById('settingPat');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btnTogglePat.textContent = '🙈 隠す';
+      } else {
+        input.type = 'password';
+        btnTogglePat.textContent = '👁 表示';
+      }
+    });
+  }
   document.getElementById('btnStorage').addEventListener('click', openStorageModal);
   document.getElementById('btnExportMode').addEventListener('click', toggleExportMode);
   document.getElementById('btnExportExecute').addEventListener('click', executeExport);
@@ -3323,6 +3337,11 @@ function openSettings() {
   document.getElementById('settingOwner').value = auth.owner || '';
   document.getElementById('settingRepo').value = auth.repo || '';
   document.getElementById('settingBranch').value = auth.branch || 'main';
+  // PATは開くたびにマスク状態に戻す (v1.9.2)
+  const patInput = document.getElementById('settingPat');
+  const patBtn = document.getElementById('btnTogglePat');
+  if (patInput) patInput.type = 'password';
+  if (patBtn) patBtn.textContent = '👁 表示';
   renderShopsList();
   document.getElementById('settingsModal').style.display = 'flex';
 }
