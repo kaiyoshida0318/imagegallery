@@ -3,279 +3,545 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ヤフショ画像くん</title>
+<title>ImageGallery</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="favicon-64.png">
+<link rel="apple-touch-icon" href="speeddial-192.png">
+<meta name="theme-color" content="#fdf2f8">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@500;700&family=Roboto+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=0.25.1">
-<style id="modal-guarantee">
-/* === モーダルの寸法・見た目を index 側で保証（外部CSSのキャッシュに依存しない） === */
-.overlay{background:rgba(15,18,24,.46)!important;display:grid!important;place-items:center!important;padding:24px!important;z-index:80}
-.overlay[hidden]{display:none!important}
-.overlay>.mini{background:#fff!important;border:1px solid #e6e1d8!important;border-radius:18px!important;box-shadow:0 30px 80px rgba(20,24,32,.35)!important;width:100%!important;padding:28px 32px!important;max-height:90vh!important;overflow:auto!important;max-width:520px!important}
-.overlay>.mini-wide{max-width:920px!important}
-.overlay>.mini.modal-cat{max-width:820px!important}
-.overlay>.mini.modal-status{max-width:880px!important}
-.overlay>.mini.modal-col{max-width:1200px!important}
-</style>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=1.9.2">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
 
-<div class="sticky-top">
-  <header class="app-header">
-    <div class="header-inner">
-      <img class="logo-img" src="logo1.png" alt="ヤフショ画像くん">
-      <div class="header-actions">
-        <span class="version" id="version">v0.25.1</span>
-        <button class="btn btn-ghost" id="btnManage">📄 制作予定ページ管理</button>
-        <button class="btn btn-ghost" id="btnManageCats">📂 出品内容管理</button>
-        <button class="btn btn-ghost" id="btnManageStatus">📋 状態管理</button>
-        <button class="btn btn-ghost" id="btnCols2">📐 項目管理</button>
-        <button class="btn btn-ghost" id="btnSettings">⚙️ 設定</button>
-        <button class="btn btn-ghost" id="btnLog">📜 ログ</button>
-        <span class="gh-progress" id="ghProgress" hidden><span class="gh-spin"></span><span id="ghText"></span></span>
-        <button class="btn btn-red" id="btnSave">💾 GitHubに保存</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- フィルタ帯 -->
-  <div class="console">
-  <!-- 1段目：カテゴリ系 ＋ 右側アクション -->
-  <div class="frow frow-cat" id="catRow">
-    <div class="pill-group" id="catPills"></div>
-    <span class="spacer"></span>
-    <div class="view-toggle" id="viewToggle">
-      <button type="button" class="vt-btn" data-view="basic" id="vtBasic">📋 基礎情報</button>
-      <button type="button" class="vt-btn on" data-view="images" id="vtImages">🖼️ 画像</button>
-    </div>
-    <button class="btn btn-quiet btn-sm" id="btnBulkDel">🗑 一括削除</button>
-    <button class="btn btn-green-line btn-sm" id="btnAddRow">＋ 行だけ</button>
-    <button class="btn btn-green" id="btnAdd">＋ 新規作成</button>
+<!-- ============ Header ============ -->
+<header class="app-header">
+  <div class="logo" onclick="goHome()">
+    <img src="logo-header.png" alt="ImageGallery" class="logo-img">
   </div>
 
-  <!-- 2段目：ステータス ＋ 変更を保存（右上） -->
-  <div class="frow frow-status">
-    <div class="pill-group" id="statusRow"></div>
-    <span class="spacer"></span>
-    <button class="btn btn-line btn-sm" id="btnBulkEdit">✏️ 一括編集</button>
-    <button class="btn btn-red btn-sm" id="btnSaveEdits" hidden>変更を保存</button>
+  <!-- Shop Tabs -->
+  <div class="shop-tabs" id="shopTabs">
+    <!-- shop tabs rendered by JS -->
   </div>
+
+  <div class="header-actions">
+    <span class="app-version" id="appVersion">v1.0.0</span>
+    <button class="btn-icon" id="btnImportCsv" title="商品名称一括更新(CSV)">
+      <span class="icon">📋</span><span class="label">商品名称一括更新</span>
+    </button>
+    <button class="btn-icon" id="btnExportCsv" title="基礎情報をCSVでダウンロード">
+      <span class="icon">⬇️</span><span class="label">基礎情報DL</span>
+    </button>
+    <button class="btn-icon btn-danger-mini" id="btnClearProducts" title="商品データを全クリア">
+      <span class="icon">🗑️</span><span class="label">全クリア</span>
+    </button>
+    <button class="btn-icon" id="btnExportMode" title="エクスポート用">
+      <span class="icon">📤</span><span class="label">エクスポート用</span>
+    </button>
+    <button class="btn-icon" id="btnStorage" title="容量確認">📊</button>
+    <button class="btn-icon" id="btnSettings" title="設定">⚙️</button>
   </div>
-</div>
-<div class="table-wrap">
-  <div class="table-shell">
-    <div class="table-scroll">
-      <table id="grid" style="display:none">
-        <thead id="gridHead"></thead>
-        <tbody id="gridBody"></tbody>
-      </table>
-    </div>
-    <div class="shell-empty" id="emptyState">
-      <div class="lead">まだ商品がありません</div>
-      <p>「＋ 新規作成」から商品を登録すると、ここに一覧で表示されます。</p>
-    </div>
+  <input type="file" id="csvFileInput" accept=".csv,text/csv" style="display:none">
+</header>
+
+<!-- ============ Category Row ============ -->
+<div class="category-row">
+  <div class="categories" id="categories">
+    <button class="cat-btn active" data-cat="product">商品(現役)</button>
+    <button class="cat-btn cat-btn-unsure" data-cat="product_unsure">商品(微妙)</button>
+    <button class="cat-btn cat-btn-all" data-cat="product_all">商品(全体)</button>
+    <button class="cat-btn" data-cat="material">素材</button>
+    <button class="cat-btn" data-cat="boost">盛り上げ</button>
+  </div>
+  <div class="category-meta" id="categoryMeta">
+    <span id="unregisteredCount"></span>
   </div>
 </div>
 
-<!-- 新規作成/編集モーダル -->
-<div class="overlay" id="editModal" hidden>
-  <div class="sheet sheet-form">
-    <div class="form-topbar">
-      <h2 id="edTitle">新規作成</h2>
-      <div class="topbar-actions">
-        <button class="btn btn-line" data-close="editModal">キャンセル</button>
-        <button class="btn btn-line" id="btnSaveStay">変更を保存</button>
-        <button class="btn btn-red" id="btnSaveClose">変更を保存して閉じる</button>
-      </div>
-    </div>
+<!-- ============ Search ============ -->
+<div class="search-row">
+  <div class="search-box">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="商品名・商品コードで検索...">
+  </div>
+  <div class="tag-filter-inline" id="tagFilterInline">
+    <!-- タグフィルタチップがJSで描画される -->
+  </div>
+  <div class="view-mode-toggle">
+    <button class="view-mode-btn active" data-mode="images" id="modeImages">🖼️ 画像全体</button>
+    <button class="view-mode-btn" data-mode="basic" id="modeBasic">📋 基礎情報</button>
+  </div>
+  <label class="filter-toggle">
+    <input type="checkbox" id="filterUnregistered">
+    <span>📷 画像未登録のみ</span>
+  </label>
+  <button class="view-mode-btn view-mode-btn-danger view-mode-btn-standalone" data-mode="delete" id="modeDelete">🗑️ 削除</button>
+  <button class="btn-add" id="btnAddEntry">+ 追加</button>
+</div>
 
-    <div class="modal-tabs">
-      <button type="button" class="mtab on" data-tab="basic">基本情報</button>
-      <button type="button" class="mtab" data-tab="images">画像</button>
-    </div>
+<!-- ============ Main Content ============ -->
+<main class="content" id="content">
+  <!-- product grid / material grid / boost grid rendered by JS -->
+</main>
 
-    <div class="form-body">
-      <!-- 基本情報タブ -->
-      <div class="tab-panel" id="panel-basic">
-        <div class="basic-top">
-          <div class="mini-imgs">
-            <div class="mini-wrap"><div class="mini-img" id="miniYahoo"></div><div class="mini-cap">Yahooメイン</div></div>
-            <div class="mini-wrap"><div class="mini-img" id="miniRakuten"></div><div class="mini-cap">楽天メイン</div></div>
-          </div>
-          <input type="file" id="fileMiniYahoo" accept="image/*" hidden>
-          <input type="file" id="fileMiniRakuten" accept="image/*" hidden>
-          <div class="basic-fields">
-            <div class="span-all" style="grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-              <label class="fld">商品名<input type="text" id="fName" placeholder="商品名"></label>
-              <label class="fld">商品コード<input type="text" id="fCode" placeholder="例：ABC-123"></label>
-            </div>
-            <div class="span-all" style="grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px">
-              <label class="fld">日付<input type="date" id="fDate"></label>
-              <label class="fld">評価<input type="number" id="fRating" step="0.1" min="0" placeholder="4.2 など"></label>
-              <label class="fld">制作予定ページ
-                <select id="fPagePlan"></select>
-              </label>
-            </div>
-            <div class="span-all" style="grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start">
-              <div style="display:grid;gap:14px;align-content:start">
-                <label class="fld">出品内容
-                  <select id="fListing">
-                    <option>新規出品</option>
-                    <option>リニューアル-同一ページ</option>
-                    <option>リニューアル-新規ページ</option>
-                    <option>再登録</option>
-                  </select>
-                </label>
-                <label class="fld">状態
-                  <select id="fStatus">
-                    <option>未着手</option>
-                    <option>作成中</option>
-                    <option>確認待ち</option>
-                    <option>完了</option>
-                  </select>
-                </label>
-              </div>
-              <label class="fld">販売手法<textarea id="fMethod" rows="4" placeholder="複数行で入力できます（改行OK）"></textarea></label>
-            </div>
+<!-- ============ Empty State ============ -->
+<div class="empty-state" id="emptyState" style="display:none">
+  <div class="empty-icon">📭</div>
+  <div class="empty-title">まだショップがありません</div>
+  <div class="empty-desc">右上の ⚙️ から設定を開いて、ショップを追加してください</div>
+  <button class="btn-primary" onclick="openSettings()">⚙️ 設定を開く</button>
+</div>
+
+<!-- ============ Pending Status Change Bar (右上固定) ============ -->
+<div class="pending-status-bar" id="pendingStatusBar" style="display:none">
+  <div class="pending-status-info">
+    <span class="pending-status-icon">💾</span>
+    <span>ステータス変更: <strong id="pendingStatusCount">0</strong> 件</span>
+  </div>
+  <div class="pending-status-buttons">
+    <button class="btn-secondary btn-mini" id="btnDiscardStatus">破棄</button>
+    <button class="btn-primary btn-mini" id="btnCommitStatus">保存</button>
+  </div>
+</div>
+
+<!-- ============ Add Product Hub Modal (v1.8.7) ============ -->
+<div class="modal-backdrop" id="addHubModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>追加</h2>
+      <button class="btn-close" onclick="closeModal('addHubModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <section class="add-hub-section">
+        <h3>📦 商品追加</h3>
+        <div class="add-hub-cards">
+          <button class="add-hub-card" id="btnHubSyncProducts">
+            <div class="add-hub-card-icon">🔄</div>
+            <div class="add-hub-card-title">商品同期によって自動追加</div>
+            <div class="add-hub-card-desc">楽天APIから商品一覧を取得して同期</div>
+          </button>
+        </div>
+      </section>
+      <section class="add-hub-section">
+        <h3>🖼️ 画像追加</h3>
+        <div class="add-hub-cards">
+          <button class="add-hub-card" id="btnHubBulkImages">
+            <div class="add-hub-card-icon">📦</div>
+            <div class="add-hub-card-title">画像一括アップロード</div>
+            <div class="add-hub-card-desc">ZIPファイルで画像を一括アップロード</div>
+          </button>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Export Action Bar ============ -->
+<div class="export-action-bar" id="exportBar" style="display:none">
+  <div class="export-action-info">
+    <span class="export-action-icon">📤</span>
+    <span>選択中: <strong id="exportCount">0</strong> 件</span>
+  </div>
+  <div class="export-action-buttons">
+    <button class="btn-secondary" id="btnExportClear">選択クリア</button>
+    <button class="btn-primary" id="btnExportExecute">選択した商品をエクスポート</button>
+  </div>
+</div>
+
+<!-- ============ Delete Mode Action Bar ============ -->
+<div class="delete-action-bar" id="deleteActionBar" style="display:none">
+  <div class="delete-action-info">
+    <span class="delete-action-icon">🗑️</span>
+    <span>削除予約: <strong id="deleteCount">0</strong> 枚</span>
+  </div>
+  <div class="delete-action-buttons">
+    <button class="btn-secondary" id="btnDeleteCancel">予約をクリア</button>
+    <button class="btn-danger" id="btnDeleteExecute">選択した画像を削除</button>
+  </div>
+</div>
+
+<!-- ============ Settings Modal ============ -->
+<div class="modal-backdrop" id="settingsModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>⚙️ 設定</h2>
+      <button class="btn-close" onclick="closeModal('settingsModal')">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- GitHub Section -->
+      <section class="setting-section">
+        <h3>📦 GitHub保存先</h3>
+        <div class="form-row">
+          <label>Personal Access Token (PAT)</label>
+          <div class="input-with-toggle">
+            <input type="password" id="settingPat" placeholder="ghp_...">
+            <button type="button" class="input-toggle-btn" id="btnTogglePat" title="表示/非表示">👁 表示</button>
           </div>
         </div>
-
-        <div class="form-bottom">
-          <div class="url-block">
-            <div class="url-head">
-              <span class="url-ttl">🔍 検索ページURL</span>
-            </div>
-            <div class="url-row"><input type="text" id="fSearchUrl" placeholder="https://…（検索ページのURL）"></div>
+        <div class="form-row form-row-2col">
+          <div>
+            <label>オーナー</label>
+            <input type="text" id="settingOwner" placeholder="kaiyoshida0318">
           </div>
-          <div class="url-block">
-            <div class="url-head">
-              <span class="url-ttl"><span class="tag-badge tb-y">Y</span>ヤフショURL（メイン）</span>
-              <button class="btn btn-line btn-sm" data-addurl="urlYahoo">＋ 追加</button>
-            </div>
-            <div class="url-list" id="urlYahoo">
-              <div class="url-row"><input type="text" placeholder="https://store.shopping.yahoo.co.jp/…"><button class="url-del">×</button></div>
-            </div>
-          </div>
-          <div class="url-block">
-            <div class="url-head">
-              <span class="url-ttl"><span class="tag-badge tb-r">R</span>楽天URL</span>
-              <button class="btn btn-line btn-sm" data-addurl="urlRakuten">＋ 追加</button>
-            </div>
-            <div class="url-list" id="urlRakuten">
-              <div class="url-row"><input type="text" placeholder="https://item.rakuten.co.jp/…"><button class="url-del">×</button></div>
-            </div>
+          <div>
+            <label>リポジトリ</label>
+            <input type="text" id="settingRepo" placeholder="imagegallery">
           </div>
         </div>
-      </div>
-
-      <!-- 画像タブ -->
-      <div class="tab-panel" id="panel-images" hidden>
-        <div class="gallery-sec">
-          <div class="fld-label"><span class="tag-badge tb-y">Y</span>Yahoo画像<span class="gal-hint">複数まとめて登録OK／←→で並び替え／1枚目がメイン</span></div>
-          <div class="dropzone" id="dzYahoo">📤 画像をここにドラッグ＆ドロップ、またはクリックで選択（複数可）</div>
-          <input type="file" id="fileYahoo" accept="image/*" multiple hidden>
-          <div class="img-strip" id="stripYahoo"></div>
+        <div class="form-row">
+          <label>ブランチ</label>
+          <input type="text" id="settingBranch" placeholder="main" value="main">
         </div>
-        <div class="gallery-sec">
-          <div class="fld-label"><span class="tag-badge tb-r">R</span>楽天画像<span class="gal-hint">複数まとめて登録OK／←→で並び替え／1枚目がメイン</span></div>
-          <div class="dropzone" id="dzRakuten">📤 画像をここにドラッグ＆ドロップ、またはクリックで選択（複数可）</div>
-          <input type="file" id="fileRakuten" accept="image/*" multiple hidden>
-          <div class="img-strip" id="stripRakuten"></div>
+      </section>
+
+      <!-- Shops Section -->
+      <section class="setting-section">
+        <h3>🏪 ショップ管理</h3>
+        <div id="shopsList"></div>
+        <button class="btn-add-shop" onclick="openShopForm()">+ ショップを追加</button>
+      </section>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('settingsModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveSettings()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Shop Form Modal ============ -->
+<div class="modal-backdrop" id="shopFormModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="shopFormTitle">ショップを追加</h2>
+      <button class="btn-close" onclick="closeModal('shopFormModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="shopFormId">
+      <div class="form-row">
+        <label>ショップ名</label>
+        <input type="text" id="shopFormName" placeholder="ゆかい屋">
+      </div>
+      <div class="form-row">
+        <label>モール</label>
+        <select id="shopFormMall">
+          <option value="rakuten">楽天</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>ショップコード (shopCode)</label>
+        <input type="text" id="shopFormCode" placeholder="yukaiya">
+      </div>
+      <div class="form-row">
+        <label>楽天 Application ID (UUID形式)</label>
+        <input type="text" id="shopFormAppId" placeholder="25e47e44-78d4-4298-a49e-9e5bb71bba2c">
+        <small class="form-hint">楽天Web Service「アプリ情報の確認」のアプリケーションID</small>
+      </div>
+      <div class="form-row">
+        <label>Access Key</label>
+        <input type="password" id="shopFormAccessKey" placeholder="アクセスキー">
+        <small class="form-hint">楽天Web Service「アプリ情報の確認」のアクセスキー</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('shopFormModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveShopForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Product Detail Modal ============ -->
+<div class="modal-backdrop" id="productModal" style="display:none">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <div>
+        <h2 id="productModalTitle">商品名</h2>
+        <div class="product-modal-meta" id="productModalMeta"></div>
+      </div>
+      <button class="btn-close" onclick="closeModal('productModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="product-upload-area" id="productUploadArea">
+        <div class="upload-dropzone" id="uploadDropzone">
+          <div class="upload-icon">📤</div>
+          <div class="upload-text">画像をドラッグ&ドロップ、または<button class="link-btn" id="btnPickFiles">ファイルを選択</button></div>
+          <div class="upload-hint">JPG / PNG / WebP / GIF (複数選択可)</div>
+          <input type="file" id="fileInput" multiple accept="image/*" style="display:none">
+        </div>
+      </div>
+      <div class="upload-progress" id="uploadProgress" style="display:none"></div>
+      <div class="image-grid" id="productImageGrid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Image Detail Modal ============ -->
+<div class="modal-backdrop" id="imageModal" style="display:none">
+  <div class="modal modal-xl modal-image">
+    <div class="modal-header">
+      <h2 id="imageDetailTitle">画像詳細</h2>
+      <button class="btn-close" onclick="closeModal('imageModal')">×</button>
+    </div>
+    <div class="modal-body image-detail-body">
+      <div class="image-detail-preview">
+        <img id="imageDetailImg" src="" alt="">
+      </div>
+      <div class="image-detail-side">
+        <div class="form-row">
+          <label>ファイル名</label>
+          <div class="readonly-field" id="imageDetailFilename"></div>
+        </div>
+        <div class="form-row">
+          <label>登録日</label>
+          <div class="readonly-field" id="imageDetailDate"></div>
+        </div>
+        <div class="form-row">
+          <label>メモ</label>
+          <textarea id="imageDetailNote" placeholder="この画像のメモ (用途、撮影日、注意点など)"></textarea>
+        </div>
+        <div class="form-row">
+          <label>タグ</label>
+          <div class="tag-input-wrap">
+            <div id="imageDetailTags" class="tag-list"></div>
+            <input type="text" id="imageDetailTagInput" placeholder="タグを追加してEnter">
+          </div>
+        </div>
+        <div class="image-detail-actions">
+          <a id="btnDownloadImage" class="btn-secondary" download>⬇️ ダウンロード</a>
+          <button class="btn-secondary" onclick="copyImageUrl()">🔗 URLコピー</button>
+          <button class="btn-danger" onclick="deleteCurrentImage()">🗑️ 削除</button>
+        </div>
+        <div class="form-row">
+          <button class="btn-primary" onclick="saveImageDetail()">変更を保存</button>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="settingsModal" hidden>
-  <div class="mini">
-    <h2>GitHub設定</h2>
-    <p class="hint">PATを入力するだけでOK。入力情報はこのブラウザ内（localStorage）にのみ保存されます。保存・画像アップロードにはリポジトリへの書き込み権限が必要です。</p>
-    <label>Personal Access Token (PAT)<input type="password" id="cfgPat" placeholder="github_pat_xxxx"></label>
-    <button type="button" class="adv-toggle" id="btnAdv">▶ 詳細設定（オーナー／リポジトリ／ブランチ）</button>
-    <div id="advBox" hidden>
-      <label>オーナー（ユーザー名）<input type="text" id="cfgOwner" value="kaiyoshida0318"></label>
-      <label>リポジトリ名<input type="text" id="cfgRepo" value="yafusho-gazo"></label>
-      <label>ブランチ<input type="text" id="cfgBranch" value="main"></label>
+<!-- ============ Bulk Image Upload Modal ============ -->
+<div class="modal-backdrop" id="bulkImagesModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>📦 画像一括アップロード</h2>
+      <button class="btn-close" onclick="closeModal('bulkImagesModal')">×</button>
     </div>
-    <div class="acts"><span class="sp"></span><button class="btn btn-ghost" data-close="settingsModal">閉じる</button><button class="btn btn-red" id="btnSaveSettings">変更を保存</button></div>
-  </div>
-</div>
-<div class="overlay" id="logModal" hidden>
-  <div class="mini">
-    <h2>📜 アプリログ</h2>
-    <p class="hint">GitHub保存・画像アップロード等のログです。</p>
-    <textarea readonly>[起動] ヤフショ画像くん v0.25.1</textarea>
-    <div class="acts"><button class="btn btn-line" id="btnCopyLog">📋 ログをコピー</button><span class="sp"></span><button class="btn btn-ghost" data-close="logModal">閉じる</button></div>
-  </div>
-</div>
-<div class="overlay" id="manageModal" hidden>
-  <div class="mini mini-wide">
-    <h2>📄 制作予定ページ管理</h2>
-    <p class="hint">制作予定ページの選択肢と、マーク（色＋短い記号）を編集できます。↑↓で並び替え。表のドロップダウンに反映されます。</p>
-    <div class="opt-scroll" id="optScroll">
-      <div class="opt-sec">
-        <div class="opt-head"><span class="fld-label">制作予定ページ</span><button type="button" class="btn btn-line btn-sm" data-addopt="pagePlan">＋ 追加</button></div>
-        <div class="opt-cols"><span>マーク</span><span>色</span><span>選択肢名</span><span></span><span></span><span></span></div>
-        <div id="optPage"></div>
+    <div class="modal-body">
+      <div class="bulk-dropzone" id="bulkDropzone">
+        <div class="bulk-dropzone-icon">📦</div>
+        <div class="bulk-dropzone-text">ZIPファイルをドラッグ&ドロップ<br>または<button class="link-btn" id="btnPickBulkZip">ファイルを選択</button></div>
+        <div class="bulk-dropzone-hint">
+          ZIPの構造: <code>rakuten-images/<b>{shopCode}_{管理番号}</b>/画像ファイル</code><br>
+          例: <code>rakuten-images/yukaiya_10000176/1_xxx.jpg</code>
+        </div>
+        <input type="file" id="bulkZipInput" accept=".zip,application/zip" style="display:none">
+      </div>
+      <div class="bulk-import-summary" id="bulkImportSummary"></div>
+      <div class="bulk-import-preview" id="bulkImportPreview"></div>
+      <div class="bulk-upload-progress" id="bulkUploadProgress" style="display:none"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('bulkImagesModal')">キャンセル</button>
+        <button class="btn-primary" id="btnConfirmBulkImport" style="display:none">一括アップロードを実行</button>
       </div>
     </div>
-    <div class="acts"><span class="sp"></span><button class="btn btn-ghost" data-close="manageModal">閉じる</button><button class="btn btn-red" id="btnSaveOpts">変更を保存</button></div>
   </div>
-</div>
-<div class="overlay" id="colsModal" hidden>
-  <div class="mini modal-col">
-    <h2>📐 項目管理</h2>
-    <p class="hint">左が「表示中」、右が「非表示」の項目です。「非表示にする →」「← 表示する」で切り替え、▲▼で表示順を入れ替えできます。幅(px)・折り返し・タイトル/データの揃えも設定可能。この設定はこの端末にのみ保存されます。</p>
-    <div class="col-cols">
-      <div class="col-col col-col-visible">
-        <div class="col-col-head">✅ 表示中</div>
-        <div id="colListVisible" class="col-list"></div>
-      </div>
-      <div class="col-col col-col-hidden">
-        <div class="col-col-head">🚫 非表示</div>
-        <div id="colListHidden" class="col-list"></div>
-      </div>
-    </div>
-    <div class="acts">
-      <button class="btn btn-ghost" id="btnResetCols">🔄 デフォルトに戻す</button>
-      <button class="btn btn-ghost" id="btnDragResize">↔ ドラッグで幅調整</button>
-      <span class="sp"></span>
-      <button class="btn btn-ghost" data-close="colsModal">閉じる</button>
-    </div>
-  </div>
-</div>
-<div class="resize-bar" id="resizeBar" hidden>
-  <span class="resize-bar-text">↔ 列の境界をドラッグして幅を調整できます</span>
-  <button class="btn btn-red btn-sm" id="btnResizeDone">完了</button>
 </div>
 
-<div class="overlay" id="catModal" hidden>
-  <div class="mini modal-cat">
-    <h2>📂 出品内容管理</h2>
-    <p class="hint">出品内容（上段タブ）を管理します。並び替え・名前変更・アイコン変更・削除ができます。</p>
-    <div class="cat-add-row">
-      <input type="text" id="newCatLabel" placeholder="新しいカテゴリ名">
-      <button class="btn btn-red" id="btnAddCat">追加</button>
+<!-- ============ CSV Import Modal ============ -->
+<div class="modal-backdrop" id="csvImportModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>📋 商品名称一括更新</h2>
+      <button class="btn-close" onclick="closeModal('csvImportModal')">×</button>
     </div>
-    <div id="catList" class="cat-list"></div>
-    <div class="acts"><span class="sp"></span><button class="btn btn-ghost" data-close="catModal">閉じる</button></div>
+    <div class="modal-body">
+      <div class="csv-dropzone" id="csvDropzone">
+        <div class="csv-dropzone-icon">📋</div>
+        <div class="csv-dropzone-text">CSVファイルをドラッグ&ドロップ<br>または<button class="link-btn" id="btnPickCsv">ファイルを選択</button></div>
+        <div class="csv-dropzone-hint">必須列: 商品管理番号 / 商品番号 / 商品名</div>
+      </div>
+      <div class="csv-import-summary" id="csvImportSummary"></div>
+      <div class="csv-import-preview" id="csvImportPreview"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('csvImportModal')">キャンセル</button>
+        <button class="btn-primary" id="btnConfirmCsvImport" style="display:none">一括更新を実行</button>
+      </div>
+    </div>
   </div>
 </div>
-<div class="overlay" id="statusModal" hidden>
-  <div class="mini modal-status">
-    <h2>📋 状態管理</h2>
-    <p class="hint">状態（下段タブ）を管理します。番号バッジ・並び替え・名前変更・追加・削除ができます。</p>
-    <div class="cat-add-row">
-      <input type="text" id="newStatusLabel" placeholder="新しいステータス名">
-      <button class="btn btn-red" id="btnAddStatus">追加</button>
+
+<!-- ============ Product Edit Modal ============ -->
+<div class="modal-backdrop" id="productEditModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>商品情報を編集</h2>
+      <button class="btn-close" onclick="closeModal('productEditModal')">×</button>
     </div>
-    <div id="statusList" class="cat-list"></div>
-    <div class="acts"><span class="sp"></span><button class="btn btn-ghost" data-close="statusModal">閉じる</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="productEditId">
+      <div class="form-row">
+        <label>ステータス</label>
+        <div class="status-radio-group">
+          <label class="status-radio-option">
+            <input type="radio" name="productEditStatus" value="active" checked>
+            <span class="status-radio-label status-active">現役</span>
+          </label>
+          <label class="status-radio-option">
+            <input type="radio" name="productEditStatus" value="unsure">
+            <span class="status-radio-label status-unsure">微妙</span>
+          </label>
+        </div>
+        <small class="form-hint">「微妙」にすると商品(微妙)タブに移動します</small>
+      </div>
+      <div class="form-row">
+        <label>商品管理番号</label>
+        <input type="text" id="productEditManageNumber" placeholder="10000176">
+        <small class="form-hint">楽天で自動採番される管理番号</small>
+      </div>
+      <div class="form-row">
+        <label>商品番号</label>
+        <input type="text" id="productEditNumber" placeholder="cab-16-01">
+        <small class="form-hint">店舗内で商品を管理する番号(自分で決める形式)</small>
+      </div>
+      <div class="form-row">
+        <label>商品名</label>
+        <input type="text" id="productEditName" placeholder="商品名">
+      </div>
+      <div class="form-row">
+        <label>商品コード (itemCode)</label>
+        <div class="readonly-field" id="productEditItemCode"></div>
+        <small class="form-hint">楽天API由来のため編集不可</small>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('productEditModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveProductEditForm()">保存</button>
+      </div>
+    </div>
   </div>
 </div>
-<div id="toast" class="toast" hidden></div>
-<script src="app.js?v=0.25.1"></script>
+
+<!-- ============ Add Entry Modal (for material/boost) ============ -->
+<div class="modal-backdrop" id="entryFormModal" style="display:none">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="entryFormTitle">追加</h2>
+      <button class="btn-close" onclick="closeModal('entryFormModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="entryFormId">
+      <input type="hidden" id="entryFormCategory">
+      <div class="form-row">
+        <label>名前 / タイトル</label>
+        <input type="text" id="entryFormName" placeholder="例: ロゴ素材、お祝いバナー">
+      </div>
+      <div class="form-row">
+        <label>商品との紐づけ (任意)</label>
+        <select id="entryFormProductId">
+          <option value="">紐づけなし (ショップ共通)</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>メモ (任意)</label>
+        <textarea id="entryFormNote" placeholder="このグループに入る画像のメモ"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal('entryFormModal')">キャンセル</button>
+        <button class="btn-primary" onclick="saveEntryForm()">保存</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Storage Modal ============ -->
+<div class="modal-backdrop" id="storageModal" style="display:none">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <h2>📊 容量確認</h2>
+      <button class="btn-close" onclick="closeModal('storageModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="storage-loading" id="storageLoading">
+        <div class="spinner"></div>
+        <div>リポジトリの情報を取得中...</div>
+      </div>
+      <div class="storage-content" id="storageContent" style="display:none">
+
+        <!-- 全体サイズ -->
+        <section class="storage-section">
+          <h3>リポジトリ全体のサイズ</h3>
+          <div class="storage-total">
+            <div class="storage-total-num" id="storageTotalSize">—</div>
+            <div class="storage-total-meta">推奨上限 1GB</div>
+          </div>
+          <div class="storage-bar-wrap">
+            <div class="storage-bar" id="storageBar"></div>
+          </div>
+          <div class="storage-bar-legend">
+            <span class="legend-item"><span class="legend-dot green"></span>〜1GB: 余裕あり</span>
+            <span class="legend-item"><span class="legend-dot orange"></span>1〜5GB: 注意</span>
+            <span class="legend-item"><span class="legend-dot red"></span>5GB超: 整理推奨</span>
+          </div>
+        </section>
+
+        <!-- 画像フォルダ集計 -->
+        <section class="storage-section">
+          <h3>画像フォルダの内訳</h3>
+          <div class="storage-stats">
+            <div class="storage-stat">
+              <div class="storage-stat-label">画像ファイル数</div>
+              <div class="storage-stat-num" id="storageImageCount">—</div>
+            </div>
+            <div class="storage-stat">
+              <div class="storage-stat-label">画像合計サイズ</div>
+              <div class="storage-stat-num" id="storageImageSize">—</div>
+            </div>
+            <div class="storage-stat">
+              <div class="storage-stat-label">その他のファイル</div>
+              <div class="storage-stat-num" id="storageOtherSize">—</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ショップ別 -->
+        <section class="storage-section">
+          <h3>ショップ別</h3>
+          <div class="storage-shop-list" id="storageShopList"></div>
+        </section>
+
+        <!-- 大きいファイル トップ10 -->
+        <section class="storage-section">
+          <h3>大きいファイル トップ10</h3>
+          <div class="storage-top-list" id="storageTopList"></div>
+        </section>
+
+        <!-- 圧縮機能(今は無効) -->
+        <section class="storage-section storage-future">
+          <h3>📦 既存の画像を一括圧縮</h3>
+          <button class="btn-primary" id="btnBulkCompress" disabled>一括圧縮を実行</button>
+          <div class="storage-future-note">必要な時期がきたら実装</div>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Toast ============ -->
+<div class="toast" id="toast"></div>
+
+<!-- ============ Loading Overlay ============ -->
+<div class="loading-overlay" id="loadingOverlay" style="display:none">
+  <div class="loading-box">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loadingText">処理中...</div>
+  </div>
+</div>
+
+<script src="app.js?v=1.9.2"></script>
 </body>
 </html>
