@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.9.3';
+const APP_VERSION = 'v1.10.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -141,6 +141,52 @@ function loadCurrentSelections() {
 
 function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
+  // 画像編集モーダル (v1.10.0)
+  const ieClose = document.getElementById('btnImagesEditClose');
+  if (ieClose) ieClose.addEventListener('click', closeProductImagesModal);
+  const ieDel = document.getElementById('btnImagesEditDelete');
+  if (ieDel) ieDel.addEventListener('click', deleteSelectedImagesInModal);
+  const ieFile = document.getElementById('imagesEditFileInput');
+  if (ieFile) {
+    ieFile.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length) {
+        uploadImagesToProductInModal(Array.from(e.target.files));
+        e.target.value = ''; // 同じファイル再選択可
+      }
+    });
+  }
+  const ieDrop = document.getElementById('imagesEditDropzone');
+  if (ieDrop) {
+    ieDrop.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      ieDrop.classList.add('dragover');
+    });
+    ieDrop.addEventListener('dragleave', () => {
+      ieDrop.classList.remove('dragover');
+    });
+    ieDrop.addEventListener('drop', (e) => {
+      e.preventDefault();
+      ieDrop.classList.remove('dragover');
+      const files = Array.from(e.dataTransfer.files || []).filter(f => f.type.startsWith('image/'));
+      if (files.length > 0) {
+        uploadImagesToProductInModal(files);
+      } else {
+        toast('画像ファイルをドロップしてください', 'error');
+      }
+    });
+    // ドロップエリアをクリックでもファイル選択
+    ieDrop.addEventListener('click', (e) => {
+      if (e.target.closest('button')) return; // ボタンは別途
+      ieFile?.click();
+    });
+  }
+  const ieBrowse = document.getElementById('btnImagesEditBrowse');
+  if (ieBrowse) {
+    ieBrowse.addEventListener('click', (e) => {
+      e.stopPropagation();
+      ieFile?.click();
+    });
+  }
   // PAT表示/非表示トグル (v1.9.2)
   const btnTogglePat = document.getElementById('btnTogglePat');
   if (btnTogglePat) {
@@ -2081,11 +2127,18 @@ function renderProductGrid(products) {
   content.querySelectorAll('[data-sort]').forEach(el => {
     el.addEventListener('click', () => toggleSort(el.dataset.sort));
   });
-  // 編集ボタン
-  content.querySelectorAll('[data-edit-product]').forEach(btn => {
+  // 編集ボタン: 情報編集
+  content.querySelectorAll('[data-edit-info]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      openProductEditForm(btn.dataset.editProduct);
+      openProductEditForm(btn.dataset.editInfo);
+    });
+  });
+  // 編集ボタン: 画像編集 (v1.10.0)
+  content.querySelectorAll('[data-edit-images]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openProductImagesModal(btn.dataset.editImages);
     });
   });
   // タグ・グリッド: ワンクリックでタグON/OFF
@@ -2780,6 +2833,177 @@ async function toggleFavorite(productId, btnEl) {
   }
 }
 
+// ===== 画像編集モーダル (v1.10.0) =====
+let _imagesEditingProductId = null;
+let _imagesEditSelection = new Set();  // 選択中の画像ID
+
+function openProductImagesModal(productId) {
+  const data = dataCache[currentShopId];
+  const p = data?.products.find(x => x.id === productId);
+  if (!p) return;
+  _imagesEditingProductId = productId;
+  _imagesEditSelection.clear();
+  document.getElementById('imagesEditTitle').textContent = `画像を編集: ${p.itemManageNumber || p.itemName || ''}`;
+  renderImagesEditGrid();
+  document.getElementById('imagesEditModal').style.display = 'flex';
+}
+
+function closeProductImagesModal() {
+  document.getElementById('imagesEditModal').style.display = 'none';
+  _imagesEditingProductId = null;
+  _imagesEditSelection.clear();
+}
+
+function renderImagesEditGrid() {
+  const data = dataCache[currentShopId];
+  const p = data?.products.find(x => x.id === _imagesEditingProductId);
+  if (!p) return;
+  const grid = document.getElementById('imagesEditGrid');
+  const empty = document.getElementById('imagesEditEmpty');
+  const sortedImages = sortImagesByName(p.images || []);
+  if (sortedImages.length === 0) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  } else {
+    empty.style.display = 'none';
+    grid.innerHTML = sortedImages.map(img => {
+      const checked = _imagesEditSelection.has(img.id);
+      const filename = img.originalName || img.filename || '';
+      return `<div class="images-edit-card ${checked ? 'selected' : ''}" data-iid="${img.id}">
+        <input type="checkbox" class="images-edit-check" data-edit-img-check="${img.id}" ${checked ? 'checked' : ''}>
+        <div class="images-edit-thumb">
+          <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
+        </div>
+        <div class="images-edit-name" title="${escapeHtml(filename)}">${escapeHtml(filename)}</div>
+      </div>`;
+    }).join('');
+    grid.querySelectorAll('[data-edit-img-check]').forEach(cb => {
+      cb.addEventListener('change', () => {
+        const id = cb.dataset.editImgCheck;
+        if (cb.checked) _imagesEditSelection.add(id);
+        else _imagesEditSelection.delete(id);
+        const card = cb.closest('.images-edit-card');
+        if (card) card.classList.toggle('selected', cb.checked);
+        updateImagesEditSelectionBar();
+      });
+    });
+    // カードの本体クリック(チェックボックス外)でもトグル
+    grid.querySelectorAll('.images-edit-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        const cb = card.querySelector('input[type="checkbox"]');
+        if (cb) {
+          cb.checked = !cb.checked;
+          cb.dispatchEvent(new Event('change'));
+        }
+      });
+    });
+  }
+  updateImagesEditSelectionBar();
+}
+
+function updateImagesEditSelectionBar() {
+  const bar = document.getElementById('imagesEditDeleteBar');
+  if (!bar) return;
+  const count = _imagesEditSelection.size;
+  if (count === 0) {
+    bar.style.display = 'none';
+  } else {
+    bar.style.display = 'flex';
+    document.getElementById('imagesEditDeleteCount').textContent = count;
+  }
+}
+
+async function deleteSelectedImagesInModal() {
+  if (_imagesEditSelection.size === 0) return;
+  if (!confirm(`${_imagesEditSelection.size}枚の画像を削除します。よろしいですか?`)) return;
+  const data = dataCache[currentShopId];
+  const p = data?.products.find(x => x.id === _imagesEditingProductId);
+  if (!p) return;
+  const idsToDelete = new Set(_imagesEditSelection);
+  const targetImgs = (p.images || []).filter(img => idsToDelete.has(img.id));
+  const progress = document.getElementById('imagesEditProgress');
+  if (progress) progress.textContent = `削除中... 0/${targetImgs.length}`;
+  document.getElementById('imagesEditLoading').style.display = 'flex';
+
+  let okCount = 0;
+  let failCount = 0;
+  for (let i = 0; i < targetImgs.length; i++) {
+    const img = targetImgs[i];
+    if (progress) progress.textContent = `削除中... ${i + 1}/${targetImgs.length}`;
+    try {
+      // GitHubから画像を削除
+      if (img.path && img.sha) {
+        await ghFetch(`contents/${encodeURI(img.path)}`, {
+          method: 'DELETE',
+          body: JSON.stringify({
+            message: `delete image: ${img.path}`,
+            sha: img.sha,
+            branch: auth.branch || 'main'
+          })
+        });
+      }
+      okCount++;
+    } catch (e) {
+      console.error('Image delete failed', e);
+      failCount++;
+    }
+  }
+  // メタデータから削除した画像を除外
+  p.images = (p.images || []).filter(img => !idsToDelete.has(img.id));
+  try {
+    await saveShopData(currentShopId, `delete ${okCount} images from product`);
+  } catch (e) {
+    toast('JSON保存失敗: ' + e.message, 'error');
+  }
+  document.getElementById('imagesEditLoading').style.display = 'none';
+  _imagesEditSelection.clear();
+  renderImagesEditGrid();
+  render();
+  toast(`${okCount}枚を削除しました${failCount ? ` / 失敗${failCount}件` : ''}`, failCount ? 'error' : 'success');
+}
+
+async function uploadImagesToProductInModal(files) {
+  if (!files.length) return;
+  const data = dataCache[currentShopId];
+  const p = data?.products.find(x => x.id === _imagesEditingProductId);
+  if (!p) return;
+  // 画像ファイルだけに絞る
+  const imageFiles = Array.from(files).filter(f => f.type.startsWith('image/'));
+  if (imageFiles.length === 0) {
+    toast('画像ファイルが含まれていません', 'error');
+    return;
+  }
+  document.getElementById('imagesEditLoading').style.display = 'flex';
+  const progress = document.getElementById('imagesEditProgress');
+
+  let success = 0;
+  let failed = 0;
+  for (let i = 0; i < imageFiles.length; i++) {
+    const f = imageFiles[i];
+    if (progress) progress.textContent = `アップロード中 ${i + 1}/${imageFiles.length}: ${f.name}`;
+    try {
+      const imgMeta = await uploadImageToGitHub(currentShopId, p.id, f);
+      if (!p.images) p.images = [];
+      p.images.push(imgMeta);
+      success++;
+    } catch (e) {
+      console.error('Upload failed', e);
+      failed++;
+    }
+  }
+  if (progress) progress.textContent = `JSON保存中...`;
+  try {
+    await saveShopData(currentShopId, `add ${success} images to product`);
+  } catch (e) {
+    toast('JSON保存失敗: ' + e.message, 'error');
+  }
+  document.getElementById('imagesEditLoading').style.display = 'none';
+  renderImagesEditGrid();
+  render();
+  toast(`アップロード完了: 成功${success}件${failed ? ` / 失敗${failed}件` : ''}`, failed ? 'error' : 'success');
+}
+
 function toggleSort(key) {
   if (sortKey !== key) {
     sortKey = key;
@@ -2897,10 +3121,13 @@ function productRowHTML(p) {
 
   if (viewMode === 'images') {
     // 画像全体モード: 商品番号・画像・お気に入り・タグ操作
-    // (現役/微妙は編集モーダルで操作)
+    // (現役/微妙は情報編集モーダルで操作)
     const actionsForImagesMode = `<div class="col-actions">
       ${tagGridHTML}
-      <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+      <div class="edit-btn-group">
+        <button class="btn-edit-mini" data-edit-images="${p.id}" title="画像を編集">🖼️ 画像</button>
+        <button class="btn-edit-mini" data-edit-info="${p.id}" title="商品情報を編集">📝 情報</button>
+      </div>
     </div>`;
     return `<div class="product-row mode-images ${exportMode ? 'with-export' : ''} ${isEmpty ? 'empty' : ''}">
       ${exportCellHTML}
@@ -2920,10 +3147,13 @@ function productRowHTML(p) {
     </div>`;
   }
 
-  // 基礎情報モード: お気に入りを画像の右隣に専用列、現役/微妙は編集モーダルへ
+  // 基礎情報モード: お気に入りを画像の右隣に専用列、現役/微妙は情報編集モーダルへ
   const actionsCellForBasic = `<div class="col-actions">
     ${tagGridHTML}
-    <button class="btn-edit-mini" data-edit-product="${p.id}">✏️ 編集</button>
+    <div class="edit-btn-group">
+      <button class="btn-edit-mini" data-edit-images="${p.id}" title="画像を編集">🖼️ 画像</button>
+      <button class="btn-edit-mini" data-edit-info="${p.id}" title="商品情報を編集">📝 情報</button>
+    </div>
   </div>`;
   return `<div class="product-row mode-basic ${exportMode ? 'with-export' : ''} ${isEmpty ? 'empty' : ''}">
     ${exportCellHTML}
