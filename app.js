@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.9.2';
+const APP_VERSION = 'v1.9.3';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -394,6 +394,10 @@ async function fileToBase64(file) {
 const FAVORITE_TAG_NAME = 'お気に入り';
 const FAVORITE_TAG_COLOR = 'pink';
 
+// 選ばれる理由タグ (v1.9.3) — 固定名
+const REASON_TAG_NAME = '選ばれる理由';
+const REASON_TAG_COLOR = 'purple';
+
 // 起動時に「お気に入り」タグがなければ自動作成
 async function ensureFavoriteTag(shopId) {
   const data = dataCache[shopId];
@@ -414,6 +418,29 @@ async function ensureFavoriteTag(shopId) {
     console.info('[ImageGallery] お気に入りタグを自動追加');
   } catch (e) {
     console.warn('お気に入りタグの保存失敗', e);
+    data.tags = data.tags.filter(t => t.id !== newTag.id);
+  }
+}
+
+// 起動時に「選ばれる理由」タグがなければ自動作成 (v1.9.3)
+async function ensureReasonTag(shopId) {
+  const data = dataCache[shopId];
+  if (!data) return;
+  if (!Array.isArray(data.tags)) data.tags = [];
+  const existing = data.tags.find(t => t.name === REASON_TAG_NAME);
+  if (existing) return;
+  const newTag = {
+    id: 'tag_reason_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+    name: REASON_TAG_NAME,
+    color: REASON_TAG_COLOR,
+    createdAt: new Date().toISOString()
+  };
+  data.tags.push(newTag);
+  try {
+    await saveShopData(shopId, 'auto: add reason tag');
+    console.info('[ImageGallery] 選ばれる理由タグを自動追加');
+  } catch (e) {
+    console.warn('選ばれる理由タグの保存失敗', e);
     data.tags = data.tags.filter(t => t.id !== newTag.id);
   }
 }
@@ -1809,6 +1836,8 @@ async function loadCurrentShopData() {
   hideLoading();
   // v1.9.0: お気に入りタグを自動確保
   ensureFavoriteTag(currentShopId);
+  // v1.9.3: 選ばれる理由タグを自動確保
+  ensureReasonTag(currentShopId);
 }
 
 // =====================================================
