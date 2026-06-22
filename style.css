@@ -1452,6 +1452,158 @@ body {
   font-size: 11px;
   color: var(--text-muted);
 }
+
+/* ===== 編集ボタングループ (v1.10.0): [🖼️画像][📝情報] ===== */
+.edit-btn-group {
+  display: flex;
+  gap: 4px;
+  align-self: stretch;
+}
+.edit-btn-group .btn-edit-mini {
+  flex: 1;
+  padding: 3px 4px;
+  font-size: 10px;
+}
+
+/* ===== 画像編集モーダル (v1.10.0) ===== */
+.modal.modal-xl {
+  max-width: 900px;
+}
+
+.images-edit-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
+  padding: 24px 16px;
+  text-align: center;
+  background: var(--bg);
+  cursor: pointer;
+  transition: all .15s;
+  margin-bottom: 16px;
+}
+.images-edit-dropzone:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+}
+.images-edit-dropzone.dragover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  border-style: solid;
+  transform: scale(1.01);
+}
+.images-edit-dropzone-icon {
+  font-size: 36px;
+  margin-bottom: 6px;
+}
+.images-edit-dropzone-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.images-edit-dropzone-or {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.images-edit-dropzone-hint {
+  font-size: 11px;
+  color: var(--text-light);
+  margin-top: 8px;
+}
+
+.images-edit-delete-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--danger-bg);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius-sm);
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--danger);
+}
+.images-edit-delete-bar strong {
+  font-size: 16px;
+  font-weight: 700;
+}
+.images-edit-delete-icon { font-size: 18px; margin-right: 6px; }
+
+.images-edit-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+}
+.images-edit-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all .15s;
+}
+.images-edit-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.images-edit-card.selected {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 2px var(--danger-bg);
+}
+.images-edit-check {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  z-index: 2;
+  accent-color: var(--danger);
+}
+.images-edit-thumb {
+  width: 100%;
+  aspect-ratio: 1;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.images-edit-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.images-edit-name {
+  padding: 6px 8px;
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: ui-monospace, monospace;
+}
+
+.images-edit-empty {
+  padding: 30px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.images-edit-loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-radius: var(--radius);
+  z-index: 100;
+}
 .delete-action-info {
   display: flex;
   align-items: center;
