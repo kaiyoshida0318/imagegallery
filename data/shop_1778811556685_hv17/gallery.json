@@ -26438,6 +26438,12 @@
       "name": "お気に入り",
       "color": "pink",
       "createdAt": "2026-06-05T06:08:17.432Z"
+    },
+    {
+      "id": "tag_reason_1782106125180_et6p",
+      "name": "選ばれる理由",
+      "color": "purple",
+      "createdAt": "2026-06-22T05:28:45.180Z"
     }
   ]
 }
