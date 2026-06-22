@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.9.3">
+<link rel="stylesheet" href="style.css?v=1.10.0">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -136,6 +136,51 @@
           </button>
         </div>
       </section>
+    </div>
+  </div>
+</div>
+
+<!-- ============ Product Images Edit Modal (v1.10.0) ============ -->
+<div class="modal-backdrop" id="imagesEditModal" style="display:none">
+  <div class="modal modal-xl">
+    <div class="modal-header">
+      <h2 id="imagesEditTitle">画像を編集</h2>
+      <button class="btn-close" id="btnImagesEditClose">×</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- ドロップエリア -->
+      <div class="images-edit-dropzone" id="imagesEditDropzone">
+        <div class="images-edit-dropzone-icon">📥</div>
+        <div class="images-edit-dropzone-text">ここに画像ファイルをドロップ</div>
+        <div class="images-edit-dropzone-or">または</div>
+        <button class="btn-secondary" id="btnImagesEditBrowse">ファイルを選択</button>
+        <input type="file" id="imagesEditFileInput" accept="image/*" multiple style="display:none">
+        <div class="images-edit-dropzone-hint">jpg / png / webp / gif などの画像ファイル</div>
+      </div>
+
+      <!-- 一括削除バー -->
+      <div class="images-edit-delete-bar" id="imagesEditDeleteBar" style="display:none">
+        <div>
+          <span class="images-edit-delete-icon">🗑️</span>
+          選択中: <strong id="imagesEditDeleteCount">0</strong> 枚
+        </div>
+        <button class="btn-danger" id="btnImagesEditDelete">選択した画像を削除</button>
+      </div>
+
+      <!-- 画像一覧 -->
+      <div class="images-edit-grid" id="imagesEditGrid"></div>
+      <div class="images-edit-empty" id="imagesEditEmpty" style="display:none">
+        <div style="font-size:32px;opacity:0.5;margin-bottom:8px;">📭</div>
+        <div>登録されている画像はありません</div>
+      </div>
+
+      <!-- ローディングオーバーレイ -->
+      <div class="images-edit-loading" id="imagesEditLoading" style="display:none">
+        <div class="spinner"></div>
+        <div id="imagesEditProgress">処理中...</div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -542,6 +587,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.9.3"></script>
+<script src="app.js?v=1.10.0"></script>
 </body>
 </html>
