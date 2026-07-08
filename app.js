@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.10.0';
+const APP_VERSION = 'v1.10.1';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -495,6 +495,99 @@ async function ensureReasonTag(shopId) {
 function getFavoriteTagId() {
   const tags = getCurrentTags();
   return tags.find(t => t.name === FAVORITE_TAG_NAME)?.id || null;
+}
+
+// ===== 画像遅延読み込み&リトライ (v1.10.1) =====
+// GitHubのraw.githubusercontent.comは大量並列アクセスでHTTP 429を返すため、
+// 1) 画面外の画像は読み込まない (IntersectionObserver)
+// 2) 同時読み込み数を制限
+// 3) 429/失敗時は指数バックオフでリトライ
+
+const LAZY_ROOT_MARGIN = '500px'; // 画面下から500px先まで先読み
+const LAZY_MAX_CONCURRENT = 6;     // 同時読み込み数
+const LAZY_MAX_RETRIES = 3;
+const LAZY_BASE_DELAY = 1000;      // ms
+let _lazyObserver = null;
+let _lazyActiveCount = 0;
+const _lazyQueue = [];
+
+function getLazyObserver() {
+  if (_lazyObserver) return _lazyObserver;
+  _lazyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const img = entry.target;
+        _lazyObserver.unobserve(img);
+        _lazyEnqueue(img);
+      }
+    });
+  }, { rootMargin: LAZY_ROOT_MARGIN });
+  return _lazyObserver;
+}
+
+// 対象の <img> を監視対象に登録 (data-src → 実src)
+function observeLazyImg(img) {
+  if (!img || !img.dataset || !img.dataset.src) return;
+  // ネイティブlazy属性はブラウザ任せなので、明示的にIntersectionObserverで制御
+  getLazyObserver().observe(img);
+}
+
+// 全ての data-src 属性を持つ img を再スキャンして監視
+function scanLazyImages(root) {
+  const scope = root || document;
+  scope.querySelectorAll('img[data-src]:not([data-lazy-registered])').forEach(img => {
+    img.dataset.lazyRegistered = '1';
+    observeLazyImg(img);
+  });
+}
+
+// キューに投入 → 空きがあれば実行
+function _lazyEnqueue(img) {
+  _lazyQueue.push(img);
+  _lazyPump();
+}
+
+function _lazyPump() {
+  while (_lazyActiveCount < LAZY_MAX_CONCURRENT && _lazyQueue.length > 0) {
+    const img = _lazyQueue.shift();
+    _lazyLoadImage(img, 0);
+  }
+}
+
+// 画像を読み込む(失敗時はリトライ)
+function _lazyLoadImage(img, attempt) {
+  if (!img || !img.dataset.src) return;
+  const url = img.dataset.src;
+  _lazyActiveCount++;
+  // 一時的な Image インスタンスで先に読み込みを試みる (成功したら実DOMのsrcにセット)
+  const probe = new Image();
+  probe.onload = () => {
+    img.src = url;
+    img.classList.remove('img-loading', 'img-error');
+    img.classList.add('img-loaded');
+    _lazyActiveCount--;
+    _lazyPump();
+  };
+  probe.onerror = () => {
+    if (attempt < LAZY_MAX_RETRIES) {
+      // 指数バックオフでリトライ (1s → 2s → 4s)
+      const delay = LAZY_BASE_DELAY * Math.pow(2, attempt);
+      setTimeout(() => {
+        _lazyActiveCount--;
+        _lazyLoadImage(img, attempt + 1);
+        _lazyPump();
+      }, delay);
+    } else {
+      // 失敗確定
+      img.classList.remove('img-loading');
+      img.classList.add('img-error');
+      _lazyActiveCount--;
+      _lazyPump();
+    }
+  };
+  img.classList.remove('img-error');
+  img.classList.add('img-loading');
+  probe.src = url;
 }
 
 function shopDataPath(shopId) {
@@ -2123,6 +2216,9 @@ function renderProductGrid(products) {
   `;
   content.innerHTML = html;
 
+  // 遅延読み込み対象を登録 (v1.10.1)
+  scanLazyImages(content);
+
   // ソート切替
   content.querySelectorAll('[data-sort]').forEach(el => {
     el.addEventListener('click', () => toggleSort(el.dataset.sort));
@@ -3044,12 +3140,12 @@ function productRowHTML(p) {
       return `<div class="product-row-thumb delete-mark ${isMarked ? 'marked' : ''}"
         data-delete-toggle="${img.id}"
         title="${escapeHtml(getImageSortKey(img))}">
-        <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
+        <img data-src="${escapeHtml(img.url)}" alt="" class="lazy-thumb">
         ${isMarked ? '<div class="delete-mark-overlay">✕</div>' : ''}
       </div>`;
     }
     return `<div class="product-row-thumb" data-lb-pid="${p.id}" data-lb-index="${idx}" title="${escapeHtml(getImageSortKey(img))}">
-      <img src="${escapeHtml(img.url)}" alt="" loading="lazy">
+      <img data-src="${escapeHtml(img.url)}" alt="" class="lazy-thumb">
     </div>`;
   }).join('');
 
