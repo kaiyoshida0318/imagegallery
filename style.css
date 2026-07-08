@@ -1794,6 +1794,45 @@ body {
   transition: outline .15s;
 }
 .product-row-thumb.delete-mark { cursor: pointer; }
+
+/* ===== 画像遅延読み込み (v1.10.1) ===== */
+/* 読み込み前・読み込み中: 灰色のパルスアニメーション */
+img.lazy-thumb {
+  background: linear-gradient(90deg,
+    var(--bg) 0%,
+    var(--border-light) 50%,
+    var(--bg) 100%);
+  background-size: 200% 100%;
+}
+img.lazy-thumb.img-loading {
+  animation: lazyPulse 1.4s ease-in-out infinite;
+}
+@keyframes lazyPulse {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+/* 読み込み成功: アニメ停止 */
+img.lazy-thumb.img-loaded {
+  background: #fff;
+  animation: none;
+}
+/* 読み込み失敗: 赤い枠 + アイコン */
+img.lazy-thumb.img-error {
+  background: #fef2f2;
+  animation: none;
+  border: 1px dashed #dc2626;
+  position: relative;
+}
+img.lazy-thumb.img-error::after {
+  content: '⚠';
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #dc2626;
+  font-size: 20px;
+}
 .product-row-thumb:hover {
   outline: 2px solid var(--primary);
   outline-offset: -2px;
