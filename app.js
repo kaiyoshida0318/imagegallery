@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.2';
+const APP_VERSION = 'v1.11.4';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -634,8 +634,8 @@ function cancelBulkDownload() {
 // 2) 同時読み込み数を制限
 // 3) 429/失敗時は指数バックオフでリトライ
 
-const LAZY_ROOT_MARGIN = '500px'; // 画面下から500px先まで先読み
-const LAZY_MAX_CONCURRENT = 6;     // 同時読み込み数
+const LAZY_ROOT_MARGIN = '1500px'; // v1.11.4: 500px → 1500px (先読み範囲を広げる)
+const LAZY_MAX_CONCURRENT = 16;     // v1.11.4: 6 → 16 (画像軽量化により429リスク減、並列を増やす)
 const LAZY_MAX_RETRIES = 3;
 const LAZY_BASE_DELAY = 1000;      // ms
 let _lazyObserver = null;
@@ -2400,8 +2400,29 @@ function renderProductGrid(products) {
     `;
   }
 
+  // エクスポート操作行 (v1.11.3): 表示中の商品を対象に全選択/全解除
+  let exportActionRowHTML = '';
+  if (exportMode) {
+    const visibleIds = list.map(p => p.id);
+    const selectedInView = visibleIds.filter(id => exportSelection.has(id)).length;
+    const allSelected = visibleIds.length > 0 && selectedInView === visibleIds.length;
+    exportActionRowHTML = `
+      <div class="export-action-row">
+        <div class="export-action-row-info">
+          <span>📤 エクスポート選択操作</span>
+          <span class="export-action-row-count">表示中の商品: ${visibleIds.length}件 (選択済み ${selectedInView}件)</span>
+        </div>
+        <div class="export-action-row-buttons">
+          <button class="btn-secondary btn-mini" id="btnExportSelectAllVisible" ${allSelected ? 'disabled' : ''}>✓ 表示中を全選択</button>
+          <button class="btn-secondary btn-mini" id="btnExportDeselectAllVisible" ${selectedInView === 0 ? 'disabled' : ''}>✕ 表示中の選択を解除</button>
+        </div>
+      </div>
+    `;
+  }
+
   const html = `
     <div class="product-table">
+      ${exportActionRowHTML}
       ${headerHTML}
       ${list.map(p => productRowHTML(p)).join('')}
     </div>
@@ -2410,6 +2431,26 @@ function renderProductGrid(products) {
 
   // 遅延読み込み対象を登録 (v1.10.1)
   scanLazyImages(content);
+
+  // エクスポート操作行のボタン (v1.11.3)
+  const btnSelectAll = content.querySelector('#btnExportSelectAllVisible');
+  if (btnSelectAll) {
+    btnSelectAll.addEventListener('click', () => {
+      list.forEach(p => exportSelection.add(p.id));
+      saveExportState();
+      updateExportBar();
+      render();
+    });
+  }
+  const btnDeselectAll = content.querySelector('#btnExportDeselectAllVisible');
+  if (btnDeselectAll) {
+    btnDeselectAll.addEventListener('click', () => {
+      list.forEach(p => exportSelection.delete(p.id));
+      saveExportState();
+      updateExportBar();
+      render();
+    });
+  }
 
   // ソート切替
   content.querySelectorAll('[data-sort]').forEach(el => {
