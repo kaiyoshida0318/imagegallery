@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.4';
+const APP_VERSION = 'v1.11.5';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -679,43 +679,65 @@ function _lazyEnqueue(img) {
 }
 
 function _lazyPump() {
+  // 🚨 (v1.11.5) 安全弁: カウンタが負や異常値になっていたらリセット
+  if (_lazyActiveCount < 0 || _lazyActiveCount > LAZY_MAX_CONCURRENT * 2) {
+    console.warn('[ImageGallery] _lazyActiveCount 異常値、リセット:', _lazyActiveCount);
+    _lazyActiveCount = 0;
+  }
   while (_lazyActiveCount < LAZY_MAX_CONCURRENT && _lazyQueue.length > 0) {
     const img = _lazyQueue.shift();
-    _lazyLoadImage(img, 0);
+    _lazyActiveCount++;   // 🚨 (v1.11.5) カウンタ管理はここに集約
+    // リトライ経由の再エントリならdataset.retryCountに保存されている
+    const attempt = parseInt(img.dataset.retryCount || '0', 10);
+    _lazyLoadImage(img, attempt);
   }
 }
 
 // 画像を読み込む(失敗時はリトライ)
+// (v1.11.5) バグ修正: リトライ待機中はカウンタを解放してキューを進める
+//   旧実装: setTimeout待機中(1〜4秒)もカウンタを保持していたため、
+//          遅い画像/失敗画像が16個溜まると並列度が枯渇してキュー完全停止
+//   新実装: probe失敗時は即カウンタを解放し、キューの末尾に戻して再挑戦。
+//          _lazyLoadImage内でカウンタを触らないシンプルな責務分離
 function _lazyLoadImage(img, attempt) {
-  if (!img || !img.dataset.src) return;
+  if (!img || !img.dataset.src) {
+    // 対象が無効な場合もカウンタを解放
+    _lazyActiveCount--;
+    _lazyPump();
+    return;
+  }
   const url = img.dataset.src;
-  _lazyActiveCount++;
-  // 一時的な Image インスタンスで先に読み込みを試みる (成功したら実DOMのsrcにセット)
   const probe = new Image();
-  probe.onload = () => {
-    img.src = url;
-    img.classList.remove('img-loading', 'img-error');
-    img.classList.add('img-loaded');
+
+  const finish = (success) => {
+    if (success) {
+      img.src = url;
+      img.classList.remove('img-loading', 'img-error');
+      img.classList.add('img-loaded');
+    } else {
+      img.classList.remove('img-loading');
+      img.classList.add('img-error');
+    }
     _lazyActiveCount--;
     _lazyPump();
   };
+
+  probe.onload = () => finish(true);
   probe.onerror = () => {
     if (attempt < LAZY_MAX_RETRIES) {
-      // 指数バックオフでリトライ (1s → 2s → 4s)
+      // 🚨 リトライ: カウンタを即解放して他の画像を処理させる
+      _lazyActiveCount--;
       const delay = LAZY_BASE_DELAY * Math.pow(2, attempt);
       setTimeout(() => {
-        _lazyActiveCount--;
-        _lazyLoadImage(img, attempt + 1);
-        _lazyPump();
+        // 再挑戦時にキュー経由で再エントリ(dataset.retryCountでリトライ数を保持)
+        img.dataset.retryCount = String(attempt + 1);
+        _lazyEnqueue(img);
       }, delay);
     } else {
-      // 失敗確定
-      img.classList.remove('img-loading');
-      img.classList.add('img-error');
-      _lazyActiveCount--;
-      _lazyPump();
+      finish(false);
     }
   };
+
   img.classList.remove('img-error');
   img.classList.add('img-loading');
   probe.src = url;
