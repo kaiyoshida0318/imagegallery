@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.0';
+const APP_VERSION = 'v1.12.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -207,6 +207,11 @@ function bindEvents() {
   if (btnBulkDL) btnBulkDL.addEventListener('click', downloadAllImagesAsZip);
   const btnBulkDLCancel = document.getElementById('btnBulkDownloadCancel');
   if (btnBulkDLCancel) btnBulkDLCancel.addEventListener('click', cancelBulkDownload);
+  // 全実ファイルDL & 孤児削除 (v1.12.0)
+  const btnAllFilesDL = document.getElementById('btnDownloadAllFiles');
+  if (btnAllFilesDL) btnAllFilesDL.addEventListener('click', downloadAllRealFilesAsZip);
+  const btnDelOrphans = document.getElementById('btnDeleteOrphans');
+  if (btnDelOrphans) btnDelOrphans.addEventListener('click', findAndDeleteOrphanFiles);
   document.getElementById('btnExportMode').addEventListener('click', toggleExportMode);
   document.getElementById('btnExportExecute').addEventListener('click', executeExport);
   document.getElementById('btnExportClear').addEventListener('click', clearExportSelection);
@@ -603,6 +608,216 @@ async function downloadAllImagesAsZip() {
 function cancelBulkDownload() {
   _bulkDownloadCancelled = true;
 }
+
+// ===== 実ファイル全ダウンロード (v1.12.0) =====
+// JSONの登録に関係なく、GitHub上のdata/{shopId}/images/配下の実ファイル全部をZIP化
+async function downloadAllRealFilesAsZip() {
+  if (typeof JSZip === 'undefined') {
+    toast('JSZipライブラリが読み込まれていません', 'error');
+    return;
+  }
+  const shop = getCurrentShop();
+  if (!shop) { toast('ショップが選択されていません', 'error'); return; }
+
+  showLoading('リポジトリの全ファイル一覧を取得中...');
+  let allBlobs;
+  try {
+    // Trees APIで全ファイル取得
+    const branch = auth.branch || 'main';
+    const res = await ghFetch(`git/trees/${branch}?recursive=1`);
+    if (!res.ok) throw new Error(`Trees API ${res.status}`);
+    const data = await res.json();
+    allBlobs = (data.tree || []).filter(n => n.type === 'blob');
+  } catch (e) {
+    hideLoading();
+    toast('ファイル一覧取得失敗: ' + e.message, 'error');
+    return;
+  }
+  hideLoading();
+
+  // 現在のショップの画像ファイルだけ抽出
+  const shopPrefix = `data/${currentShopId}/images/`;
+  const imageExt = /\.(jpe?g|png|webp|gif|bmp|svg|avif|heic)$/i;
+  const imageFiles = allBlobs.filter(b =>
+    b.path.startsWith(shopPrefix) && imageExt.test(b.path)
+  );
+
+  if (imageFiles.length === 0) {
+    toast('ダウンロード対象のファイルがありません', 'error');
+    return;
+  }
+
+  if (!confirm(`GitHub上の実ファイル ${imageFiles.length} 枚をZIPでダウンロードします。\n(JSONへの登録有無に関係なく全部)\n続行しますか?`)) return;
+
+  _bulkDownloadCancelled = false;
+  const shopCode = (shop.shopCode || 'shop').toLowerCase();
+  const zip = new JSZip();
+
+  const progressWrap = document.getElementById('bulkDownloadProgress');
+  if (progressWrap) progressWrap.style.display = 'block';
+  const progressText = document.getElementById('bulkDownloadProgressText');
+  const progressBar = document.getElementById('bulkDownloadProgressBar');
+
+  let okCount = 0;
+  let failCount = 0;
+
+  // 商品IDから管理番号を引くマップ (JSONから)
+  const data = dataCache[currentShopId];
+  const productIdToManage = new Map();
+  if (data && data.products) {
+    for (const p of data.products) {
+      productIdToManage.set(p.id, p.itemManageNumber || p.id);
+    }
+  }
+
+  for (let i = 0; i < imageFiles.length; i++) {
+    if (_bulkDownloadCancelled) break;
+    const f = imageFiles[i];
+    if (progressText) progressText.textContent = `${i + 1} / ${imageFiles.length} 枚取得中...`;
+    if (progressBar) progressBar.style.width = `${Math.floor((i + 1) / imageFiles.length * 100)}%`;
+
+    try {
+      // パス例: data/{shopId}/images/{productId}/{filename}
+      const relative = f.path.substring(shopPrefix.length); // productId/filename
+      const parts = relative.split('/');
+      const productId = parts[0];
+      const filename = parts.slice(1).join('/');
+      // フォルダ名: 商品と紐づいてれば管理番号、なければ orphan_{productId}
+      let folderName;
+      if (productIdToManage.has(productId)) {
+        folderName = `${shopCode}_${productIdToManage.get(productId)}`;
+      } else {
+        folderName = `orphan_${productId}`;
+      }
+      const folder = zip.folder(folderName);
+
+      // raw.githubusercontent.com から取得
+      const rawUrl = `https://raw.githubusercontent.com/${auth.owner}/${auth.repo}/${auth.branch || 'main'}/${f.path}`;
+      const res = await fetch(rawUrl, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      folder.file(filename, blob);
+      okCount++;
+    } catch (e) {
+      console.error('DL failed', f.path, e);
+      failCount++;
+    }
+  }
+
+  if (_bulkDownloadCancelled) {
+    if (progressWrap) progressWrap.style.display = 'none';
+    toast('キャンセルされました', 'error');
+    return;
+  }
+
+  if (progressText) progressText.textContent = 'ZIPを生成中...';
+  try {
+    const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const filename = `allfiles_${shopCode}_${imageFiles.length}files_${stamp}.zip`;
+
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    if (progressWrap) progressWrap.style.display = 'none';
+    toast(`${okCount}枚をZIPでダウンロードしました${failCount ? ` / 失敗${failCount}件` : ''}`, failCount ? 'error' : 'success');
+  } catch (e) {
+    if (progressWrap) progressWrap.style.display = 'none';
+    toast('ZIP生成失敗: ' + e.message, 'error');
+  }
+}
+
+// ===== 孤児ファイル検出&一括削除 (v1.12.0) =====
+async function findAndDeleteOrphanFiles() {
+  showLoading('孤児ファイル検出中...');
+  try {
+    // Trees APIで全ファイル取得
+    const branch = auth.branch || 'main';
+    const res = await ghFetch(`git/trees/${branch}?recursive=1`);
+    if (!res.ok) throw new Error(`Trees API ${res.status}`);
+    const treeData = await res.json();
+    const allBlobs = (treeData.tree || []).filter(n => n.type === 'blob');
+
+    // 現在のショップの画像ファイル
+    const shopPrefix = `data/${currentShopId}/images/`;
+    const imageExt = /\.(jpe?g|png|webp|gif|bmp|svg|avif|heic)$/i;
+    const realFiles = allBlobs.filter(b =>
+      b.path.startsWith(shopPrefix) && imageExt.test(b.path)
+    );
+
+    // JSON側で認識してる画像のpathを収集
+    const data = dataCache[currentShopId];
+    const registeredPaths = new Set();
+    if (data && data.products) {
+      for (const p of data.products) {
+        for (const img of (p.images || [])) {
+          if (img.path) registeredPaths.add(img.path);
+        }
+      }
+    }
+
+    // 孤児 = 実ファイルにあるがJSONにない
+    const orphans = realFiles.filter(f => !registeredPaths.has(f.path));
+
+    hideLoading();
+
+    if (orphans.length === 0) {
+      toast('孤児ファイルはありません', 'success');
+      return;
+    }
+
+    // 合計サイズ計算
+    let totalSize = 0;
+    orphans.forEach(o => { totalSize += o.size || 0; });
+
+    if (!confirm(`孤児ファイル(JSONに登録されていない画像) ${orphans.length} 件が見つかりました。\n合計サイズ: ${formatBytes(totalSize)}\n\nこれらを一括削除しますか?\n(削除は取り消せません)`)) return;
+
+    showLoading(`削除中... 0/${orphans.length}`);
+    let okCount = 0;
+    let failCount = 0;
+    for (let i = 0; i < orphans.length; i++) {
+      const o = orphans[i];
+      showLoading(`削除中... ${i + 1}/${orphans.length}`);
+      try {
+        // 削除にはSHAが必要 → Contents APIから取得
+        const meta = await ghFetch(`contents/${encodeURI(o.path)}`);
+        if (!meta.ok) throw new Error(`meta fetch ${meta.status}`);
+        const metaJson = await meta.json();
+        const sha = metaJson.sha;
+        const delRes = await ghFetch(`contents/${encodeURI(o.path)}`, {
+          method: 'DELETE',
+          body: JSON.stringify({
+            message: `cleanup orphan: ${o.path}`,
+            sha,
+            branch
+          })
+        });
+        if (!delRes.ok && delRes.status !== 404) {
+          throw new Error(`delete ${delRes.status}`);
+        }
+        okCount++;
+      } catch (e) {
+        console.error('orphan delete failed', o.path, e);
+        failCount++;
+      }
+    }
+    hideLoading();
+    toast(`${okCount}件の孤児ファイルを削除しました${failCount ? ` / 失敗${failCount}件` : ''}`, failCount ? 'error' : 'success');
+  } catch (e) {
+    hideLoading();
+    toast('処理失敗: ' + e.message, 'error');
+  }
+}
+
+// ===== 実ファイル全ダウンロード ここまで =====
 
 // ===== 全画像一括ダウンロード ここまで =====
 
