@@ -251,6 +251,12 @@
         <button class="btn-add-shop" onclick="openShopForm()">+ ショップを追加</button>
       </section>
 
+      <section class="setting-section">
+        <h3>🗑️ 画像キャッシュ</h3>
+        <p class="form-hint">画像の表示がおかしい場合はキャッシュをクリアしてリロードしてください</p>
+        <button class="btn-secondary" id="btnClearImageCache">画像キャッシュをクリア</button>
+      </section>
+
       <div class="modal-actions">
         <button class="btn-secondary" onclick="closeModal('settingsModal')">キャンセル</button>
         <button class="btn-primary" onclick="saveSettings()">保存</button>
@@ -604,6 +610,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.11.5"></script>
+<script src="app.js?v=1.11.6"></script>
 </body>
 </html>
