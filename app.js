@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.10.1';
+const APP_VERSION = 'v1.11.0';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -202,6 +202,11 @@ function bindEvents() {
     });
   }
   document.getElementById('btnStorage').addEventListener('click', openStorageModal);
+  // 全画像一括ダウンロード (v1.11.0)
+  const btnBulkDL = document.getElementById('btnBulkDownload');
+  if (btnBulkDL) btnBulkDL.addEventListener('click', downloadAllImagesAsZip);
+  const btnBulkDLCancel = document.getElementById('btnBulkDownloadCancel');
+  if (btnBulkDLCancel) btnBulkDLCancel.addEventListener('click', cancelBulkDownload);
   document.getElementById('btnExportMode').addEventListener('click', toggleExportMode);
   document.getElementById('btnExportExecute').addEventListener('click', executeExport);
   document.getElementById('btnExportClear').addEventListener('click', clearExportSelection);
@@ -496,6 +501,110 @@ function getFavoriteTagId() {
   const tags = getCurrentTags();
   return tags.find(t => t.name === FAVORITE_TAG_NAME)?.id || null;
 }
+
+// ===== 全画像一括ダウンロード (v1.11.0) =====
+let _bulkDownloadCancelled = false;
+
+async function downloadAllImagesAsZip() {
+  if (typeof JSZip === 'undefined') {
+    toast('JSZipライブラリが読み込まれていません', 'error');
+    return;
+  }
+  const shop = getCurrentShop();
+  if (!shop) { toast('ショップが選択されていません', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) { toast('データが読み込まれていません', 'error'); return; }
+
+  const targets = data.products;
+  if (targets.length === 0) {
+    toast('商品がありません', 'error');
+    return;
+  }
+  let totalImages = 0;
+  targets.forEach(p => { totalImages += (p.images || []).length; });
+  if (totalImages === 0) {
+    toast('画像がありません', 'error');
+    return;
+  }
+
+  if (!confirm(`全画像 ${totalImages} 枚をZIPでダウンロードします。\n(大量の場合、処理に数分〜数十分かかる可能性があります)\n続行しますか?`)) return;
+
+  _bulkDownloadCancelled = false;
+  const shopCode = (shop.shopCode || 'shop').toLowerCase();
+  const zip = new JSZip();
+
+  // 専用の進捗UI
+  const progressWrap = document.getElementById('bulkDownloadProgress');
+  if (progressWrap) progressWrap.style.display = 'block';
+  const progressText = document.getElementById('bulkDownloadProgressText');
+  const progressBar = document.getElementById('bulkDownloadProgressBar');
+
+  let okCount = 0;
+  let failCount = 0;
+  let processed = 0;
+
+  for (const p of targets) {
+    if (_bulkDownloadCancelled) break;
+    const manage = p.itemManageNumber || p.id;
+    const folderName = `${shopCode}_${manage}`;
+    const folder = zip.folder(folderName);
+    const sorted = sortImagesByName(p.images || []);
+    for (const img of sorted) {
+      if (_bulkDownloadCancelled) break;
+      processed++;
+      if (progressText) progressText.textContent = `${processed} / ${totalImages} 枚取得中...`;
+      if (progressBar) progressBar.style.width = `${Math.floor(processed / totalImages * 100)}%`;
+      try {
+        const res = await fetch(img.url, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        const filename = img.originalName || img.filename;
+        folder.file(filename, blob);
+        okCount++;
+      } catch (e) {
+        console.error('DL failed', img.url, e);
+        failCount++;
+      }
+    }
+  }
+
+  if (_bulkDownloadCancelled) {
+    if (progressWrap) progressWrap.style.display = 'none';
+    toast('キャンセルされました', 'error');
+    return;
+  }
+
+  if (progressText) progressText.textContent = 'ZIPを生成中...';
+  if (progressBar) progressBar.style.width = '100%';
+  try {
+    const zipBlob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const filename = `backup_${shopCode}_${targets.length}items_${stamp}.zip`;
+
+    const url = URL.createObjectURL(zipBlob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+    if (progressWrap) progressWrap.style.display = 'none';
+    toast(`${okCount}枚をZIPでダウンロードしました${failCount ? ` / 失敗${failCount}件` : ''}`, failCount ? 'error' : 'success');
+  } catch (e) {
+    if (progressWrap) progressWrap.style.display = 'none';
+    toast('ZIP生成失敗: ' + e.message, 'error');
+  }
+}
+
+function cancelBulkDownload() {
+  _bulkDownloadCancelled = true;
+}
+
+// ===== 全画像一括ダウンロード ここまで =====
 
 // ===== 画像遅延読み込み&リトライ (v1.10.1) =====
 // GitHubのraw.githubusercontent.comは大量並列アクセスでHTTP 429を返すため、
@@ -863,6 +972,33 @@ async function deleteImageFromGitHub(imageMeta) {
     const err = await res.json();
     throw new Error(err.message || '削除失敗');
   }
+}
+
+// 既存画像を上書き (v1.11.0): 既存のpathとshaを使って新しいコンテンツをPUT
+async function overwriteImageOnGitHub(imageMeta, newFile) {
+  const content = await fileToBase64(newFile);
+  const res = await ghFetch(`contents/${imageMeta.path}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      message: `overwrite image: ${imageMeta.filename}`,
+      content,
+      sha: imageMeta.sha,
+      branch: auth.branch
+    })
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || '上書き失敗');
+  }
+  const result = await res.json();
+  // メタデータを更新
+  return {
+    ...imageMeta,
+    sha: result.content.sha,
+    url: result.content.download_url,
+    size: newFile.size,
+    uploadedAt: new Date().toISOString()
+  };
 }
 
 // =====================================================
@@ -1655,23 +1791,32 @@ async function handleBulkZip(file) {
       if (p.itemManageNumber) productsByManage.set(String(p.itemManageNumber).trim(), p);
     });
 
-    const matched = [];      // {product, files: [{path, filename, entry}]}
+    const matched = [];      // {product, files: [{path, filename, entry, existingImg?}]}
     const unmatched = [];    // {manageNumber, fileCount}
     let totalFiles = 0;
+    let overwriteCount = 0;  // 上書きになる枚数 (v1.11.0)
 
     for (const [manageNumber, files] of groups) {
       // ファイル名でソート (1_xxx.jpg, 2_xxx.jpg ...)
       files.sort((a, b) => a.filename.localeCompare(b.filename, 'ja', { numeric: true }));
       const product = productsByManage.get(manageNumber);
       if (product) {
-        matched.push({ product, files });
+        // 上書き対象を判定 (originalNameか filename が一致する既存画像)
+        const enrichedFiles = files.map(f => {
+          const existingImg = (product.images || []).find(img =>
+            (img.originalName || img.filename) === f.filename
+          );
+          if (existingImg) overwriteCount++;
+          return { ...f, existingImg };
+        });
+        matched.push({ product, files: enrichedFiles });
         totalFiles += files.length;
       } else {
         unmatched.push({ manageNumber, fileCount: files.length });
       }
     }
 
-    pendingBulkImport = { matched, unmatched, totalFiles };
+    pendingBulkImport = { matched, unmatched, totalFiles, overwriteCount };
     hideLoading();
     showBulkImportPreview();
   } catch (e) {
@@ -1705,11 +1850,16 @@ function showBulkImportPreview() {
         <div class="csv-stat-num">${r.totalFiles}</div>
         <div class="csv-stat-label">画像ファイル</div>
       </div>
+      <div class="csv-stat ${r.overwriteCount > 0 ? 'csv-stat-warn' : 'csv-stat-ok'}">
+        <div class="csv-stat-num">${r.overwriteCount || 0}</div>
+        <div class="csv-stat-label">上書き対象</div>
+      </div>
       <div class="csv-stat csv-stat-warn">
         <div class="csv-stat-num">${r.unmatched.length}</div>
         <div class="csv-stat-label">未マッチ商品</div>
       </div>
     </div>
+    ${r.overwriteCount > 0 ? `<div class="csv-hint" style="color:var(--warning-text)">⚠️ ${r.overwriteCount}枚が既存画像を上書きします</div>` : ''}
   `;
 
   const preview = document.getElementById('bulkImportPreview');
@@ -1752,6 +1902,14 @@ function showBulkImportPreview() {
 async function confirmBulkImport() {
   const r = pendingBulkImport;
   if (!r || r.matched.length === 0) return;
+
+  // 上書き確認 (v1.11.0)
+  if (r.overwriteCount > 0) {
+    if (!confirm(`${r.overwriteCount}枚の既存画像を上書きします。よろしいですか?\n(元の画像は復元できません)`)) {
+      return;
+    }
+  }
+
   const confirmBtn = document.getElementById('btnConfirmBulkImport');
   const dz = document.getElementById('bulkDropzone');
   const progress = document.getElementById('bulkUploadProgress');
@@ -1760,12 +1918,11 @@ async function confirmBulkImport() {
   progress.style.display = 'block';
 
   let uploadedCount = 0;
+  let overwrittenCount = 0;
   let failedCount = 0;
   const totalCount = r.totalFiles;
-  let processedProducts = 0;
 
   for (const m of r.matched) {
-    processedProducts++;
     const p = m.product;
     if (!p.images) p.images = [];
 
@@ -1783,14 +1940,19 @@ async function confirmBulkImport() {
                    : 'image/jpeg';
         const fileObj = new File([blob], f.filename, { type: mime });
 
-        // 重複チェック: 同じoriginalNameが既にあればスキップ
-        const exists = p.images.some(img =>
-          (img.originalName || img.filename) === f.filename
-        );
-        if (exists) continue;
-
-        const imgMeta = await uploadImageToGitHub(currentShopId, p.id, fileObj);
-        p.images.push(imgMeta);
+        if (f.existingImg) {
+          // 上書きアップロード
+          const updatedMeta = await overwriteImageOnGitHub(f.existingImg, fileObj);
+          const idx = p.images.findIndex(img => img.id === f.existingImg.id);
+          if (idx >= 0) {
+            p.images[idx] = updatedMeta;
+          }
+          overwrittenCount++;
+        } else {
+          // 新規アップロード
+          const imgMeta = await uploadImageToGitHub(currentShopId, p.id, fileObj);
+          p.images.push(imgMeta);
+        }
       } catch (e) {
         console.error(`Upload failed: ${f.filename}`, e);
         failedCount++;
@@ -1806,7 +1968,8 @@ async function confirmBulkImport() {
 
   progress.style.display = 'none';
   closeModal('bulkImagesModal');
-  toast(`完了: ${uploadedCount}枚アップロード${failedCount ? ` / 失敗${failedCount}件` : ''}`, failedCount ? 'error' : 'success');
+  const summary = `完了: 新規${uploadedCount - overwrittenCount - failedCount}枚 / 上書き${overwrittenCount}枚${failedCount ? ` / 失敗${failedCount}件` : ''}`;
+  toast(summary, failedCount ? 'error' : 'success');
   pendingBulkImport = null;
   render();
 }
