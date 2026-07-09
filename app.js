@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.1';
+const APP_VERSION = 'v1.11.2';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -450,9 +450,21 @@ const REASON_TAG_NAME = '選ばれる理由';
 const REASON_TAG_COLOR = 'purple';
 
 // 起動時に「お気に入り」タグがなければ自動作成
+// 起動時に「お気に入り」タグがなければ自動作成
+// (v1.11.2) 空/破損データ検出時は保存をスキップして事故を防ぐ
 async function ensureFavoriteTag(shopId) {
   const data = dataCache[shopId];
   if (!data) return;
+  // 🚨 安全ガード: JSON読み込みで異常があった場合は絶対に保存しない
+  if (data._wasEmpty || data._parseError) {
+    console.warn('[ImageGallery] ensureFavoriteTag: データ異常のためスキップ', { _wasEmpty: data._wasEmpty, _parseError: data._parseError });
+    return;
+  }
+  // 🚨 追加ガード: sha が未取得(初回書き込み前)の場合、既存データ検出できないと危険
+  if (!Array.isArray(data.products)) {
+    console.warn('[ImageGallery] ensureFavoriteTag: productsが配列でないためスキップ');
+    return;
+  }
   if (!Array.isArray(data.tags)) data.tags = [];
   const existing = data.tags.find(t => t.name === FAVORITE_TAG_NAME);
   if (existing) return;
@@ -474,9 +486,19 @@ async function ensureFavoriteTag(shopId) {
 }
 
 // 起動時に「選ばれる理由」タグがなければ自動作成 (v1.9.3)
+// (v1.11.2) 空/破損データ検出時は保存をスキップして事故を防ぐ
 async function ensureReasonTag(shopId) {
   const data = dataCache[shopId];
   if (!data) return;
+  // 🚨 安全ガード: JSON読み込みで異常があった場合は絶対に保存しない
+  if (data._wasEmpty || data._parseError) {
+    console.warn('[ImageGallery] ensureReasonTag: データ異常のためスキップ', { _wasEmpty: data._wasEmpty, _parseError: data._parseError });
+    return;
+  }
+  if (!Array.isArray(data.products)) {
+    console.warn('[ImageGallery] ensureReasonTag: productsが配列でないためスキップ');
+    return;
+  }
   if (!Array.isArray(data.tags)) data.tags = [];
   const existing = data.tags.find(t => t.name === REASON_TAG_NAME);
   if (existing) return;
@@ -869,12 +891,11 @@ async function saveShopData(shopId, message) {
 async function _saveShopDataOnce(shopId, message, retryCount = 0) {
   const data = dataCache[shopId];
   if (!data) return;
-  // 空データ警告状態のままでの上書き保存を防止
-  if ((data._wasEmpty || data._parseError) &&
-      data.products.length === 0 &&
-      data.materials.length === 0 &&
-      data.boosts.length === 0 &&
-      (!data.tags || data.tags.length === 0)) {
+  // 🚨 (v1.11.2) 強化: 空データ警告状態では絶対に保存しない
+  // 以前は tags.length === 0 も条件にしていたが、ensureFavoriteTagがタグを1個追加してから
+  // 保存を呼ぶため、この条件を素通りして事故が起きた(2026-07-09の全データ消失)
+  // → tagsの数に関わらず、_wasEmpty/_parseError/_loadFailed のいずれかが立っていたら保存を拒否
+  if (data._wasEmpty || data._parseError || data._loadFailed) {
     throw new Error('データロード時に空/破損を検出したため、上書き保存を中止しました。GitHub上のgallery.jsonを確認してください。');
   }
   const path = shopDataPath(shopId);
@@ -2133,10 +2154,18 @@ async function loadCurrentShopData() {
     }
   } catch (e) {
     toast('読み込み失敗: ' + e.message, 'error');
-    dataCache[currentShopId] = { products: [], materials: [], boosts: [], tags: [], sha: null };
+    // 🚨 (v1.11.2) 読み込み失敗時は「破損」フラグを立てて、以降の保存を絶対に走らせない
+    dataCache[currentShopId] = {
+      products: [], materials: [], boosts: [], tags: [], sha: null,
+      _wasEmpty: true,
+      _parseError: true,
+      _loadFailed: true
+    };
+    hideLoading();
+    return;  // 🚨 早期return: ensureFavoriteTag/ensureReasonTagを呼ばない
   }
   hideLoading();
-  // v1.9.0: お気に入りタグを自動確保
+  // v1.9.0: お気に入りタグを自動確保 (ただしensure側でも_wasEmpty/_parseErrorをチェック済み)
   ensureFavoriteTag(currentShopId);
   // v1.9.3: 選ばれる理由タグを自動確保
   ensureReasonTag(currentShopId);
