@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=1.12.0">
+<link rel="stylesheet" href="style.css?v=1.11.1">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body>
@@ -566,10 +566,10 @@
 
         <!-- 一括ダウンロード (v1.11.0) -->
         <section class="storage-section">
-          <h3>📥 全画像を一括ダウンロード (JSON登録済み)</h3>
+          <h3>📥 全画像を一括ダウンロード</h3>
           <div class="storage-hint">
-            JSONに登録されている全画像をZIPでダウンロードします。<br>
-            通常のバックアップにはこちらを使用します。
+            現在のショップの全画像をZIPでダウンロードします。<br>
+            バックアップ、手元での圧縮作業などに使えます。
           </div>
           <button class="btn-primary" id="btnBulkDownload">全画像をZIPでダウンロード</button>
           <div class="bulk-download-progress" id="bulkDownloadProgress" style="display:none">
@@ -578,23 +578,6 @@
             </div>
             <div class="bulk-download-text" id="bulkDownloadProgressText">準備中...</div>
             <button class="btn-secondary btn-mini" id="btnBulkDownloadCancel">キャンセル</button>
-          </div>
-        </section>
-
-        <!-- 実ファイル全DL & 孤児削除 (v1.12.0) -->
-        <section class="storage-section storage-cleanup">
-          <h3>🧹 データクリーンアップ</h3>
-          <div class="storage-hint">
-            GitHub上の実ファイルには、JSONに登録されていない孤児ファイルが含まれる場合があります。<br>
-            ここでは実ファイルベースの操作ができます。
-          </div>
-          <div class="storage-cleanup-buttons">
-            <button class="btn-secondary" id="btnDownloadAllFiles">📥 全実ファイルをダウンロード</button>
-            <button class="btn-danger" id="btnDeleteOrphans">🗑️ 孤児ファイルを一括削除</button>
-          </div>
-          <div class="storage-hint" style="margin-top:8px">
-            <strong>孤児ファイルとは</strong>: GitHubには残っているが、JSONの画像一覧には登録されていない画像。<br>
-            過去のアップロード失敗や、削除処理の中断で発生します。
           </div>
         </section>
 
@@ -621,6 +604,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.12.0"></script>
+<script src="app.js?v=1.11.1"></script>
 </body>
 </html>
