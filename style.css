@@ -2497,6 +2497,44 @@ img.lazy-thumb.img-error::after {
   font-style: italic;
 }
 
+/* ===== 一括ダウンロード (v1.11.0) ===== */
+.storage-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.bulk-download-progress {
+  margin-top: 12px;
+  padding: 12px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.bulk-download-bar-wrap {
+  background: var(--border-light);
+  border-radius: 6px;
+  height: 8px;
+  overflow: hidden;
+}
+.bulk-download-bar {
+  height: 100%;
+  background: var(--primary);
+  width: 0%;
+  transition: width .2s;
+  border-radius: 6px;
+}
+.bulk-download-text {
+  font-size: 12px;
+  color: var(--text);
+  text-align: center;
+}
+.bulk-download-progress .btn-mini {
+  align-self: flex-end;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .app-header { flex-wrap: wrap; padding: 10px 14px; }
