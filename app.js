@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.5';
+const APP_VERSION = 'v1.11.6';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -81,6 +81,8 @@ let newTagSelectedColor = 'amber';
 window.addEventListener('DOMContentLoaded', init);
 
 async function init() {
+  // Service Worker登録 (v1.11.6): 画像を長期キャッシュして表示高速化
+  registerServiceWorker();
   loadAuth();
   loadCurrentSelections();
   // エクスポートモード状態をsessionStorageから復元
@@ -97,6 +99,44 @@ async function init() {
   renderShopTabs();
   await loadCurrentShopData();
   render();
+}
+
+// Service Worker登録 (v1.11.6)
+function registerServiceWorker() {
+  if (!('serviceWorker' in navigator)) {
+    console.warn('[ImageGallery] Service Worker非対応ブラウザです');
+    return;
+  }
+  // 相対パスで登録(GitHub Pagesのサブディレクトリでも動く)
+  navigator.serviceWorker.register('./sw.js')
+    .then(reg => {
+      console.info('[ImageGallery] Service Worker 登録成功:', reg.scope);
+    })
+    .catch(err => {
+      console.warn('[ImageGallery] Service Worker 登録失敗:', err);
+    });
+}
+
+// 画像キャッシュを全クリア (設定モーダルから使用)
+async function clearImageCache() {
+  if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+    toast('Service Workerが有効ではありません', 'error');
+    return;
+  }
+  return new Promise((resolve) => {
+    const channel = new MessageChannel();
+    channel.port1.onmessage = (event) => {
+      if (event.data && event.data.ok) {
+        toast('画像キャッシュをクリアしました', 'success');
+      } else {
+        toast('キャッシュクリア失敗', 'error');
+      }
+      resolve();
+    };
+    navigator.serviceWorker.controller.postMessage({ type: 'CLEAR_IMAGE_CACHE' }, [channel.port2]);
+    // タイムアウト対策
+    setTimeout(() => resolve(), 5000);
+  });
 }
 
 function renderVersion() {
@@ -141,6 +181,14 @@ function loadCurrentSelections() {
 
 function bindEvents() {
   document.getElementById('btnSettings').addEventListener('click', openSettings);
+  // 画像キャッシュクリア (v1.11.6)
+  const btnClearCache = document.getElementById('btnClearImageCache');
+  if (btnClearCache) {
+    btnClearCache.addEventListener('click', async () => {
+      if (!confirm('画像キャッシュを全部クリアします。よろしいですか?\n(次回表示時にネットワークから取り直します)')) return;
+      await clearImageCache();
+    });
+  }
   // 画像編集モーダル (v1.10.0)
   const ieClose = document.getElementById('btnImagesEditClose');
   if (ieClose) ieClose.addEventListener('click', closeProductImagesModal);
