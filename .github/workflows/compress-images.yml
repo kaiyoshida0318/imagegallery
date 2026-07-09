@@ -1,0 +1,205 @@
+name: Compress Images
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_width:
+        description: '横幅(px)'
+        required: true
+        default: '750'
+      jpeg_quality:
+        description: 'JPEG品質(1-100)'
+        required: true
+        default: '80'
+
+permissions:
+  contents: write
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Install ImageMagick
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Compress images
+        id: compress
+        env:
+          MAX_WIDTH: ${{ inputs.max_width }}
+          JPEG_QUALITY: ${{ inputs.jpeg_quality }}
+        run: |
+          set -e
+          MAX_WIDTH="${MAX_WIDTH:-750}"
+          JPEG_QUALITY="${JPEG_QUALITY:-80}"
+          echo "設定: MAX_WIDTH=$MAX_WIDTH, JPEG_QUALITY=$JPEG_QUALITY"
+
+          TOTAL=$(find data -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.webp' \) | wc -l)
+          echo "処理対象: $TOTAL 枚"
+          echo "total_files=$TOTAL" >> $GITHUB_OUTPUT
+
+          DONE=0
+          ROLLBACK=0
+          FAILED=0
+          BYTES_BEFORE=0
+          BYTES_AFTER=0
+          BYTES_LARGER_ROLLBACK=0
+
+          # tmpdirに出力してからmv
+          TMPDIR=$(mktemp -d)
+
+          find data -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.gif' -o -iname '*.webp' \) | while read -r src; do
+            ext_lower=$(echo "${src##*.}" | tr '[:upper:]' '[:lower:]')
+            tmp="$TMPDIR/tmpfile.$ext_lower"
+
+            case "$ext_lower" in
+              jpg|jpeg)
+                convert "$src" -resize "${MAX_WIDTH}x>" -strip -interlace Plane -quality $JPEG_QUALITY -sampling-factor 4:2:0 "$tmp" 2>/dev/null || { FAILED=$((FAILED+1)); continue; }
+                ;;
+              png)
+                # 透明度チェック
+                has_alpha=$(identify -format '%[opaque]' "$src" 2>/dev/null || echo "True")
+                if [ "$has_alpha" = "False" ]; then
+                  # 透明あり → PNGのままリサイズ
+                  convert "$src" -resize "${MAX_WIDTH}x>" -strip "$tmp" 2>/dev/null || { FAILED=$((FAILED+1)); continue; }
+                else
+                  # 透明なし → 256色PNGに軽量化
+                  convert "$src" -resize "${MAX_WIDTH}x>" -strip -colors 256 -depth 8 "$tmp" 2>/dev/null || { FAILED=$((FAILED+1)); continue; }
+                fi
+                ;;
+              gif)
+                frame_count=$(identify "$src" 2>/dev/null | wc -l)
+                if [ "$frame_count" -le 1 ]; then
+                  # 静止GIF → 最適化
+                  convert "$src" -resize "${MAX_WIDTH}x>" -strip "$tmp" 2>/dev/null || { FAILED=$((FAILED+1)); continue; }
+                else
+                  # アニメGIF → coalesce+optimize
+                  convert "$src" -coalesce -resize "${MAX_WIDTH}x>" -layers Optimize "$tmp" 2>/dev/null || { FAILED=$((FAILED+1)); continue; }
+                fi
+                ;;
+              webp)
+                convert "$src" -resize "${MAX_WIDTH}x>" -strip -quality $JPEG_QUALITY "$tmp" 2>/dev/null || { FAILED=$((FAILED+1)); continue; }
+                ;;
+            esac
+
+            if [ ! -f "$tmp" ]; then
+              FAILED=$((FAILED+1))
+              continue
+            fi
+
+            src_size=$(stat -c%s "$src")
+            tmp_size=$(stat -c%s "$tmp")
+            BYTES_BEFORE=$((BYTES_BEFORE + src_size))
+
+            if [ "$tmp_size" -ge "$src_size" ]; then
+              # 元より大きい or 同じ → ロールバック (元のまま)
+              BYTES_AFTER=$((BYTES_AFTER + src_size))
+              BYTES_LARGER_ROLLBACK=$((BYTES_LARGER_ROLLBACK + 1))
+              rm -f "$tmp"
+            else
+              # 小さくなった → 置き換え
+              mv "$tmp" "$src"
+              BYTES_AFTER=$((BYTES_AFTER + tmp_size))
+            fi
+
+            DONE=$((DONE+1))
+            if [ $((DONE % 100)) -eq 0 ]; then
+              echo "進捗: $DONE / $TOTAL"
+            fi
+          done
+
+          rm -rf "$TMPDIR"
+
+          echo ""
+          echo "=== 完了 ==="
+          echo "処理成功: $DONE / $TOTAL"
+          echo "ロールバック(元より大きくなった): $BYTES_LARGER_ROLLBACK 件"
+          echo "失敗: $FAILED 件"
+
+      - name: Update gallery.json sizes
+        run: |
+          python3 << 'PYEOF'
+          import json
+          import os
+          from pathlib import Path
+
+          updated_count = 0
+          for gallery_json in Path('data').glob('*/gallery.json'):
+              try:
+                  with open(gallery_json, 'r', encoding='utf-8') as f:
+                      data = json.load(f)
+              except Exception as e:
+                  print(f"読み込み失敗: {gallery_json}: {e}")
+                  continue
+
+              if not isinstance(data, dict) or 'products' not in data:
+                  continue
+
+              changed = 0
+              for p in data.get('products', []):
+                  for img in p.get('images', []):
+                      path = img.get('path')
+                      if not path:
+                          continue
+                      abs_path = Path(path)
+                      if abs_path.exists():
+                          new_size = abs_path.stat().st_size
+                          if img.get('size') != new_size:
+                              img['size'] = new_size
+                              changed += 1
+
+              # material, boostも同様
+              for section in ('materials', 'boosts'):
+                  for e in data.get(section, []):
+                      for img in e.get('images', []):
+                          path = img.get('path')
+                          if not path:
+                              continue
+                          abs_path = Path(path)
+                          if abs_path.exists():
+                              new_size = abs_path.stat().st_size
+                              if img.get('size') != new_size:
+                                  img['size'] = new_size
+                                  changed += 1
+
+              if changed > 0:
+                  with open(gallery_json, 'w', encoding='utf-8') as f:
+                      json.dump(data, f, ensure_ascii=False, indent=2)
+                  print(f"更新: {gallery_json} ({changed}件)")
+                  updated_count += changed
+
+          print(f"\n合計: {updated_count} 件のimg.sizeを更新")
+          PYEOF
+
+      - name: Show diff summary
+        run: |
+          echo "=== 変更ファイル数 ==="
+          git status --short | wc -l
+          echo ""
+          echo "=== サイズ集計 ==="
+          du -sh data/ || true
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "変更なし、コミットスキップ"
+          else
+            CHANGED_COUNT=$(git diff --cached --name-only | wc -l)
+            git commit -m "Auto-compress images (${{ inputs.max_width }}px, JPEG q${{ inputs.jpeg_quality }}) - ${CHANGED_COUNT} files"
+            git push
+            echo "プッシュ完了: $CHANGED_COUNT ファイル"
+          fi
