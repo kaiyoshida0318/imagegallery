@@ -435,9 +435,14 @@ function bindEvents() {
   });
 
   // Close modal on backdrop click
+  // 親モーダルの上に重なって開くネストされたモーダルは、背景クリックで閉じない。
+  // (親モーダルの背景を覆ってしまい、親の保存/操作クリックを奪って入力内容を無言で破棄する事故を防ぐ)
+  const NESTED_MODAL_IDS = ['shopFormModal', 'tagEditModal', 'productEditModal', 'entryFormModal'];
   document.querySelectorAll('.modal-backdrop').forEach(el => {
     el.addEventListener('click', (e) => {
-      if (e.target === el) el.style.display = 'none';
+      if (e.target !== el) return;
+      if (NESTED_MODAL_IDS.includes(el.id)) return;
+      el.style.display = 'none';
     });
   });
 }
