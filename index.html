@@ -295,7 +295,10 @@
       </div>
       <div class="form-row">
         <label>Access Key</label>
-        <input type="password" id="shopFormAccessKey" placeholder="アクセスキー">
+        <div class="input-with-toggle">
+          <input type="password" id="shopFormAccessKey" placeholder="アクセスキー">
+          <button type="button" class="input-toggle-btn" id="btnToggleAccessKey" title="表示/非表示">👁 表示</button>
+        </div>
         <small class="form-hint">楽天Web Service「アプリ情報の確認」のアクセスキー</small>
       </div>
       <div class="modal-actions">
@@ -610,6 +613,6 @@
   </div>
 </div>
 
-<script src="app.js?v=1.11.6"></script>
+<script src="app.js?v=1.11.7"></script>
 </body>
 </html>
