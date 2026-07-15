@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.6';
+const APP_VERSION = 'v1.11.7';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -246,6 +246,20 @@ function bindEvents() {
       } else {
         input.type = 'password';
         btnTogglePat.textContent = '👁 表示';
+      }
+    });
+  }
+  // Access Key表示/非表示トグル (v1.11.7)
+  const btnToggleAccessKey = document.getElementById('btnToggleAccessKey');
+  if (btnToggleAccessKey) {
+    btnToggleAccessKey.addEventListener('click', () => {
+      const input = document.getElementById('shopFormAccessKey');
+      if (input.type === 'password') {
+        input.type = 'text';
+        btnToggleAccessKey.textContent = '🙈 隠す';
+      } else {
+        input.type = 'password';
+        btnToggleAccessKey.textContent = '👁 表示';
       }
     });
   }
@@ -4062,6 +4076,11 @@ function openShopForm(shopId) {
     document.getElementById('shopFormAccessKey').value = '';
   }
   document.getElementById('shopFormModal').style.display = 'flex';
+  // v1.11.7: Access Keyを開くたびにマスク状態に戻す
+  const ak = document.getElementById('shopFormAccessKey');
+  const akBtn = document.getElementById('btnToggleAccessKey');
+  if (ak) ak.type = 'password';
+  if (akBtn) akBtn.textContent = '👁 表示';
 }
 
 function saveShopForm() {
