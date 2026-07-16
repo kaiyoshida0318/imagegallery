@@ -5489,7 +5489,7 @@
     {
       "id": "prod_1778823317155_x0jou4",
       "itemCode": "yukaiya:10001347",
-      "itemManageNumber": "10001332",
+      "itemManageNumber": "10001330",
       "itemNumber": "si-26-05",
       "itemUrl": "https://item.rakuten.co.jp/yukaiya/10001330/",
       "itemName": "【 お得なクーポンで★最大20％OFF 】＼レビュー特典付き／エイムリング スティック 保護リング シリコンリング プロコン PS5 PS4 Switch Proコン エイム コントローラー 保護 スティックカバー FPS エイムリング フリーク エイムアシストリング 削れ防止 PKT1-4F RPR RP1",
@@ -5635,7 +5635,8 @@
         "tag_1778825361008_1j00",
         "tag_fav_1780639697432_eitc"
       ],
-      "status": "active"
+      "status": "active",
+      "_oldManageNumber": "10001332"
     },
     {
       "id": "prod_1778823317155_fzp32q",
@@ -26362,15 +26363,16 @@
     {
       "id": "prod_1782880947688_yzpyuj",
       "itemCode": "yukaiya:10001349",
-      "itemManageNumber": "001",
+      "itemManageNumber": "10001332",
       "itemNumber": "",
       "itemUrl": "https://item.rakuten.co.jp/yukaiya/10001332/",
       "itemName": "【 お得なクーポンで★最大20％OFF 】＼レビュー特典付き／エイムリング スティック 保護リング シリコンリング プロコン PS5 PS4 Switch Proコン エイム コントローラー 保護 スティックカバー FPS エイムリング フリーク エイムアシストリング 削れ防止 PKT1-4F RPR RP1",
       "itemPrice": 780,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/si/si-26-05a-01.jpg?_ex=128x128",
       "images": [],
-      "status": "active",
-      "syncedAt": "2026-07-01T04:42:27.688Z"
+      "status": "unsure",
+      "syncedAt": "2026-07-01T04:42:27.688Z",
+      "_oldManageNumber": "001"
     }
   ],
   "materials": [],
