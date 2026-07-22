@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.27';
+const APP_VERSION = 'v1.11.28';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -564,12 +564,20 @@ async function refreshCurrentShopData(opts = {}) {
     if (lb && lb.classList.contains('open')) return;         // 拡大表示中は邪魔しない
     if (document.querySelector('.modal-backdrop[style*="flex"]')) return; // モーダル操作中はスキップ
   }
-  let fresh;
-  try { fresh = await loadShopData(currentShopId); }
-  catch (e) { if (manual) toast('更新に失敗しました', 'error'); return; }
-  if (!fresh || fresh._wasEmpty || fresh._parseError) { if (manual) toast('更新に失敗しました', 'error'); return; }
+  // v1.11.28: 公開ファイル(raw)を直読み。GitHub Contents APIを使わないのでレート制限に当たらない。
+  const fresh = await loadShopDataRaw(currentShopId);
 
+  // 🚨 失敗/空/破損のときは絶対に置き換えない (既存の表示を維持) → 「更新の度に消える」を防止
+  if (!fresh || fresh._wasEmpty || fresh._parseError || fresh._loadFailed) {
+    if (manual) toast('更新できませんでした（通信状況を確認してください）', 'error');
+    return;
+  }
   const prev = dataCache[currentShopId];
+  // 安全策: 既存が非空なのに取得0件なら異常とみなして置き換えない
+  if (prev && (prev.products || []).length > 0 && (fresh.products || []).length === 0) {
+    if (manual) toast('更新できませんでした（データが取得できませんでした）', 'error');
+    return;
+  }
   if (!manual && prev && _dataSig(fresh) === _dataSig(prev)) return; // 変化なし → 何もしない
 
   const sy = window.scrollY;
@@ -1627,70 +1635,75 @@ async function loadShopData(shopId) {
       );
     }
 
-    let products = Array.isArray(json.products) ? json.products : [];
-
-    // === マイグレーション (v1.1.5) ===
-    // STEP 1: itemUrlから正しい管理番号を取り直す
-    const shop = shops.find(s => s.id === shopId);
-    if (shop && shop.shopCode) {
-      products.forEach(p => {
-        if (p.itemUrl) {
-          const correctCode = extractCode(p.itemUrl, shop.shopCode);
-          if (correctCode && correctCode !== p.itemManageNumber) {
-            if (correctCode === p.itemNumber) {
-              p.itemManageNumber = p.itemNumber;
-              p.itemNumber = '';
-            } else {
-              p._oldManageNumber = p.itemManageNumber;
-              p.itemManageNumber = correctCode;
-            }
-          }
-        }
-      });
-    }
-
-    // STEP 2: 同じ itemManageNumber の重複をマージ
-    // (画像は全部統合、編集された商品番号・名前は古い方を優先しない=新しい方を残す)
-    const mergedMap = new Map();
-    let mergedCount = 0;
-    products.forEach(p => {
-      if (!p.itemManageNumber) {
-        // 管理番号がない商品は壊れたデータとして除外
-        mergedCount++;
-        return;
-      }
-      const key = String(p.itemManageNumber).trim();
-      const existing = mergedMap.get(key);
-      if (!existing) {
-        mergedMap.set(key, p);
-      } else {
-        // マージ: 画像配列をつなぐ(重複URLは除外)
-        const existingUrls = new Set((existing.images || []).map(i => i.url));
-        const newImages = (p.images || []).filter(i => !existingUrls.has(i.url));
-        existing.images = [...(existing.images || []), ...newImages];
-        // 手動入力された値があれば優先
-        if (!existing.itemNumber && p.itemNumber) existing.itemNumber = p.itemNumber;
-        if (!existing.itemName && p.itemName) existing.itemName = p.itemName;
-        mergedCount++;
-      }
-    });
-    if (mergedCount > 0) {
-      console.log(`[ImageGallery] Merged ${mergedCount} duplicate/broken product entries`);
-    }
-    products = Array.from(mergedMap.values());
-
-    return {
-      products,
-      materials: Array.isArray(json.materials) ? json.materials : [],
-      boosts: Array.isArray(json.boosts) ? json.boosts : [],
-      tags: Array.isArray(json.tags) ? json.tags : [],  // ショップのタグマスタ
-      sha: data.sha,
-      _mergedCount: mergedCount,
-      _loadedViaRaw: usedRawFallback  // デバッグ用
-    };
+    const built = _buildShopDataFromJson(json, data.sha, shopId);
+    built._loadedViaRaw = usedRawFallback;
+    return built;
   } catch (e) {
     console.error('loadShopData failed', e);
-    return { products: [], materials: [], boosts: [], tags: [], sha: null };
+    // v1.11.28: 失敗時はフラグを立てる。これが無いと自動更新が「正常な空」と誤認して
+    //           既存データを空で上書きしてしまう(=更新の度に消える不具合の原因)。
+    return { products: [], materials: [], boosts: [], tags: [], sha: null, _wasEmpty: true, _parseError: true, _loadFailed: true };
+  }
+}
+
+// v1.11.28: gallery.jsonのJSONから表示用データを構築 (管理番号補正 + 重複マージ)。
+//   loadShopData / loadShopDataRaw で共有。
+function _buildShopDataFromJson(json, sha, shopId) {
+  let products = Array.isArray(json.products) ? json.products : [];
+  // STEP1: itemUrlから正しい管理番号を取り直す
+  const shop = shops.find(s => s.id === shopId);
+  if (shop && shop.shopCode) {
+    products.forEach(p => {
+      if (p.itemUrl) {
+        const correctCode = extractCode(p.itemUrl, shop.shopCode);
+        if (correctCode && correctCode !== p.itemManageNumber) {
+          if (correctCode === p.itemNumber) { p.itemManageNumber = p.itemNumber; p.itemNumber = ''; }
+          else { p._oldManageNumber = p.itemManageNumber; p.itemManageNumber = correctCode; }
+        }
+      }
+    });
+  }
+  // STEP2: 同じ itemManageNumber の重複をマージ
+  const mergedMap = new Map();
+  let mergedCount = 0;
+  products.forEach(p => {
+    if (!p.itemManageNumber) { mergedCount++; return; }
+    const key = String(p.itemManageNumber).trim();
+    const existing = mergedMap.get(key);
+    if (!existing) { mergedMap.set(key, p); }
+    else {
+      const existingUrls = new Set((existing.images || []).map(i => i.url));
+      const newImages = (p.images || []).filter(i => !existingUrls.has(i.url));
+      existing.images = [...(existing.images || []), ...newImages];
+      if (!existing.itemNumber && p.itemNumber) existing.itemNumber = p.itemNumber;
+      if (!existing.itemName && p.itemName) existing.itemName = p.itemName;
+      mergedCount++;
+    }
+  });
+  products = Array.from(mergedMap.values());
+  return {
+    products,
+    materials: Array.isArray(json.materials) ? json.materials : [],
+    boosts: Array.isArray(json.boosts) ? json.boosts : [],
+    tags: Array.isArray(json.tags) ? json.tags : [],
+    sha,
+    _mergedCount: mergedCount
+  };
+}
+
+// v1.11.28: 公開ファイル(raw)直読み専用のロード (GitHub Contents APIを使わないのでレート制限に当たらない)。
+//   閲覧者の自動更新はこちらを使う。
+async function loadShopDataRaw(shopId) {
+  try {
+    const rawText = await fetchRawGalleryJson(shopId); // 404等は throw
+    const decoded = (rawText || '').trim();
+    if (!decoded) return { products: [], materials: [], boosts: [], tags: [], sha: null, _wasEmpty: true, _loadFailed: true };
+    let json;
+    try { json = JSON.parse(decoded); }
+    catch (e) { return { products: [], materials: [], boosts: [], tags: [], sha: null, _parseError: true, _loadFailed: true }; }
+    return _buildShopDataFromJson(json, null, shopId);
+  } catch (e) {
+    return { products: [], materials: [], boosts: [], tags: [], sha: null, _wasEmpty: true, _loadFailed: true };
   }
 }
 
