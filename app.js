@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.19';
+const APP_VERSION = 'v1.11.20';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -169,6 +169,14 @@ function injectImageTagStyles() {
     .image-list-tile .ilt-thumb:hover { outline: 2px solid var(--primary, #7c3aed); outline-offset: -2px; }
     .image-list-tile .img-tag-select { max-width: 100%; width: 100%; }
     .image-list-tile .ilt-meta { font-size: 10px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    /* v1.11.20: ライトボックスをカルーセル化 (中央大 / 左右うっすら) */
+    .lightbox { padding: 0 !important; }
+    .lb-stage { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .lb-current { max-width: 62vw !important; max-height: 90vh !important; object-fit: contain; z-index: 2; cursor: pointer; box-shadow: 0 8px 50px rgba(0,0,0,.7); background: #fff; }
+    .lb-peek { position: absolute; top: 50%; transform: translateY(-50%); max-height: 72vh; max-width: 34vw; object-fit: contain; opacity: .3; z-index: 1; cursor: pointer; transition: opacity .15s; filter: brightness(.65); background: #fff; }
+    .lb-peek:hover { opacity: .55; }
+    .lb-peek-prev { left: -8vw; }
+    .lb-peek-next { right: -8vw; }
   `;
   document.head.appendChild(st);
 }
@@ -3269,47 +3277,27 @@ function openLightbox(imageUrlOrList, startIndex = 0) {
     box = document.createElement('div');
     box.id = 'lightbox';
     box.className = 'lightbox';
+    // v1.11.20: カルーセル表示 (中央=大きく / 左右=隣の画像をうっすら)
     box.innerHTML = `
       <button class="lightbox-close" aria-label="閉じる">×</button>
-      <button class="lightbox-nav lightbox-prev" aria-label="前の画像" type="button">‹</button>
-      <button class="lightbox-nav lightbox-next" aria-label="次の画像" type="button">›</button>
-      <img class="lightbox-img" src="" alt="" draggable="true">
+      <div class="lb-stage">
+        <img class="lb-peek lb-peek-prev" src="" alt="">
+        <img class="lightbox-img lb-current" src="" alt="" draggable="false">
+        <img class="lb-peek lb-peek-next" src="" alt="">
+      </div>
       <div class="lightbox-counter"></div>
     `;
     document.body.appendChild(box);
 
-    // 背景クリック/×で閉じる
     box.addEventListener('click', (e) => {
-      // ナビボタン上のクリックは別ハンドラで処理
-      if (e.target.closest('.lightbox-nav')) return;
-      // 閉じるボタン
-      if (e.target.classList.contains('lightbox-close')) {
-        closeLightbox();
-        return;
-      }
-      // 画像クリック: 左半分=前、右半分=次
-      if (e.target.classList.contains('lightbox-img')) {
-        const rect = e.target.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        if (x < rect.width / 2) {
-          lightboxPrev();
-        } else {
-          lightboxNext();
-        }
-        return;
-      }
-      // 背景クリックで閉じる
-      if (e.target === box) closeLightbox();
-    });
-
-    // ナビボタン
-    box.querySelector('.lightbox-prev').addEventListener('click', (e) => {
-      e.stopPropagation();
-      lightboxPrev();
-    });
-    box.querySelector('.lightbox-next').addEventListener('click', (e) => {
-      e.stopPropagation();
-      lightboxNext();
+      const t = e.target;
+      if (t.classList.contains('lightbox-close')) { closeLightbox(); return; }
+      if (t.classList.contains('lb-peek-prev')) { lightboxPrev(); return; }
+      if (t.classList.contains('lb-peek-next')) { lightboxNext(); return; }
+      // 中央の画像クリックで「次へ」
+      if (t.classList.contains('lb-current')) { lightboxNext(); return; }
+      // それ以外(背景/ステージ)は閉じる
+      closeLightbox();
     });
   }
   updateLightboxImage();
@@ -3321,23 +3309,34 @@ function openLightbox(imageUrlOrList, startIndex = 0) {
 function updateLightboxImage() {
   const box = document.getElementById('lightbox');
   if (!box) return;
-  const url = lightboxState.urls[lightboxState.index];
+  const { urls, index } = lightboxState;
+  const url = urls[index];
   if (!url) return;
-  box.querySelector('.lightbox-img').src = url;
-  // カウンター表示
+  const cur = box.querySelector('.lb-current');
+  const prevEl = box.querySelector('.lb-peek-prev');
+  const nextEl = box.querySelector('.lb-peek-next');
+  cur.src = url;
+  const multi = urls.length > 1;
+  if (multi) {
+    prevEl.src = urls[(index - 1 + urls.length) % urls.length];
+    nextEl.src = urls[(index + 1) % urls.length];
+    prevEl.style.display = '';
+    nextEl.style.display = '';
+  } else {
+    prevEl.style.display = 'none';
+    nextEl.style.display = 'none';
+    prevEl.removeAttribute('src');
+    nextEl.removeAttribute('src');
+  }
   const counter = box.querySelector('.lightbox-counter');
   if (counter) {
-    if (lightboxState.urls.length > 1) {
+    if (multi) {
       counter.style.display = 'block';
-      counter.textContent = `${lightboxState.index + 1} / ${lightboxState.urls.length}`;
+      counter.textContent = `${index + 1} / ${urls.length}`;
     } else {
       counter.style.display = 'none';
     }
   }
-  // 1枚しかないときはナビボタンを隠す
-  const hide = lightboxState.urls.length <= 1;
-  box.querySelector('.lightbox-prev').style.display = hide ? 'none' : '';
-  box.querySelector('.lightbox-next').style.display = hide ? 'none' : '';
 }
 
 function lightboxPrev() {
