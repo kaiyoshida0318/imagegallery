@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.10';
+const APP_VERSION = 'v1.11.11';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -117,6 +117,13 @@ function injectImageTagStyles() {
     }
     .img-tag-select[data-has="1"] { font-weight: 700; }
     .img-tag-select:hover { border-color: #94a3b8; }
+    /* v1.11.11: 画像全体/基礎情報の切替UIを廃止 */
+    .view-mode-toggle { display: none !important; }
+    /* v1.11.11: 画像全体モードに「商品管理番号」列を追加 (商品番号 / 商品管理番号 / 画像 / ★ / タグ操作) */
+    .product-table-header.mode-images,
+    .product-row.mode-images { grid-template-columns: 130px 130px minmax(0, 1fr) 60px 180px; }
+    .product-table-header.mode-images.with-export,
+    .product-row.mode-images.with-export { grid-template-columns: 40px 130px 130px minmax(0, 1fr) 60px 180px; }
   `;
   document.head.appendChild(st);
 }
@@ -182,7 +189,9 @@ function saveAuth() {
 function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
   currentCategory = localStorage.getItem(LS_CURRENT_CAT) || 'product';
-  viewMode = localStorage.getItem(LS_VIEW_MODE) || 'images';
+  // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
+  const _vm = localStorage.getItem(LS_VIEW_MODE);
+  viewMode = (_vm === 'delete') ? 'delete' : 'images';
   // ソート状態を復元 (なければデフォルト)
   const savedSortKey = localStorage.getItem(LS_SORT_KEY);
   const savedSortDir = localStorage.getItem(LS_SORT_DIR);
@@ -2535,11 +2544,12 @@ function renderProductGrid(products) {
 
   let headerHTML;
   if (viewMode === 'images') {
-    // 画像全体モード: 商品番号・画像・お気に入り(★)・タグ操作
+    // 画像全体モード: 商品番号・商品管理番号・画像・お気に入り(★)・タグ操作
     headerHTML = `
       <div class="product-table-header mode-images ${exportMode ? 'with-export' : ''}">
         ${exportHeaderHTML}
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+        <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
         <div class="col-images">画像</div>
         <div class="col-favorite">★</div>
         <div class="col-actions">タグ・操作</div>
@@ -3717,6 +3727,7 @@ function productRowHTML(p) {
     return `<div class="product-row mode-images ${exportMode ? 'with-export' : ''} ${isEmpty ? 'empty' : ''}">
       ${exportCellHTML}
       <div class="col-number">${numberCell}</div>
+      <div class="col-manage">${manageCell}</div>
       ${imagesCellHTML}
       <div class="col-favorite">${favoriteCellHTML}</div>
       ${actionsForImagesMode}
