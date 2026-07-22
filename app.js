@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.8';
+const APP_VERSION = 'v1.11.9';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -3529,17 +3529,33 @@ function productRowHTML(p) {
     : '';
 
   const sortedImages = sortImagesByName(p.images || []);
-  // basicモードは5枚まで、imagesとdeleteは全部
-  const displayImages = (viewMode === 'images' || viewMode === 'delete')
-    ? sortedImages
-    : sortedImages.slice(0, 5);
-  const remaining = sortedImages.length - displayImages.length;
 
   // v1.11.8: 画像単位の分類タグ用。ドロップダウンに出す分類タグ（お気に入りは除外）
   const favTagIdForImg = getFavoriteTagId();
   const classTagsForImg = getCurrentTags().filter(t => t.id !== favTagIdForImg);
 
+  // v1.11.9: 上部の分類タグでフィルタ中は、その分類が付いた「画像だけ」を表示する。
+  //          (お気に入りは商品単位フィルタなので画像の絞り込みには使わない)
+  const classFilterIds = filterTagIds.size > 0
+    ? [...filterTagIds].filter(id => id !== favTagIdForImg)
+    : [];
+  let visibleImages = sortedImages;
+  if (classFilterIds.length > 0) {
+    const matching = sortedImages.filter(im => classFilterIds.includes(im.tagId));
+    // マッチ画像がある商品はマッチ画像だけに絞る。
+    // (お気に入りフィルタ等で表示されているがマッチ画像が無い商品は従来どおり全画像を表示)
+    if (matching.length > 0) visibleImages = matching;
+  }
+
+  // basicモードは5枚まで、imagesとdeleteは全部
+  const displayImages = (viewMode === 'images' || viewMode === 'delete')
+    ? visibleImages
+    : visibleImages.slice(0, 5);
+  const remaining = visibleImages.length - displayImages.length;
+
   const imgsHTML = displayImages.map((img, idx) => {
+    // ライトボックスは商品の全画像で切り替えたいので、全体配列での位置を渡す
+    const realIdx = sortedImages.indexOf(img);
     const isMarked = deleteSelection.has(img.id);
     if (viewMode === 'delete') {
       return `<div class="product-row-thumb delete-mark ${isMarked ? 'marked' : ''}"
@@ -3563,7 +3579,7 @@ function productRowHTML(p) {
       imgTagSelectHTML = `<select class="img-tag-select" data-img-tag-pid="${p.id}" data-img-tag-id="${img.id}" data-has="${sel ? '1' : '0'}"${styleAttr}>${opts}</select>`;
     }
     return `<div class="img-tag-cell">
-      <div class="product-row-thumb" data-lb-pid="${p.id}" data-lb-index="${idx}" title="${escapeHtml(getImageSortKey(img))}">
+      <div class="product-row-thumb" data-lb-pid="${p.id}" data-lb-index="${realIdx}" title="${escapeHtml(getImageSortKey(img))}">
         <img data-src="${escapeHtml(img.url)}" alt="" class="lazy-thumb">
       </div>
       ${imgTagSelectHTML}
