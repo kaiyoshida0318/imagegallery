@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.14';
+const APP_VERSION = 'v1.11.15';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -51,6 +51,13 @@ let filterTagIds = new Set();
 let openTagPickerProductId = null;
 let viewMode = 'images';  // 'images' (画像全体, 既定) | 'basic' (基礎情報) | 'delete' (削除)
 const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
+// v1.11.15: 項目管理(列幅ドラッグ調整)
+const LS_COL_WIDTHS = 'imagegallery_col_widths_v1';
+const DEFAULT_COL_WIDTHS = { number: 110, manage: 120, name: 240, actions: 96 };
+let colWidths = { ...DEFAULT_COL_WIDTHS };
+let colResizeMode = false;
+let _colDrag = null;
+
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 let pendingStatusChanges = new Map();  // 保存待ちのステータス変更: productId -> 'active'|'unsure'
 
@@ -93,6 +100,9 @@ async function init() {
   } catch (e) { console.warn('export state load failed', e); }
   bindEvents();
   injectImageTagStyles();
+  injectColManageButton();   // v1.11.15: 上部に「項目管理」ボタン
+  relabelCategoryTabs();     // v1.11.15: 現役→選択分
+  applyColWidths();          // v1.11.15: 保存済みの列幅を適用
   renderVersion();
   // 表示モードのボタンを初期化
   document.querySelectorAll('.view-mode-btn').forEach(b =>
@@ -123,13 +133,109 @@ function injectImageTagStyles() {
     .cat-btn[data-cat="material"], .cat-btn[data-cat="boost"] { display: none !important; }
     /* v1.11.12: 情報モーダルの「ステータス(現役/微妙)」欄を廃止 */
     #productEditModal .form-row:has(input[name="productEditStatus"]) { display: none !important; }
-    /* v1.11.14: 商品名列を追加。画像全体モードは 商品番号 / 商品管理番号 / 商品名 / 画像 / タグ操作 */
-    .product-table-header.mode-images,
-    .product-row.mode-images { grid-template-columns: 120px 120px 220px minmax(0, 1fr) 180px; }
-    .product-table-header.mode-images.with-export,
-    .product-row.mode-images.with-export { grid-template-columns: 40px 120px 120px 220px minmax(0, 1fr) 180px; }
+    /* v1.11.15: 微妙タブを廃止 (選択分/全体の2つに) */
+    .cat-btn[data-cat="product_unsure"] { display: none !important; }
+    /* v1.11.15: タグ・操作の「画像/情報」を縦2段に */
+    .col-actions .edit-btn-group { flex-direction: column !important; }
+    /* v1.11.15: 項目管理(列幅ドラッグ) */
+    #btnColManage.active { background: #f5d0fe; border-color: #e879f9; }
+    .product-table-header.mode-images.colresize > div { position: relative; }
+    .col-resize-handle { position: absolute; top: 0; width: 10px; height: 100%; cursor: col-resize; z-index: 6; }
+    .col-resize-handle.right { right: -5px; }
+    .col-resize-handle.left { left: -5px; }
+    .col-resize-handle::after { content: ''; position: absolute; top: 12%; height: 76%; width: 3px; left: 3px; background: #c026d3; border-radius: 2px; opacity: .55; }
+    .col-resize-handle:hover::after { opacity: 1; }
+    /* 列幅(grid-template-columns)は applyColWidths() が #colWidthStyles に動的注入 */
   `;
   document.head.appendChild(st);
+}
+
+// v1.11.15: 保存済みの列幅を grid-template-columns として動的適用
+function applyColWidths() {
+  let st = document.getElementById('colWidthStyles');
+  if (!st) { st = document.createElement('style'); st.id = 'colWidthStyles'; document.head.appendChild(st); }
+  const n = colWidths.number, m = colWidths.manage, nm = colWidths.name, a = colWidths.actions;
+  st.textContent = `
+    .product-table-header.mode-images,
+    .product-row.mode-images { grid-template-columns: ${n}px ${m}px ${nm}px minmax(0, 1fr) ${a}px; }
+    .product-table-header.mode-images.with-export,
+    .product-row.mode-images.with-export { grid-template-columns: 40px ${n}px ${m}px ${nm}px minmax(0, 1fr) ${a}px; }
+  `;
+}
+
+function saveColWidths() {
+  try { localStorage.setItem(LS_COL_WIDTHS, JSON.stringify(colWidths)); } catch (e) { /* ignore */ }
+}
+
+// v1.11.15: 上部ツールバーに「項目管理」ボタンを差し込む (商品名称一括更新の左)
+function injectColManageButton() {
+  if (document.getElementById('btnColManage')) return;
+  const ref = document.getElementById('btnImportCsv');
+  if (!ref || !ref.parentNode) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnColManage';
+  btn.className = 'btn-icon';
+  btn.title = '列の幅を調整 (境界をドラッグ)';
+  btn.innerHTML = '<span class="icon">📐</span><span class="label">項目管理</span>';
+  btn.addEventListener('click', toggleColResizeMode);
+  ref.parentNode.insertBefore(btn, ref);
+}
+
+// v1.11.15: 現役タブを「選択分」に改称
+function relabelCategoryTabs() {
+  const pb = document.querySelector('.cat-btn[data-cat="product"]');
+  if (pb && pb.firstChild && pb.firstChild.nodeType === 3) pb.firstChild.nodeValue = '商品(選択分)';
+}
+
+// v1.11.15: 項目管理(列幅ドラッグ)モードの切替
+function toggleColResizeMode() {
+  colResizeMode = !colResizeMode;
+  const btn = document.getElementById('btnColManage');
+  if (btn) btn.classList.toggle('active', colResizeMode);
+  if (colResizeMode) toast('列の境界(紫のライン)をドラッグして幅を調整できます', 'success');
+  render();
+}
+
+// v1.11.15: ヘッダーに列幅ドラッグ用のハンドルを差し込む
+function addColResizeHandles(container) {
+  const header = container.querySelector('.product-table-header.mode-images');
+  if (!header) return;
+  header.classList.add('colresize');
+  const map = [
+    ['col-number', 'number', 'right'],
+    ['col-manage', 'manage', 'right'],
+    ['col-name', 'name', 'right'],
+    ['col-actions', 'actions', 'left'],
+  ];
+  map.forEach(([cls, key, side]) => {
+    const cell = header.querySelector('.' + cls);
+    if (!cell) return;
+    const h = document.createElement('span');
+    h.className = 'col-resize-handle ' + side;
+    h.addEventListener('mousedown', (e) => startColDrag(e, key, side));
+    cell.appendChild(h);
+  });
+}
+
+function startColDrag(e, key, side) {
+  e.preventDefault(); e.stopPropagation();
+  _colDrag = { key, side, startX: e.clientX, startW: colWidths[key] };
+  document.body.style.userSelect = 'none';
+  window.addEventListener('mousemove', onColDrag);
+  window.addEventListener('mouseup', endColDrag);
+}
+function onColDrag(e) {
+  if (!_colDrag) return;
+  const dx = e.clientX - _colDrag.startX;
+  let w = _colDrag.side === 'left' ? _colDrag.startW - dx : _colDrag.startW + dx;
+  colWidths[_colDrag.key] = Math.max(40, Math.min(700, Math.round(w)));
+  applyColWidths();
+}
+function endColDrag() {
+  if (_colDrag) { saveColWidths(); _colDrag = null; }
+  document.body.style.userSelect = '';
+  window.removeEventListener('mousemove', onColDrag);
+  window.removeEventListener('mouseup', endColDrag);
 }
 
 // Service Worker登録 (v1.11.6)
@@ -198,6 +304,11 @@ function loadCurrentSelections() {
   // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
   const _vm = localStorage.getItem(LS_VIEW_MODE);
   viewMode = (_vm === 'delete') ? 'delete' : 'images';
+  // v1.11.15: 列幅設定を読み込み
+  try {
+    const cw = JSON.parse(localStorage.getItem(LS_COL_WIDTHS) || 'null');
+    if (cw && typeof cw === 'object') colWidths = { ...DEFAULT_COL_WIDTHS, ...cw };
+  } catch (e) { /* ignore */ }
   // ソート状態を復元 (なければデフォルト)
   const savedSortKey = localStorage.getItem(LS_SORT_KEY);
   const savedSortDir = localStorage.getItem(LS_SORT_DIR);
@@ -2439,11 +2550,11 @@ function render() {
   const data = dataCache[currentShopId] || { products: [], materials: [], boosts: [] };
 
   if (currentCategory === 'product') {
-    // v1.11.12: ステータス廃止に伴い「現役」は全商品を表示 (微妙は空になる)
-    //           ※各商品の p.status データ自体は消さずに保持（あとで戻せるように）
-    renderProductGrid(data.products);
+    // v1.11.15: 選択分 = いずれかの画像に分類タグが付いた商品 (その商品の全画像を表示)
+    const tagged = data.products.filter(p => (p.images || []).some(im => im.tagId));
+    renderProductGrid(tagged);
   } else if (currentCategory === 'product_unsure') {
-    // v1.11.12: 微妙は空
+    // 微妙タブは廃止(非表示)。念のため空表示。
     renderProductGrid([]);
   } else if (currentCategory === 'product_all') {
     // 全商品表示(現役+微妙)
@@ -2459,15 +2570,15 @@ function render() {
 
 function updateCategoryMeta(data) {
   const meta = document.getElementById('unregisteredCount');
-  // v1.11.12: 現役=全体(全商品)。微妙は0件。
-  if (currentCategory === 'product' || currentCategory === 'product_all') {
-    const label = currentCategory === 'product' ? '商品(現役)' : '商品(全体)';
+  // v1.11.15: 選択分=タグ付き画像がある商品 / 全体=全商品
+  if (currentCategory === 'product') {
+    const tagged = data.products.filter(p => (p.images || []).some(im => im.tagId)).length;
+    meta.innerHTML = `<span>商品(選択分): ${tagged}件</span>`;
+  } else if (currentCategory === 'product_all') {
     const empty = data.products.filter(p => !p.images || p.images.length === 0).length;
     meta.innerHTML = empty > 0
-      ? `<span class="badge-warning">📷 ${label} 未登録: ${empty}件</span>`
-      : `<span>${label}: 全商品に画像登録済み 🎉</span>`;
-  } else if (currentCategory === 'product_unsure') {
-    meta.innerHTML = '<span>商品(微妙): 0件</span>';
+      ? `<span class="badge-warning">📷 商品(全体) 未登録: ${empty}件</span>`
+      : `<span>商品(全体): 全商品に画像登録済み 🎉</span>`;
   } else {
     meta.textContent = '';
   }
@@ -2607,6 +2718,9 @@ function renderProductGrid(products) {
 
   // 遅延読み込み対象を登録 (v1.10.1)
   scanLazyImages(content);
+
+  // v1.11.15: 項目管理モード中は列幅ドラッグ用ハンドルを付与
+  if (colResizeMode) addColResizeHandles(content);
 
   // エクスポート操作行のボタン (v1.11.3)
   const btnSelectAll = content.querySelector('#btnExportSelectAllVisible');
@@ -2845,9 +2959,9 @@ function updateCategoryTabCounts() {
     return p.status || 'active';
   };
 
-  // v1.11.12: ステータス廃止 → 現役=全商品、微妙=0
+  // v1.11.15: 選択分=タグ付き画像がある商品数、全体=全商品数
   const counts = {
-    product: data.products.length,
+    product: data.products.filter(p => (p.images || []).some(im => im.tagId)).length,
     product_unsure: 0,
     product_all: data.products.length,
     material: (data.materials || []).length,
