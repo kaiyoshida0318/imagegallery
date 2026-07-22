@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.22';
+const APP_VERSION = 'v1.11.25';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -108,6 +108,7 @@ async function init() {
   injectImageTagStyles();
   injectColManageButton();   // v1.11.15: 上部に「項目管理」ボタン
   injectTagManagerButton();  // v1.11.22: 上部に「タグ編集」ボタン
+  injectShareButton();       // v1.11.25: 上部に「共有」ボタン
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
   syncCategoryActiveTab();   // v1.11.19: 現在カテゴリに合わせて active 同期
@@ -195,6 +196,12 @@ function injectImageTagStyles() {
     .tagmgr-del { border: none; background: transparent; cursor: pointer; font-size: 15px; padding: 2px 4px; }
     .tagmgr-add-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 2px solid #e2e8f0; flex-wrap: wrap; }
     .tagmgr-add-row #tagMgrNewName { flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
+    /* v1.11.25: 共有モーダル */
+    #shareModal .modal { max-width: 560px; width: 92%; }
+    .share-sec { margin-bottom: 18px; }
+    .share-label { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
+    #shareModal textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, monospace; font-size: 12px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; resize: vertical; word-break: break-all; }
+    #shareModal .btn-mini { margin-top: 8px; }
   `;
   document.head.appendChild(st);
 }
@@ -225,7 +232,7 @@ function injectColManageButton() {
   btn.id = 'btnColManage';
   btn.className = 'btn-icon';
   btn.title = '列の幅を調整 (境界をドラッグ)';
-  btn.innerHTML = '<span class="icon">📐</span><span class="label">項目管理</span>';
+  btn.innerHTML = '<span class="icon">📐</span><span class="label">列幅調整</span>';
   btn.addEventListener('click', toggleColResizeMode);
   ref.parentNode.insertBefore(btn, ref);
 }
@@ -436,6 +443,102 @@ async function saveTagManager() {
   }
 }
 
+// ===== v1.11.25: ショップ共有 (共有コードの発行 / 読み込み) =====
+function _b64encUtf8(str) { return btoa(String.fromCharCode.apply(null, Array.from(new TextEncoder().encode(str)))); }
+function _b64decUtf8(b) { return new TextDecoder().decode(Uint8Array.from(atob(b.trim()), c => c.charCodeAt(0))); }
+
+function injectShareButton() {
+  if (document.getElementById('btnShareShop')) return;
+  const ref = document.getElementById('btnTagManager') || document.getElementById('btnColManage') || document.getElementById('btnImportCsv');
+  if (!ref || !ref.parentNode) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnShareShop';
+  btn.className = 'btn-icon';
+  btn.title = 'このショップを他の人と共有';
+  btn.innerHTML = '<span class="icon">🔗</span><span class="label">共有</span>';
+  btn.addEventListener('click', openShareModal);
+  ref.parentNode.insertBefore(btn, ref);
+}
+
+function ensureShareModal() {
+  if (document.getElementById('shareModal')) return;
+  const m = document.createElement('div');
+  m.className = 'modal-backdrop';
+  m.id = 'shareModal';
+  m.style.display = 'none';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">
+        <h2>ショップを共有</h2>
+        <button class="btn-close" data-share-close aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="share-sec">
+          <div class="share-label">① このショップの共有コード</div>
+          <textarea id="shareCodeOut" readonly rows="3" onclick="this.select()"></textarea>
+          <button class="btn-secondary btn-mini" id="shareCopyBtn">コピー</button>
+          <div class="tagmgr-hint">相手にこのコードを渡してください。相手はこのサイトを開いて②の欄に貼り「読み込む」を押すと、同じ画像が見られます（公開リポジトリなので閲覧にPATは不要です）。</div>
+        </div>
+        <div class="share-sec">
+          <div class="share-label">② 共有コードから読み込む</div>
+          <textarea id="shareCodeIn" rows="3" placeholder="受け取った共有コードをここに貼り付け"></textarea>
+          <button class="btn-primary btn-mini" id="shareImportBtn">読み込む</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  m.querySelectorAll('[data-share-close]').forEach(b => b.addEventListener('click', () => { m.style.display = 'none'; }));
+  m.querySelector('#shareCopyBtn').addEventListener('click', shareCopyCode);
+  m.querySelector('#shareImportBtn').addEventListener('click', importShareCode);
+}
+
+function openShareModal() {
+  ensureShareModal();
+  const m = document.getElementById('shareModal');
+  const out = document.getElementById('shareCodeOut');
+  const shop = (typeof getCurrentShop === 'function') ? getCurrentShop() : (shops.find(s => s.id === currentShopId) || null);
+  if (shop && auth.owner && auth.repo) {
+    out.value = _b64encUtf8(JSON.stringify({
+      v: 1, id: shop.id, owner: auth.owner, repo: auth.repo, branch: auth.branch || 'main',
+      name: shop.name || '', mall: shop.mall || 'rakuten', shopCode: shop.shopCode || ''
+    }));
+  } else {
+    out.value = '（共有できるショップがありません。⚙️設定でショップを登録してください）';
+  }
+  document.getElementById('shareCodeIn').value = '';
+  m.style.display = 'flex';
+}
+
+function shareCopyCode() {
+  const out = document.getElementById('shareCodeOut');
+  const text = out.value;
+  const done = () => toast('共有コードをコピーしました', 'success');
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => { out.select(); document.execCommand('copy'); done(); });
+  } else {
+    out.select(); document.execCommand('copy'); done();
+  }
+}
+
+function importShareCode() {
+  const raw = (document.getElementById('shareCodeIn').value || '').trim();
+  if (!raw) { toast('共有コードを貼り付けてください', 'error'); return; }
+  let d;
+  try { d = JSON.parse(_b64decUtf8(raw)); } catch (e) { toast('共有コードが正しくありません', 'error'); return; }
+  if (!d || !d.id || !d.owner || !d.repo) { toast('共有コードが正しくありません', 'error'); return; }
+  const a = JSON.parse(localStorage.getItem(LS_AUTH) || '{}');
+  a.owner = d.owner; a.repo = d.repo; a.branch = d.branch || 'main';
+  if (typeof a.pat !== 'string') a.pat = ''; // 閲覧はPAT不要
+  a.shops = Array.isArray(a.shops) ? a.shops : [];
+  const shopObj = { id: d.id, name: d.name || '共有ショップ', mall: d.mall || 'rakuten', shopCode: d.shopCode || '', appId: '', accessKey: '' };
+  const idx = a.shops.findIndex(s => s.id === d.id);
+  if (idx >= 0) a.shops[idx] = shopObj; else a.shops.push(shopObj);
+  localStorage.setItem(LS_AUTH, JSON.stringify(a));
+  localStorage.setItem(LS_CURRENT_SHOP, d.id);
+  toast('読み込みました。ページを再読み込みします…', 'success');
+  setTimeout(() => location.reload(), 700);
+}
+
 // v1.11.15: 項目管理(列幅ドラッグ)モードの切替
 function toggleColResizeMode() {
   colResizeMode = !colResizeMode;
@@ -569,8 +672,8 @@ function renderImageListGrid(products) {
     const selTag = sel ? classTags.find(t => t.id === sel) : null;
     const c = selTag ? getTagColor(selTag.color) : null;
     const styleAttr = c ? ` style="background:${c.bg};color:${c.fg};border-color:${c.bg}"` : '';
-    const opts = ['<option value="">タグなし</option>']
-      .concat(classTags.map(t => `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${escapeHtml(t.name)}</option>`))
+    const opts = ['<option value="" style="background:#fff;color:#334155">タグなし</option>']
+      .concat(classTags.map(t => { const cc = getTagColor(t.color); return `<option value="${t.id}" ${t.id === sel ? 'selected' : ''} style="background:${cc.bg};color:${cc.fg}">${escapeHtml(t.name)}</option>`; }))
       .join('');
     const selectHTML = `<select class="img-tag-select" data-img-tag-pid="${p.id}" data-img-tag-id="${img.id}" data-has="${sel ? '1' : '0'}"${styleAttr}>${opts}</select>`;
     return `<div class="image-list-tile">
@@ -985,15 +1088,20 @@ function sortImagesByName(images) {
 // GitHub API
 // =====================================================
 async function ghFetch(path, opts = {}) {
-  if (!auth.pat || !auth.owner || !auth.repo) {
+  if (!auth.owner || !auth.repo) {
     throw new Error('GitHub設定が未入力です。⚙️設定から登録してください。');
+  }
+  const method = (opts.method || 'GET').toUpperCase();
+  // v1.11.25: 閲覧(GET)はPATなしでも可 (公開リポジトリ前提)。書き込みはPAT必須。
+  if (!auth.pat && method !== 'GET') {
+    throw new Error('保存にはPersonal Access Token (PAT) が必要です。⚙️設定から登録してください。');
   }
   const url = `https://api.github.com/repos/${auth.owner}/${auth.repo}/${path}`;
   const headers = {
-    'Authorization': `token ${auth.pat}`,
     'Accept': 'application/vnd.github.v3+json',
     ...(opts.headers || {})
   };
+  if (auth.pat) headers['Authorization'] = `token ${auth.pat}`;
   if (opts.body) headers['Content-Type'] = 'application/json';
   const res = await fetch(url, { ...opts, headers });
   return res;
@@ -2766,7 +2874,8 @@ async function switchShop(shopId) {
 
 async function loadCurrentShopData() {
   if (!currentShopId) return;
-  if (!auth.pat || !auth.owner || !auth.repo) return;
+  // v1.11.25: 閲覧はPAT不要 (公開リポジトリ)。owner/repoだけ必須。
+  if (!auth.owner || !auth.repo) return;
   if (dataCache[currentShopId]) return;
   showLoading('データを読み込み中...');
   try {
@@ -2781,9 +2890,9 @@ async function loadCurrentShopData() {
       return;
     }
 
-    // マイグレーションでマージが発生した場合は自動保存
+    // マイグレーションでマージが発生した場合は自動保存 (PATがある編集者のみ)
     const merged = cache._mergedCount || 0;
-    if (merged > 0) {
+    if (merged > 0 && auth.pat) {
       hideLoading();
       showLoading(`重複した${merged}件をマージ中...`);
       try {
@@ -2806,12 +2915,15 @@ async function loadCurrentShopData() {
     return;  // 🚨 早期return: ensureFavoriteTag/ensureReasonTagを呼ばない
   }
   hideLoading();
-  // v1.11.10: タグの旧名リネーム＆並べ替え(冪等)。ensureより先に呼び、リネーム後の名前をensureが認識できるようにする
-  migrateTagRenameAndOrder(currentShopId);
-  // v1.9.0: お気に入りタグを自動確保 (ただしensure側でも_wasEmpty/_parseErrorをチェック済み)
-  ensureFavoriteTag(currentShopId);
-  // v1.9.3: 選ばれる理由タグを自動確保
-  ensureReasonTag(currentShopId);
+  // v1.11.25: 書き込みを伴う自動処理はPATがある場合のみ (閲覧専用ユーザーでは実行しない)
+  if (auth.pat) {
+    // v1.11.10: タグの旧名リネーム(冪等)
+    migrateTagRenameAndOrder(currentShopId);
+    // v1.9.0: お気に入りタグを自動確保
+    ensureFavoriteTag(currentShopId);
+    // v1.9.3: 選ばれる理由タグを自動確保
+    ensureReasonTag(currentShopId);
+  }
 }
 
 // =====================================================
@@ -4110,9 +4222,11 @@ function productRowHTML(p) {
       const selTag = sel ? classTagsForImg.find(t => t.id === sel) : null;
       const c = selTag ? getTagColor(selTag.color) : null;
       const styleAttr = c ? ` style="background:${c.bg};color:${c.fg};border-color:${c.bg}"` : '';
-      const opts = ['<option value="">タグなし</option>']
-        .concat(classTagsForImg.map(t =>
-          `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${escapeHtml(t.name)}</option>`))
+      const opts = ['<option value="" style="background:#fff;color:#334155">タグなし</option>']
+        .concat(classTagsForImg.map(t => {
+          const cc = getTagColor(t.color);
+          return `<option value="${t.id}" ${t.id === sel ? 'selected' : ''} style="background:${cc.bg};color:${cc.fg}">${escapeHtml(t.name)}</option>`;
+        }))
         .join('');
       imgTagSelectHTML = `<select class="img-tag-select" data-img-tag-pid="${p.id}" data-img-tag-id="${img.id}" data-has="${sel ? '1' : '0'}"${styleAttr}>${opts}</select>`;
     }
