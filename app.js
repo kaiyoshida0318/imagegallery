@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.28';
+const APP_VERSION = 'v1.11.29';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -68,6 +68,7 @@ let colResizeMode = false;
 let _colDrag = null;
 
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
+let productDeleteSelection = new Set();  // v1.11.29: 削除予約された商品ID (p.id)
 let pendingStatusChanges = new Map();  // 保存待ちのステータス変更: productId -> 'active'|'unsure'
 
 // エクスポートモード関連 (v1.8.4)
@@ -113,6 +114,7 @@ async function init() {
   injectTagManagerButton();  // v1.11.22: 上部に「タグ編集」ボタン
   injectShareButton();       // v1.11.25: 上部に「共有」ボタン
   injectRefreshButton();     // v1.11.27: 上部に「更新」ボタン
+  injectProductDeleteUI();   // v1.11.29: 「削除」→「画像削除」改称 + 「商品削除」追加
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
   syncCategoryActiveTab();   // v1.11.19: 現在カテゴリに合わせて active 同期
@@ -201,6 +203,14 @@ function injectImageTagStyles() {
     .tagmgr-del { border: none; background: transparent; cursor: pointer; font-size: 15px; padding: 2px 4px; }
     .tagmgr-add-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 2px solid #e2e8f0; flex-wrap: wrap; }
     .tagmgr-add-row #tagMgrNewName { flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
+    /* v1.11.29: 商品削除モード */
+    .product-table-header.mode-productdelete,
+    .product-row.mode-productdelete { display: grid; align-items: center; grid-template-columns: 56px 120px 120px 220px minmax(0, 1fr); border-bottom: 1px solid var(--border-light, #eef2f7); }
+    .product-row.mode-productdelete { cursor: pointer; }
+    .product-row.mode-productdelete:hover { background: #fef2f2; }
+    .product-row.mode-productdelete.pd-selected { background: #fee2e2; outline: 2px solid #ef4444; outline-offset: -2px; }
+    .col-pd-check { display: flex; align-items: center; justify-content: center; font-size: 20px; color: #ef4444; user-select: none; }
+    .product-row.mode-productdelete .product-row-thumb { pointer-events: none; }
     /* v1.11.25: 共有モーダル */
     #shareModal .modal { max-width: 560px; width: 92%; }
     .share-sec { margin-bottom: 18px; }
@@ -840,7 +850,7 @@ function loadCurrentSelections() {
   currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged') ? _cc : 'product';
   // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
   const _vm = localStorage.getItem(LS_VIEW_MODE);
-  viewMode = (_vm === 'delete') ? 'delete' : 'images';
+  viewMode = (_vm === 'delete' || _vm === 'productdelete') ? _vm : 'images';
   // v1.11.15: 列幅設定を読み込み
   try {
     const cw = JSON.parse(localStorage.getItem(LS_COL_WIDTHS) || 'null');
@@ -1064,7 +1074,9 @@ function bindEvents() {
         b.classList.toggle('active', b.dataset.mode === viewMode));
       // モード切替で削除予約は一旦リセット
       deleteSelection.clear();
+      productDeleteSelection.clear();
       updateDeleteActionBar();
+      updateProductDeleteBar();
       render();
     });
   });
@@ -3088,9 +3100,118 @@ async function executeDeleteSelected() {
   toast(`削除完了: ${okCount}枚${failCount ? ` / 失敗${failCount}件` : ''}`, failCount ? 'error' : 'success');
 }
 
+// ===== v1.11.29: 商品削除 =====
+function updateProductDeleteBar() {
+  const bar = document.getElementById('productDeleteBar');
+  if (!bar) return;
+  const cnt = document.getElementById('productDeleteCount');
+  if (viewMode === 'productdelete' && productDeleteSelection.size > 0) {
+    bar.style.display = 'flex';
+    if (cnt) cnt.textContent = productDeleteSelection.size;
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+// 上部の「削除」ボタンを「画像削除」に改称し、「商品削除」ボタンと商品削除バーを用意する
+function injectProductDeleteUI() {
+  // 「削除」→「画像削除」に改称
+  const imgDelBtn = document.getElementById('modeDelete');
+  if (imgDelBtn && !imgDelBtn.dataset.renamed) {
+    imgDelBtn.textContent = '🗑️ 画像削除';
+    imgDelBtn.dataset.renamed = '1';
+  }
+  // 「商品削除」ボタン
+  if (!document.getElementById('modeProductDelete') && imgDelBtn && imgDelBtn.parentNode) {
+    const btn = document.createElement('button');
+    btn.id = 'modeProductDelete';
+    btn.className = 'view-mode-btn view-mode-btn-danger view-mode-btn-standalone';
+    btn.dataset.mode = 'productdelete';
+    btn.textContent = '🗑️ 商品削除';
+    btn.addEventListener('click', () => {
+      viewMode = (viewMode === 'productdelete') ? 'images' : 'productdelete';
+      localStorage.setItem(LS_VIEW_MODE, viewMode);
+      document.querySelectorAll('.view-mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === viewMode));
+      deleteSelection.clear();
+      productDeleteSelection.clear();
+      updateDeleteActionBar();
+      updateProductDeleteBar();
+      render();
+    });
+    imgDelBtn.parentNode.insertBefore(btn, imgDelBtn.nextSibling);
+  }
+  // 商品削除アクションバー
+  if (!document.getElementById('productDeleteBar')) {
+    const bar = document.createElement('div');
+    bar.className = 'delete-action-bar';
+    bar.id = 'productDeleteBar';
+    bar.style.display = 'none';
+    bar.innerHTML = `
+      <div class="delete-action-info">
+        <span class="delete-action-icon">🗑️</span>
+        <span>商品削除予約: <strong id="productDeleteCount">0</strong> 件</span>
+      </div>
+      <div class="delete-action-buttons">
+        <button class="btn-secondary" id="btnProductDeleteCancel">予約をクリア</button>
+        <button class="btn-danger" id="btnProductDeleteExecute">選択した商品を削除</button>
+      </div>`;
+    document.body.appendChild(bar);
+    bar.querySelector('#btnProductDeleteCancel').addEventListener('click', () => {
+      productDeleteSelection.clear();
+      updateProductDeleteBar();
+      render();
+    });
+    bar.querySelector('#btnProductDeleteExecute').addEventListener('click', executeDeleteProducts);
+  }
+}
+
+async function executeDeleteProducts() {
+  if (productDeleteSelection.size === 0) return;
+  if (!auth.pat) { toast('削除には編集権限(PAT)が必要です', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const ids = [...productDeleteSelection];
+  const idSet = new Set(ids);
+  const targets = (data.products || []).filter(p => idSet.has(p.id));
+  if (targets.length === 0) return;
+  const totalImgs = targets.reduce((n, p) => n + (p.images || []).length, 0);
+  if (!confirm(`${targets.length}商品を削除します。\n※ひも付く画像ファイル(${totalImgs}枚)もGitHubから削除されます。\n元に戻せません。本当に実行しますか?`)) return;
+
+  let failImg = 0, done = 0;
+  showLoading('商品を削除中…');
+  for (const p of targets) {
+    for (const img of (p.images || [])) {
+      done++;
+      showLoading(`画像を削除中… ${done}/${totalImgs}`);
+      try {
+        await ghFetch(`contents/${img.path}`, {
+          method: 'DELETE',
+          body: JSON.stringify({ message: `delete product image: ${img.filename}`, sha: img.sha, branch: auth.branch })
+        });
+      } catch (e) { failImg++; console.error('product image delete failed', e); }
+    }
+  }
+  // 商品を配列から除去
+  data.products = (data.products || []).filter(p => !idSet.has(p.id));
+  showLoading('保存中…');
+  try {
+    await saveShopData(currentShopId, `delete ${targets.length} products`);
+  } catch (e) {
+    hideLoading();
+    toast('保存失敗: ' + e.message, 'error');
+    return;
+  }
+  hideLoading();
+  productDeleteSelection.clear();
+  updateProductDeleteBar();
+  render();
+  toast(`${targets.length}商品を削除しました${failImg ? ` / 画像削除失敗${failImg}件` : ''}`, failImg ? 'error' : 'success');
+}
+
 function render() {
   updateTagFilterIndicator();
   updateDeleteActionBar();
+  updateProductDeleteBar();
   updatePendingStatusBar();
   updateCategoryTabCounts();
   updateExportModeButton();
@@ -3109,23 +3230,23 @@ function render() {
 
   const data = dataCache[currentShopId] || { products: [], materials: [], boosts: [] };
 
+  // v1.11.29: カテゴリごとの商品リストを決めてから、表示方法を選ぶ
+  let list = null;
   if (currentCategory === 'product') {
-    // v1.11.15: 選択分 = いずれかの画像に分類タグが付いた商品 (その商品の全画像を表示)
-    const tagged = data.products.filter(p => (p.images || []).some(im => im.tagId));
-    if (galleryViewMode === 'imagelist') renderImageListGrid(tagged);
-    else renderProductGrid(tagged);
+    list = data.products.filter(p => (p.images || []).some(im => im.tagId)); // 選択分
   } else if (currentCategory === 'product_untagged') {
-    // v1.11.19: 未選択分 = 全画像がタグ無しの商品
-    const untagged = data.products.filter(isUntaggedProduct);
-    if (galleryViewMode === 'imagelist') renderImageListGrid(untagged);
-    else renderProductGrid(untagged);
+    list = data.products.filter(isUntaggedProduct);                         // 未選択分
   } else if (currentCategory === 'product_unsure') {
-    // 微妙タブは廃止(非表示)。念のため空表示。
-    renderProductGrid([]);
+    list = [];
   } else if (currentCategory === 'product_all') {
-    // 全商品表示
-    if (galleryViewMode === 'imagelist') renderImageListGrid(data.products);
-    else renderProductGrid(data.products);
+    list = data.products;
+  }
+
+  if (list !== null) {
+    // 削除系モード(画像削除/商品削除)では常に商品ごと表示にする
+    const useImageList = galleryViewMode === 'imagelist' && viewMode !== 'delete' && viewMode !== 'productdelete';
+    if (useImageList) renderImageListGrid(list);
+    else renderProductGrid(list);
   } else if (currentCategory === 'material') {
     renderMaterialGrid(data.materials);
   } else if (currentCategory === 'boost') {
@@ -3234,12 +3355,23 @@ function renderProductGrid(products) {
       </div>
     `;
   } else if (viewMode === 'delete') {
-    // 削除モード: 商品番号・画像 (画像クリックで削除予約)
+    // 画像削除モード: 商品番号・画像 (画像クリックで削除予約)
     headerHTML = `
       <div class="product-table-header mode-delete ${exportMode ? 'with-export' : ''}">
         ${exportHeaderHTML}
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-images">画像 (クリックで削除予約)</div>
+      </div>
+    `;
+  } else if (viewMode === 'productdelete') {
+    // v1.11.29: 商品削除モード: 行クリックで商品ごと削除予約
+    headerHTML = `
+      <div class="product-table-header mode-productdelete">
+        <div class="col-pd-check">選択</div>
+        <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
+        <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
+        <div class="col-name">商品名</div>
+        <div class="col-images">画像</div>
       </div>
     `;
   } else {
@@ -3364,6 +3496,19 @@ function renderProductGrid(products) {
         }
       }
       updateDeleteActionBar();
+    });
+  });
+  // v1.11.29: 商品削除モード: 行クリックで商品を選択/解除
+  content.querySelectorAll('[data-pd-toggle]').forEach(el => {
+    el.addEventListener('click', () => {
+      const pid = el.dataset.pdToggle;
+      if (productDeleteSelection.has(pid)) productDeleteSelection.delete(pid);
+      else productDeleteSelection.add(pid);
+      const on = productDeleteSelection.has(pid);
+      el.classList.toggle('pd-selected', on);
+      const chk = el.querySelector('.col-pd-check');
+      if (chk) chk.textContent = on ? '☑' : '☐';
+      updateProductDeleteBar();
     });
   });
   // 画像追加ボタン
@@ -4422,6 +4567,22 @@ function productRowHTML(p) {
       ${exportCellHTML}
       <div class="col-number">${numberCell}</div>
       ${imagesCellHTML}
+    </div>`;
+  }
+
+  if (viewMode === 'productdelete') {
+    // v1.11.29: 商品削除モード。行クリックで商品ごと選択。サムネは読み取り専用。
+    const selected = productDeleteSelection.has(p.id);
+    const shown = sortedImages.slice(0, 12);
+    const moreN = sortedImages.length - shown.length;
+    const pdThumbs = shown.map(img =>
+      `<div class="product-row-thumb"><img data-src="${escapeHtml(img.url)}" alt="" class="lazy-thumb"></div>`).join('');
+    return `<div class="product-row mode-productdelete ${selected ? 'pd-selected' : ''} ${isEmpty ? 'empty' : ''}" data-pd-toggle="${p.id}">
+      <div class="col-pd-check">${selected ? '☑' : '☐'}</div>
+      <div class="col-number">${numberCell}</div>
+      <div class="col-manage">${manageCell}</div>
+      <div class="col-name"><div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div></div>
+      <div class="col-images"><div class="product-row-images">${pdThumbs}${moreN > 0 ? `<div class="product-row-more">+${moreN}</div>` : ''}</div></div>
     </div>`;
   }
 
