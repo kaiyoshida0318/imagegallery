@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.15';
+const APP_VERSION = 'v1.11.17';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -51,6 +51,11 @@ let filterTagIds = new Set();
 let openTagPickerProductId = null;
 let viewMode = 'images';  // 'images' (画像全体, 既定) | 'basic' (基礎情報) | 'delete' (削除)
 const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
+// v1.11.17: 表示切替 (商品ごと / 画像一覧)
+const LS_GALLERY_VIEW = 'imagegallery_gallery_view_v1';
+let galleryViewMode = 'product'; // 'product' (商品ごと) | 'imagelist' (画像一覧)
+let _imageListUrls = [];         // 画像一覧モードのライトボックス用URL配列
+
 // v1.11.15: 項目管理(列幅ドラッグ調整)
 const LS_COL_WIDTHS = 'imagegallery_col_widths_v1';
 const DEFAULT_COL_WIDTHS = { number: 110, manage: 120, name: 240, actions: 96 };
@@ -103,6 +108,7 @@ async function init() {
   injectColManageButton();   // v1.11.15: 上部に「項目管理」ボタン
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   applyColWidths();          // v1.11.15: 保存済みの列幅を適用
+  setupFilterRow();          // v1.11.17: 検索の上に「切替ボタン+タグチップ」の行を作る
   renderVersion();
   // 表示モードのボタンを初期化
   document.querySelectorAll('.view-mode-btn').forEach(b =>
@@ -146,6 +152,21 @@ function injectImageTagStyles() {
     .col-resize-handle::after { content: ''; position: absolute; top: 12%; height: 76%; width: 3px; left: 3px; background: #c026d3; border-radius: 2px; opacity: .55; }
     .col-resize-handle:hover::after { opacity: 1; }
     /* 列幅(grid-template-columns)は applyColWidths() が #colWidthStyles に動的注入 */
+    /* v1.11.17: 検索の上の「切替+タグチップ」行 */
+    .filter-chip-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 8px 16px 0; }
+    .gallery-mode-seg { display: inline-flex; border: 1px solid var(--border, #e2e8f0); border-radius: 8px; overflow: hidden; flex-shrink: 0; }
+    .gallery-mode-seg button { border: none; background: #fff; color: #475569; font-size: 12px; padding: 6px 12px; cursor: pointer; }
+    .gallery-mode-seg button + button { border-left: 1px solid var(--border, #e2e8f0); }
+    .gallery-mode-seg button.active { background: #7c3aed; color: #fff; font-weight: 700; }
+    .filter-chip-row #tagFilterInline { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+    /* v1.11.17: 画像一覧グリッド */
+    .image-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; padding: 12px 16px; }
+    .image-list-tile { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+    .image-list-tile .ilt-thumb { width: 100%; height: 170px; background: #fff; border: 1px solid var(--border-light, #eef2f7); overflow: hidden; cursor: zoom-in; }
+    .image-list-tile .ilt-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .image-list-tile .ilt-thumb:hover { outline: 2px solid var(--primary, #7c3aed); outline-offset: -2px; }
+    .image-list-tile .img-tag-select { max-width: 100%; width: 100%; }
+    .image-list-tile .ilt-meta { font-size: 10px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   `;
   document.head.appendChild(st);
 }
@@ -238,6 +259,120 @@ function endColDrag() {
   window.removeEventListener('mouseup', endColDrag);
 }
 
+// v1.11.17: 検索バーの上に「表示切替ボタン + タグフィルタチップ」の行を作り、チップを移設する
+function setupFilterRow() {
+  if (document.getElementById('galleryModeSeg')) return;
+  const searchRow = document.querySelector('.search-row');
+  const chips = document.getElementById('tagFilterInline');
+  if (!searchRow || !chips) return;
+  const row = document.createElement('div');
+  row.className = 'filter-chip-row';
+  // 左側: 商品ごと / 画像一覧 の切替
+  const seg = document.createElement('div');
+  seg.id = 'galleryModeSeg';
+  seg.className = 'gallery-mode-seg';
+  seg.innerHTML = `
+    <button type="button" data-gmode="product">🗂️ 商品ごと</button>
+    <button type="button" data-gmode="imagelist">🖼️ 画像一覧</button>`;
+  seg.querySelectorAll('[data-gmode]').forEach(b =>
+    b.addEventListener('click', () => setGalleryViewMode(b.dataset.gmode)));
+  row.appendChild(seg);
+  // チップをこの行へ移設
+  row.appendChild(chips);
+  searchRow.parentNode.insertBefore(row, searchRow);
+  updateGalleryModeSeg();
+}
+
+function updateGalleryModeSeg() {
+  const seg = document.getElementById('galleryModeSeg');
+  if (!seg) return;
+  seg.querySelectorAll('[data-gmode]').forEach(b =>
+    b.classList.toggle('active', b.dataset.gmode === galleryViewMode));
+}
+
+function setGalleryViewMode(mode) {
+  if (mode !== 'product' && mode !== 'imagelist') return;
+  if (galleryViewMode === mode) return;
+  galleryViewMode = mode;
+  try { localStorage.setItem(LS_GALLERY_VIEW, mode); } catch (e) { /* ignore */ }
+  updateGalleryModeSeg();
+  render();
+}
+
+// v1.11.17: 画像一覧モード — 対象商品の画像をフラットなグリッドで並べる
+// (上部フィルタでタグを選ぶと、そのタグの画像だけがずらっと並ぶ)
+function renderImageListGrid(products) {
+  const content = document.getElementById('content');
+  let list = products.slice();
+  if (searchQuery) {
+    list = list.filter(p =>
+      (p.itemName || '').toLowerCase().includes(searchQuery) ||
+      (p.itemCode || '').toLowerCase().includes(searchQuery) ||
+      (p.itemNumber || '').toLowerCase().includes(searchQuery) ||
+      (p.itemManageNumber || '').toLowerCase().includes(searchQuery));
+  }
+  const favTagId = getFavoriteTagId();
+  const classTags = getCurrentTags().filter(t => t.id !== favTagId);
+  const classFilterIds = [...filterTagIds].filter(id => id !== favTagId);
+
+  // 画像を集約
+  let items = [];
+  list.forEach(p => {
+    sortImagesByName(p.images || []).forEach(img => items.push({ p, img }));
+  });
+  if (classFilterIds.length > 0) {
+    items = items.filter(it => classFilterIds.includes(it.img.tagId));
+  }
+
+  if (items.length === 0) {
+    content.innerHTML = `<div class="empty-state">
+      <div class="empty-icon">🖼️</div>
+      <div class="empty-title">該当する画像がありません</div>
+      <div class="empty-desc">${classFilterIds.length ? '上部のタグ選択を変えてみてください' : 'タグを付けた画像がありません'}</div>
+    </div>`;
+    return;
+  }
+
+  _imageListUrls = items.map(it => it.img.url);
+
+  const html = `<div class="image-list-grid">` + items.map((it, idx) => {
+    const { p, img } = it;
+    const sel = img.tagId || '';
+    const selTag = sel ? classTags.find(t => t.id === sel) : null;
+    const c = selTag ? getTagColor(selTag.color) : null;
+    const styleAttr = c ? ` style="background:${c.bg};color:${c.fg};border-color:${c.bg}"` : '';
+    const opts = ['<option value="">タグなし</option>']
+      .concat(classTags.map(t => `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${escapeHtml(t.name)}</option>`))
+      .join('');
+    const selectHTML = `<select class="img-tag-select" data-img-tag-pid="${p.id}" data-img-tag-id="${img.id}" data-has="${sel ? '1' : '0'}"${styleAttr}>${opts}</select>`;
+    return `<div class="image-list-tile">
+      <div class="ilt-thumb" data-il-index="${idx}" title="${escapeHtml(getImageSortKey(img))}">
+        <img data-src="${escapeHtml(img.url)}" alt="" class="lazy-thumb">
+      </div>
+      ${selectHTML}
+      <div class="ilt-meta" title="${escapeHtml(p.itemName || '')}">${escapeHtml(p.itemNumber || p.itemManageNumber || '')}</div>
+    </div>`;
+  }).join('') + `</div>`;
+  content.innerHTML = html;
+  scanLazyImages(content);
+
+  // 画像タグのドロップダウン (商品ごとビューと同じ挙動)
+  content.querySelectorAll('[data-img-tag-id]').forEach(selEl => {
+    selEl.addEventListener('click', (e) => e.stopPropagation());
+    selEl.addEventListener('change', (e) => {
+      e.stopPropagation();
+      setImageTag(selEl.dataset.imgTagPid, selEl.dataset.imgTagId, selEl.value, selEl);
+    });
+  });
+  // サムネクリックでライトボックス
+  content.querySelectorAll('[data-il-index]').forEach(el => {
+    el.addEventListener('click', () => {
+      const i = parseInt(el.dataset.ilIndex, 10) || 0;
+      openLightbox(_imageListUrls, i);
+    });
+  });
+}
+
 // Service Worker登録 (v1.11.6)
 function registerServiceWorker() {
   if (!('serviceWorker' in navigator)) {
@@ -309,6 +444,9 @@ function loadCurrentSelections() {
     const cw = JSON.parse(localStorage.getItem(LS_COL_WIDTHS) || 'null');
     if (cw && typeof cw === 'object') colWidths = { ...DEFAULT_COL_WIDTHS, ...cw };
   } catch (e) { /* ignore */ }
+  // v1.11.17: 表示切替(商品ごと/画像一覧)
+  const _gv = localStorage.getItem(LS_GALLERY_VIEW);
+  galleryViewMode = (_gv === 'imagelist') ? 'imagelist' : 'product';
   // ソート状態を復元 (なければデフォルト)
   const savedSortKey = localStorage.getItem(LS_SORT_KEY);
   const savedSortDir = localStorage.getItem(LS_SORT_DIR);
@@ -2552,13 +2690,15 @@ function render() {
   if (currentCategory === 'product') {
     // v1.11.15: 選択分 = いずれかの画像に分類タグが付いた商品 (その商品の全画像を表示)
     const tagged = data.products.filter(p => (p.images || []).some(im => im.tagId));
-    renderProductGrid(tagged);
+    if (galleryViewMode === 'imagelist') renderImageListGrid(tagged);
+    else renderProductGrid(tagged);
   } else if (currentCategory === 'product_unsure') {
     // 微妙タブは廃止(非表示)。念のため空表示。
     renderProductGrid([]);
   } else if (currentCategory === 'product_all') {
-    // 全商品表示(現役+微妙)
-    renderProductGrid(data.products);
+    // 全商品表示
+    if (galleryViewMode === 'imagelist') renderImageListGrid(data.products);
+    else renderProductGrid(data.products);
   } else if (currentCategory === 'material') {
     renderMaterialGrid(data.materials);
   } else if (currentCategory === 'boost') {
@@ -4067,10 +4207,11 @@ function openMaterialModal(entryId) {
 function getCurrentEntry() {
   const data = dataCache[currentShopId];
   if (!data) return null;
-  if (currentCategory === 'product') return data.products.find(x => x.id === currentProductId);
   if (currentCategory === 'material') return data.materials.find(x => x.id === currentProductId);
   if (currentCategory === 'boost') return data.boosts.find(x => x.id === currentProductId);
-  return null;
+  // v1.11.16: product / product_all / product_unsure はすべて「商品」として扱う
+  //   (以前は 'product' のみ判定していたため、全体タブ[product_all]で「対象が選択されていません」になっていた)
+  return data.products.find(x => x.id === currentProductId);
 }
 
 function renderProductImageGrid(entry) {
@@ -4112,7 +4253,9 @@ async function uploadFiles(files) {
     const f = files[i];
     progress.textContent = `アップロード中 ${i + 1}/${files.length}: ${f.name}`;
     try {
-      const productLinkId = currentCategory === 'product' ? entry.id : (entry.productId || null);
+      // v1.11.16: 商品カテゴリ(product/product_all/product_unsure)は entry.id を保存先にする
+      const isMatBoost = currentCategory === 'material' || currentCategory === 'boost';
+      const productLinkId = isMatBoost ? (entry.productId || null) : entry.id;
       const imgMeta = await uploadImageToGitHub(currentShopId, productLinkId, f);
       if (!entry.images) entry.images = [];
       entry.images.push(imgMeta);
@@ -4239,7 +4382,8 @@ function copyImageUrl() {
 // エントリー追加 (素材/盛り上げ)
 // =====================================================
 function openEntryForm() {
-  if (currentCategory === 'product') {
+  // v1.11.16: 商品カテゴリ(product/product_all/product_unsure)では手動追加不可
+  if (currentCategory !== 'material' && currentCategory !== 'boost') {
     toast('「商品」は同期で自動追加されます。「+ 商品同期」をご利用ください', 'error');
     return;
   }
