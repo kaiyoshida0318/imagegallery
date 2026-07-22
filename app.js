@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.17';
+const APP_VERSION = 'v1.11.19';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -107,6 +107,8 @@ async function init() {
   injectImageTagStyles();
   injectColManageButton();   // v1.11.15: 上部に「項目管理」ボタン
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
+  injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
+  syncCategoryActiveTab();   // v1.11.19: 現在カテゴリに合わせて active 同期
   applyColWidths();          // v1.11.15: 保存済みの列幅を適用
   setupFilterRow();          // v1.11.17: 検索の上に「切替ボタン+タグチップ」の行を作る
   renderVersion();
@@ -206,6 +208,35 @@ function injectColManageButton() {
 function relabelCategoryTabs() {
   const pb = document.querySelector('.cat-btn[data-cat="product"]');
   if (pb && pb.firstChild && pb.firstChild.nodeType === 3) pb.firstChild.nodeValue = '商品(選択分)';
+}
+
+// v1.11.19: 「商品(未選択分)」タブを 選択分 と 全体 の間に追加 (全画像がタグ無しの商品)
+function injectUntaggedTab() {
+  if (document.querySelector('.cat-btn[data-cat="product_untagged"]')) return;
+  const allBtn = document.querySelector('.cat-btn[data-cat="product_all"]');
+  if (!allBtn || !allBtn.parentNode) return;
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn';
+  btn.dataset.cat = 'product_untagged';
+  btn.textContent = '商品(未選択分)';
+  btn.addEventListener('click', () => {
+    currentCategory = 'product_untagged';
+    localStorage.setItem(LS_CURRENT_CAT, 'product_untagged');
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+  allBtn.parentNode.insertBefore(btn, allBtn);
+}
+
+// v1.11.19: 読み込み時のカテゴリに合わせてタブの active 状態を同期
+function syncCategoryActiveTab() {
+  document.querySelectorAll('.cat-btn').forEach(b =>
+    b.classList.toggle('active', b.dataset.cat === currentCategory));
+}
+
+// 商品の全画像がタグ無しか (未選択分の判定)
+function isUntaggedProduct(p) {
+  return !(p.images || []).some(im => im.tagId);
 }
 
 // v1.11.15: 項目管理(列幅ドラッグ)モードの切替
@@ -435,7 +466,7 @@ function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
   // v1.11.12: 素材/盛り上げタブは廃止。保存済みの material/boost は product(現役) に読み替える
   const _cc = localStorage.getItem(LS_CURRENT_CAT);
-  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all') ? _cc : 'product';
+  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged') ? _cc : 'product';
   // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
   const _vm = localStorage.getItem(LS_VIEW_MODE);
   viewMode = (_vm === 'delete') ? 'delete' : 'images';
@@ -626,7 +657,7 @@ function bindEvents() {
   document.getElementById('btnExportCsv').addEventListener('click', exportBasicInfoCsv);
   document.getElementById('btnAddEntry').addEventListener('click', () => {
     // 商品系タブ → 追加ハブモーダル / 素材・盛り上げ → 名前入力モーダル
-    if (currentCategory === 'product' || currentCategory === 'product_unsure' || currentCategory === 'product_all') {
+    if (currentCategory !== 'material' && currentCategory !== 'boost') {
       document.getElementById('addHubModal').style.display = 'flex';
     } else {
       openEntryForm();
@@ -803,8 +834,14 @@ const REASON_TAG_NAME = '◯◯個の理由';
 const OLD_REASON_TAG_NAME = '選ばれる理由';
 const REASON_TAG_COLOR = 'purple';
 
+// v1.11.18: タグ名の一括リネーム定義 (移行処理で一度だけ適用。idは不変=画像の紐付け維持)
+const TAG_RENAMES = [
+  { from: OLD_REASON_TAG_NAME, to: REASON_TAG_NAME }, // 選ばれる理由 → ◯◯個の理由
+  { from: 'ポイント前', to: '重要補足' },              // v1.11.18
+];
+
 // v1.11.10: 分類タグ(お気に入り以外)の表示順。ドロップダウン/上部フィルタはこの順に並ぶ。
-const DESIRED_TAG_ORDER = ['疑問？', 'どーん', 'ポイント前', REASON_TAG_NAME, 'セット販売'];
+const DESIRED_TAG_ORDER = ['疑問？', 'どーん', '重要補足', REASON_TAG_NAME, 'セット販売'];
 
 // 起動時に「お気に入り」タグがなければ自動作成
 // 起動時に「お気に入り」タグがなければ自動作成
@@ -889,11 +926,12 @@ async function migrateTagRenameAndOrder(shopId) {
   let changed = false;
 
   // 1) 旧名 → 新名リネーム (新名が既に存在する場合は重複を避けてスキップ)
-  const hasNew = data.tags.some(t => t.name === REASON_TAG_NAME);
-  if (!hasNew) {
-    const old = data.tags.find(t => t.name === OLD_REASON_TAG_NAME);
-    if (old) { old.name = REASON_TAG_NAME; changed = true; }
-  }
+  TAG_RENAMES.forEach(({ from, to }) => {
+    const hasNew = data.tags.some(t => t.name === to);
+    if (hasNew) return;
+    const old = data.tags.find(t => t.name === from);
+    if (old) { old.name = to; changed = true; }
+  });
 
   // 2) 並べ替え (安定ソート)
   const orderIndex = (name) => {
@@ -2692,6 +2730,11 @@ function render() {
     const tagged = data.products.filter(p => (p.images || []).some(im => im.tagId));
     if (galleryViewMode === 'imagelist') renderImageListGrid(tagged);
     else renderProductGrid(tagged);
+  } else if (currentCategory === 'product_untagged') {
+    // v1.11.19: 未選択分 = 全画像がタグ無しの商品
+    const untagged = data.products.filter(isUntaggedProduct);
+    if (galleryViewMode === 'imagelist') renderImageListGrid(untagged);
+    else renderProductGrid(untagged);
   } else if (currentCategory === 'product_unsure') {
     // 微妙タブは廃止(非表示)。念のため空表示。
     renderProductGrid([]);
@@ -2710,10 +2753,13 @@ function render() {
 
 function updateCategoryMeta(data) {
   const meta = document.getElementById('unregisteredCount');
-  // v1.11.15: 選択分=タグ付き画像がある商品 / 全体=全商品
+  // v1.11.15/19: 選択分=タグ付き画像がある商品 / 未選択分=全画像タグ無し / 全体=全商品
   if (currentCategory === 'product') {
     const tagged = data.products.filter(p => (p.images || []).some(im => im.tagId)).length;
     meta.innerHTML = `<span>商品(選択分): ${tagged}件</span>`;
+  } else if (currentCategory === 'product_untagged') {
+    const n = data.products.filter(isUntaggedProduct).length;
+    meta.innerHTML = `<span>商品(未選択分): ${n}件</span>`;
   } else if (currentCategory === 'product_all') {
     const empty = data.products.filter(p => !p.images || p.images.length === 0).length;
     meta.innerHTML = empty > 0
@@ -3099,9 +3145,10 @@ function updateCategoryTabCounts() {
     return p.status || 'active';
   };
 
-  // v1.11.15: 選択分=タグ付き画像がある商品数、全体=全商品数
+  // v1.11.15/19: 選択分=タグ付き画像がある商品数、未選択分=全画像タグ無しの商品数、全体=全商品数
   const counts = {
     product: data.products.filter(p => (p.images || []).some(im => im.tagId)).length,
+    product_untagged: data.products.filter(isUntaggedProduct).length,
     product_unsure: 0,
     product_all: data.products.length,
     material: (data.materials || []).length,
