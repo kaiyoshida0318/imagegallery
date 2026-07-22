@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.25';
+const APP_VERSION = 'v1.11.27';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -48,6 +48,9 @@ let sortDir = 'desc';    // デフォルト: 降順
 const LS_SORT_KEY = 'imagegallery_sort_key_v1';
 const LS_SORT_DIR = 'imagegallery_sort_dir_v1';
 let filterTagIds = new Set();
+// v1.11.27: フィルタ選択の永続化 & 閲覧者向け自動更新
+const LS_FILTER_TAGS = 'imagegallery_filter_tags_v1';
+let _autoRefreshTimer = null;
 let openTagPickerProductId = null;
 let viewMode = 'images';  // 'images' (画像全体, 既定) | 'basic' (基礎情報) | 'delete' (削除)
 const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
@@ -109,6 +112,7 @@ async function init() {
   injectColManageButton();   // v1.11.15: 上部に「項目管理」ボタン
   injectTagManagerButton();  // v1.11.22: 上部に「タグ編集」ボタン
   injectShareButton();       // v1.11.25: 上部に「共有」ボタン
+  injectRefreshButton();     // v1.11.27: 上部に「更新」ボタン
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
   syncCategoryActiveTab();   // v1.11.19: 現在カテゴリに合わせて active 同期
@@ -121,6 +125,7 @@ async function init() {
   renderShopTabs();
   await loadCurrentShopData();
   render();
+  startAutoRefresh();        // v1.11.27: 閲覧者向けに一定間隔で自動更新
 }
 
 // v1.11.8: 画像単位タグ用の最小CSSを一度だけ注入 (style.css を変更せず app.js だけで完結させる)
@@ -539,6 +544,64 @@ function importShareCode() {
   setTimeout(() => location.reload(), 700);
 }
 
+// ===== v1.11.27: 最新データの自動反映 (リロード不要) =====
+// データの軽量シグネチャ (商品数/画像数/タグ付き数/sha/タグ構成) で変化を検知
+function _dataSig(d) {
+  if (!d) return '';
+  let imgs = 0, tagged = 0;
+  (d.products || []).forEach(p => { const a = p.images || []; imgs += a.length; a.forEach(im => { if (im.tagId) tagged++; }); });
+  const tagsSig = (d.tags || []).map(t => t.id + t.name + t.color).join(',');
+  return `${(d.products || []).length}|${imgs}|${tagged}|${d.sha || ''}|${tagsSig}`;
+}
+
+// 現在のショップデータを再取得し、変化があれば表示を更新 (フィルタ/カテゴリ/スクロールは維持)
+async function refreshCurrentShopData(opts = {}) {
+  const manual = !!opts.manual;
+  if (!currentShopId || !auth.owner || !auth.repo) return;
+  if (!manual) {
+    if (document.hidden) return;
+    const lb = document.getElementById('lightbox');
+    if (lb && lb.classList.contains('open')) return;         // 拡大表示中は邪魔しない
+    if (document.querySelector('.modal-backdrop[style*="flex"]')) return; // モーダル操作中はスキップ
+  }
+  let fresh;
+  try { fresh = await loadShopData(currentShopId); }
+  catch (e) { if (manual) toast('更新に失敗しました', 'error'); return; }
+  if (!fresh || fresh._wasEmpty || fresh._parseError) { if (manual) toast('更新に失敗しました', 'error'); return; }
+
+  const prev = dataCache[currentShopId];
+  if (!manual && prev && _dataSig(fresh) === _dataSig(prev)) return; // 変化なし → 何もしない
+
+  const sy = window.scrollY;
+  dataCache[currentShopId] = fresh;
+  render();                       // filterTagIds等はメモリ保持なので選択は維持される
+  window.scrollTo(0, sy);
+  toast(manual ? '最新の内容に更新しました' : '新しい内容に更新しました', 'success');
+}
+
+// 閲覧者(PATなし)は一定間隔で自動更新。編集者は自分が更新元なので自動更新しない。
+function startAutoRefresh() {
+  if (_autoRefreshTimer) { clearInterval(_autoRefreshTimer); _autoRefreshTimer = null; }
+  if (auth.pat) return;
+  _autoRefreshTimer = setInterval(() => { refreshCurrentShopData(); }, 15000);
+  // タブに戻ってきた時にも即更新
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !auth.pat) refreshCurrentShopData(); });
+}
+
+// 上部ツールバーに「更新」ボタン (誰でも手動で最新化できる)
+function injectRefreshButton() {
+  if (document.getElementById('btnRefreshData')) return;
+  const ref = document.getElementById('btnShareShop') || document.getElementById('btnTagManager') || document.getElementById('btnColManage') || document.getElementById('btnImportCsv');
+  if (!ref || !ref.parentNode) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnRefreshData';
+  btn.className = 'btn-icon';
+  btn.title = '最新の内容に更新 (リロード不要)';
+  btn.innerHTML = '<span class="icon">🔄</span><span class="label">更新</span>';
+  btn.addEventListener('click', () => refreshCurrentShopData({ manual: true }));
+  ref.parentNode.insertBefore(btn, ref);
+}
+
 // v1.11.15: 項目管理(列幅ドラッグ)モードの切替
 function toggleColResizeMode() {
   colResizeMode = !colResizeMode;
@@ -778,6 +841,11 @@ function loadCurrentSelections() {
   // v1.11.17: 表示切替(商品ごと/画像一覧)
   const _gv = localStorage.getItem(LS_GALLERY_VIEW);
   galleryViewMode = (_gv === 'imagelist') ? 'imagelist' : 'product';
+  // v1.11.27: タグフィルタの選択を復元 (リロードしても消えないように)
+  try {
+    const ft = JSON.parse(localStorage.getItem(LS_FILTER_TAGS) || '[]');
+    if (Array.isArray(ft)) filterTagIds = new Set(ft);
+  } catch (e) { /* ignore */ }
   // ソート状態を復元 (なければデフォルト)
   const savedSortKey = localStorage.getItem(LS_SORT_KEY);
   const savedSortDir = localStorage.getItem(LS_SORT_DIR);
@@ -2136,6 +2204,7 @@ function renderTagFilterInline() {
       const wasActive = filterTagIds.has(id);
       filterTagIds.clear();
       if (!wasActive) filterTagIds.add(id);
+      saveFilterTags();
       renderTagFilterInline();
       render();
     });
@@ -2144,10 +2213,16 @@ function renderTagFilterInline() {
   if (cb) {
     cb.addEventListener('click', () => {
       filterTagIds.clear();
+      saveFilterTags();
       renderTagFilterInline();
       render();
     });
   }
+}
+
+// v1.11.27: タグフィルタの選択をこの端末に保存
+function saveFilterTags() {
+  try { localStorage.setItem(LS_FILTER_TAGS, JSON.stringify([...filterTagIds])); } catch (e) { /* ignore */ }
 }
 
 // 旧名互換ラッパー (他から呼ばれても安全に動くように)
@@ -2870,6 +2945,7 @@ async function switchShop(shopId) {
   renderShopTabs();
   await loadCurrentShopData();
   render();
+  startAutoRefresh();        // v1.11.27: ショップ切替後も自動更新を再開
 }
 
 async function loadCurrentShopData() {
@@ -3534,6 +3610,8 @@ async function setImageTag(productId, imageId, tagId, selEl) {
   };
   applyLook(next);
 
+  // v1.11.26: 保存が終わるまで全画面ロックして誤操作を防ぐ (フリーズ表示)
+  showLoading('タグを保存中… そのままお待ちください');
   try {
     await saveShopData(currentShopId, `image tag: ${p.itemManageNumber || p.id} / ${imageId}`);
     // フィルタ表示中は絞り込み結果が変わる可能性があるので再描画
@@ -3541,6 +3619,8 @@ async function setImageTag(productId, imageId, tagId, selEl) {
   } catch (err) {
     applyLook(prev); // ロールバック
     toast('保存失敗: ' + err.message, 'error');
+  } finally {
+    hideLoading();
   }
 }
 
