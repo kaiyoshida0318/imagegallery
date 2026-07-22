@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.20';
+const APP_VERSION = 'v1.11.22';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -55,6 +55,7 @@ const LS_VIEW_MODE = 'imagegallery_view_mode_v1';
 const LS_GALLERY_VIEW = 'imagegallery_gallery_view_v1';
 let galleryViewMode = 'product'; // 'product' (商品ごと) | 'imagelist' (画像一覧)
 let _imageListUrls = [];         // 画像一覧モードのライトボックス用URL配列
+let _tagMgr = null;              // v1.11.22: タグ管理モーダルの作業状態
 
 // v1.11.15: 項目管理(列幅ドラッグ調整)
 const LS_COL_WIDTHS = 'imagegallery_col_widths_v1';
@@ -106,6 +107,7 @@ async function init() {
   bindEvents();
   injectImageTagStyles();
   injectColManageButton();   // v1.11.15: 上部に「項目管理」ボタン
+  injectTagManagerButton();  // v1.11.22: 上部に「タグ編集」ボタン
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
   syncCategoryActiveTab();   // v1.11.19: 現在カテゴリに合わせて active 同期
@@ -172,11 +174,27 @@ function injectImageTagStyles() {
     /* v1.11.20: ライトボックスをカルーセル化 (中央大 / 左右うっすら) */
     .lightbox { padding: 0 !important; }
     .lb-stage { position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-    .lb-current { max-width: 62vw !important; max-height: 90vh !important; object-fit: contain; z-index: 2; cursor: pointer; box-shadow: 0 8px 50px rgba(0,0,0,.7); background: #fff; }
-    .lb-peek { position: absolute; top: 50%; transform: translateY(-50%); max-height: 72vh; max-width: 34vw; object-fit: contain; opacity: .3; z-index: 1; cursor: pointer; transition: opacity .15s; filter: brightness(.65); background: #fff; }
-    .lb-peek:hover { opacity: .55; }
-    .lb-peek-prev { left: -8vw; }
-    .lb-peek-next { right: -8vw; }
+    .lb-current { max-width: 54vw !important; max-height: 90vh !important; object-fit: contain; z-index: 2; cursor: pointer; box-shadow: 0 8px 50px rgba(0,0,0,.7); background: #fff; }
+    .lb-peek { position: absolute; top: 50%; transform: translateY(-50%); max-height: 72vh; max-width: 24vw; object-fit: contain; opacity: .32; z-index: 1; cursor: pointer; transition: opacity .15s; filter: brightness(.6); background: #fff; }
+    .lb-peek:hover { opacity: .6; }
+    .lb-peek-prev { left: 3vw; }
+    .lb-peek-next { right: 3vw; }
+    /* v1.11.22: 分類タグ管理モーダル */
+    #tagMgrModal .modal { max-width: 640px; width: 92%; }
+    #tagMgrModal .modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 12px 0 2px; }
+    .tagmgr-hint { font-size: 12px; color: #64748b; margin-bottom: 10px; }
+    .tagmgr-row { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-bottom: 1px solid #eef2f7; }
+    .tagmgr-reorder { display: flex; flex-direction: column; gap: 2px; }
+    .tagmgr-reorder button { width: 24px; height: 16px; line-height: 1; font-size: 9px; border: 1px solid #e2e8f0; background: #fff; border-radius: 4px; cursor: pointer; padding: 0; }
+    .tagmgr-reorder button:disabled { opacity: .3; cursor: default; }
+    .tagmgr-preview { font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 12px; white-space: nowrap; min-width: 64px; text-align: center; flex-shrink: 0; }
+    .tagmgr-name { flex: 1; min-width: 70px; font-size: 13px; padding: 4px 8px; border: 1px solid #e2e8f0; border-radius: 6px; }
+    .tagmgr-colors { display: flex; gap: 3px; flex-wrap: wrap; }
+    .tagmgr-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; box-sizing: border-box; }
+    .tagmgr-dot.sel { border-color: #0f172a; }
+    .tagmgr-del { border: none; background: transparent; cursor: pointer; font-size: 15px; padding: 2px 4px; }
+    .tagmgr-add-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 2px solid #e2e8f0; flex-wrap: wrap; }
+    .tagmgr-add-row #tagMgrNewName { flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
   `;
   document.head.appendChild(st);
 }
@@ -245,6 +263,177 @@ function syncCategoryActiveTab() {
 // 商品の全画像がタグ無しか (未選択分の判定)
 function isUntaggedProduct(p) {
   return !(p.images || []).some(im => im.tagId);
+}
+
+// ===== v1.11.22: 分類タグ管理 (並び替え / 色編集 / 追加 / 削除) =====
+function injectTagManagerButton() {
+  if (document.getElementById('btnTagManager')) return;
+  const ref = document.getElementById('btnColManage') || document.getElementById('btnImportCsv');
+  if (!ref || !ref.parentNode) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnTagManager';
+  btn.className = 'btn-icon';
+  btn.title = '分類タグの並び替え・色・追加';
+  btn.innerHTML = '<span class="icon">🏷️</span><span class="label">タグ編集</span>';
+  btn.addEventListener('click', openTagManager);
+  ref.parentNode.insertBefore(btn, ref);
+}
+
+function ensureTagManagerModal() {
+  if (document.getElementById('tagMgrModal')) return;
+  const m = document.createElement('div');
+  m.className = 'modal-backdrop';
+  m.id = 'tagMgrModal';
+  m.style.display = 'none';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">
+        <h2>分類タグの管理</h2>
+        <button class="btn-close" data-tagmgr-close aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="tagmgr-hint">▲▼で並び替え / 色をクリックで変更 / 名前は直接編集できます。</div>
+        <div id="tagMgrList"></div>
+        <div class="tagmgr-add-row">
+          <input type="text" id="tagMgrNewName" placeholder="新しいタグ名を入力">
+          <div id="tagMgrNewColors" class="tagmgr-colors"></div>
+          <button class="btn-secondary btn-mini" id="tagMgrAddBtn">+ 追加</button>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-tagmgr-close>キャンセル</button>
+        <button class="btn-primary" id="tagMgrSaveBtn">保存</button>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  m.querySelectorAll('[data-tagmgr-close]').forEach(b => b.addEventListener('click', closeTagManager));
+  m.querySelector('#tagMgrAddBtn').addEventListener('click', tagMgrAdd);
+  m.querySelector('#tagMgrSaveBtn').addEventListener('click', saveTagManager);
+  const list = m.querySelector('#tagMgrList');
+  list.addEventListener('click', (e) => {
+    const up = e.target.closest('[data-tm-up]'); if (up) { tagMgrMove(+up.dataset.tmUp, -1); return; }
+    const dn = e.target.closest('[data-tm-down]'); if (dn) { tagMgrMove(+dn.dataset.tmDown, 1); return; }
+    const del = e.target.closest('[data-tm-del]'); if (del) { tagMgrDelete(+del.dataset.tmDel); return; }
+    const dot = e.target.closest('[data-tm-color]'); if (dot) { const [i, c] = dot.dataset.tmColor.split(':'); _tagMgr.list[+i].color = c; renderTagManagerList(); return; }
+  });
+  list.addEventListener('input', (e) => {
+    const nm = e.target.closest('[data-tm-name]'); if (nm) { _tagMgr.list[+nm.dataset.tmName].name = nm.value; }
+  });
+}
+
+function openTagManager() {
+  if (!currentShopId || !dataCache[currentShopId]) { toast('ショップが選択されていません', 'error'); return; }
+  ensureTagManagerModal();
+  const favId = getFavoriteTagId();
+  const classTags = getCurrentTags().filter(t => t.id !== favId);
+  _tagMgr = {
+    list: classTags.map(t => ({ id: t.id, name: t.name, color: t.color || 'gray' })),
+    originalIds: classTags.map(t => t.id),
+    newColor: 'blue',
+  };
+  renderTagManagerList();
+  renderTagMgrNewColors();
+  document.getElementById('tagMgrModal').style.display = 'flex';
+}
+
+function closeTagManager() {
+  const m = document.getElementById('tagMgrModal');
+  if (m) m.style.display = 'none';
+  _tagMgr = null;
+}
+
+function renderTagManagerList() {
+  const wrap = document.getElementById('tagMgrList');
+  if (!wrap || !_tagMgr) return;
+  const last = _tagMgr.list.length - 1;
+  wrap.innerHTML = _tagMgr.list.map((t, i) => {
+    const col = getTagColor(t.color);
+    const dots = TAG_COLORS.map(c => `<span class="tagmgr-dot ${c.id === t.color ? 'sel' : ''}" data-tm-color="${i}:${c.id}" style="background:${c.bg}" title="${c.id}"></span>`).join('');
+    return `<div class="tagmgr-row">
+      <div class="tagmgr-reorder">
+        <button type="button" data-tm-up="${i}" ${i === 0 ? 'disabled' : ''}>▲</button>
+        <button type="button" data-tm-down="${i}" ${i === last ? 'disabled' : ''}>▼</button>
+      </div>
+      <span class="tagmgr-preview" style="background:${col.bg};color:${col.fg}">${escapeHtml(t.name || '（名称）')}</span>
+      <input type="text" class="tagmgr-name" data-tm-name="${i}" value="${escapeHtml(t.name)}">
+      <div class="tagmgr-colors">${dots}</div>
+      <button type="button" class="tagmgr-del" data-tm-del="${i}" title="削除">🗑</button>
+    </div>`;
+  }).join('') || '<div class="tagmgr-hint">タグがありません。下から追加してください。</div>';
+}
+
+function renderTagMgrNewColors() {
+  const wrap = document.getElementById('tagMgrNewColors');
+  if (!wrap || !_tagMgr) return;
+  wrap.innerHTML = TAG_COLORS.map(c => `<span class="tagmgr-dot ${c.id === _tagMgr.newColor ? 'sel' : ''}" data-tm-newcolor="${c.id}" style="background:${c.bg}" title="${c.id}"></span>`).join('');
+  wrap.querySelectorAll('[data-tm-newcolor]').forEach(d =>
+    d.addEventListener('click', () => { _tagMgr.newColor = d.dataset.tmNewcolor; renderTagMgrNewColors(); }));
+}
+
+function tagMgrMove(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= _tagMgr.list.length) return;
+  const tmp = _tagMgr.list[i]; _tagMgr.list[i] = _tagMgr.list[j]; _tagMgr.list[j] = tmp;
+  renderTagManagerList();
+}
+function tagMgrDelete(i) {
+  const t = _tagMgr.list[i];
+  if (!t) return;
+  if (!confirm(`タグ「${t.name}」を削除します。よろしいですか?\n(このタグを付けた画像はタグなしに戻ります)`)) return;
+  _tagMgr.list.splice(i, 1);
+  renderTagManagerList();
+}
+function tagMgrAdd() {
+  const input = document.getElementById('tagMgrNewName');
+  const name = (input.value || '').trim();
+  if (!name) { toast('タグ名を入力してください', 'error'); return; }
+  if (_tagMgr.list.some(t => t.name === name)) { toast('同じ名前のタグが既にあります', 'error'); return; }
+  _tagMgr.list.push({ id: 'tag_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), name, color: _tagMgr.newColor });
+  input.value = '';
+  renderTagManagerList();
+}
+
+async function saveTagManager() {
+  const data = dataCache[currentShopId];
+  if (!data || !_tagMgr) return;
+  const names = _tagMgr.list.map(t => (t.name || '').trim());
+  if (names.some(n => !n)) { toast('空のタグ名があります', 'error'); return; }
+  if (new Set(names).size !== names.length) { toast('同じ名前のタグが重複しています', 'error'); return; }
+
+  const favId = getFavoriteTagId();
+  const favTag = getCurrentTags().find(t => t.id === favId);
+  const keepIds = new Set(_tagMgr.list.map(t => t.id));
+  const deletedIds = _tagMgr.originalIds.filter(id => !keepIds.has(id));
+
+  const newTags = _tagMgr.list.map(t => {
+    const existing = getCurrentTags().find(x => x.id === t.id);
+    return { id: t.id, name: t.name.trim(), color: t.color || 'gray', createdAt: (existing && existing.createdAt) || new Date().toISOString() };
+  });
+  if (favTag) newTags.push(favTag);
+
+  // 削除タグを画像から除去 (失敗時に戻せるよう記録)
+  const removed = [];
+  if (deletedIds.length) {
+    const delSet = new Set(deletedIds);
+    (data.products || []).forEach(p => (p.images || []).forEach(im => {
+      if (im.tagId && delSet.has(im.tagId)) { removed.push({ im, tagId: im.tagId }); delete im.tagId; }
+    }));
+    deletedIds.forEach(id => filterTagIds.delete(id));
+  }
+
+  const backup = data.tags;
+  data.tags = newTags;
+  try {
+    await saveShopData(currentShopId, 'edit tags (order/color/add/delete)');
+    closeTagManager();
+    renderTagFilterInline();
+    render();
+    toast('タグを保存しました', 'success');
+  } catch (e) {
+    data.tags = backup;
+    removed.forEach(r => { r.im.tagId = r.tagId; });
+    toast('保存失敗: ' + e.message, 'error');
+  }
 }
 
 // v1.11.15: 項目管理(列幅ドラッグ)モードの切替
@@ -920,9 +1109,10 @@ async function ensureReasonTag(shopId) {
   }
 }
 
-// v1.11.10: タグの「旧名→新名リネーム」と「指定順への並べ替え」を一度だけ行う移行処理。
-//   ・旧「選ばれる理由」を「◯◯個の理由」へリネーム (id は変えないので画像の紐付けは維持)
-//   ・分類タグを DESIRED_TAG_ORDER の順に並べ替え (お気に入り等は末尾へ、相対順は維持)
+// v1.11.10: タグの「旧名→新名リネーム」を一度だけ行う移行処理。
+//   ・旧「選ばれる理由」を「◯◯個の理由」へ、旧「ポイント前」を「重要補足」へリネーム
+//     (id は変えないので画像の紐付けは維持)
+//   ・v1.11.22: 並べ替えの強制は廃止。並び順はユーザーが「タグ編集」で自由に管理する。
 //   ・変更が発生したときだけ一度 GitHub 保存。以降は差分なしで保存も走らない (冪等)
 //   ・空/破損データ時は絶対に保存しない (3重防衛と同じガード)
 async function migrateTagRenameAndOrder(shopId) {
@@ -933,7 +1123,7 @@ async function migrateTagRenameAndOrder(shopId) {
 
   let changed = false;
 
-  // 1) 旧名 → 新名リネーム (新名が既に存在する場合は重複を避けてスキップ)
+  // 旧名 → 新名リネーム (新名が既に存在する場合は重複を避けてスキップ)
   TAG_RENAMES.forEach(({ from, to }) => {
     const hasNew = data.tags.some(t => t.name === to);
     if (hasNew) return;
@@ -941,25 +1131,10 @@ async function migrateTagRenameAndOrder(shopId) {
     if (old) { old.name = to; changed = true; }
   });
 
-  // 2) 並べ替え (安定ソート)
-  const orderIndex = (name) => {
-    const i = DESIRED_TAG_ORDER.indexOf(name);
-    return i === -1 ? DESIRED_TAG_ORDER.length + 1 : i;
-  };
-  const before = data.tags.map(t => t.id).join(',');
-  const sorted = data.tags
-    .map((t, i) => ({ t, i }))
-    .sort((a, b) => {
-      const oa = orderIndex(a.t.name), ob = orderIndex(b.t.name);
-      return oa !== ob ? oa - ob : a.i - b.i;
-    })
-    .map(x => x.t);
-  if (sorted.map(t => t.id).join(',') !== before) { data.tags = sorted; changed = true; }
-
   if (changed) {
     try {
-      await saveShopData(shopId, 'migrate: rename/reorder tags (v1.11.10)');
-      console.info('[ImageGallery] タグの名称変更・並べ替えを保存しました');
+      await saveShopData(shopId, 'migrate: rename tags');
+      console.info('[ImageGallery] タグ名称の移行を保存しました');
     } catch (e) {
       console.warn('[ImageGallery] タグ移行の保存に失敗', e);
     }
@@ -3291,13 +3466,15 @@ function openLightbox(imageUrlOrList, startIndex = 0) {
 
     box.addEventListener('click', (e) => {
       const t = e.target;
+      // 閉じるのは✕ボタンだけ (背景クリックでは閉じない)
       if (t.classList.contains('lightbox-close')) { closeLightbox(); return; }
       if (t.classList.contains('lb-peek-prev')) { lightboxPrev(); return; }
       if (t.classList.contains('lb-peek-next')) { lightboxNext(); return; }
       // 中央の画像クリックで「次へ」
       if (t.classList.contains('lb-current')) { lightboxNext(); return; }
-      // それ以外(背景/ステージ)は閉じる
-      closeLightbox();
+      // 背景(暗い部分): クリック位置が右半分=次へ / 左半分=前へ
+      if (e.clientX < window.innerWidth / 2) lightboxPrev();
+      else lightboxNext();
     });
   }
   updateLightboxImage();
