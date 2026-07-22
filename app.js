@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.9';
+const APP_VERSION = 'v1.11.10';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -533,8 +533,14 @@ const FAVORITE_TAG_NAME = 'お気に入り';
 const FAVORITE_TAG_COLOR = 'pink';
 
 // 選ばれる理由タグ (v1.9.3) — 固定名
-const REASON_TAG_NAME = '選ばれる理由';
+// v1.11.10: 名称を「選ばれる理由」→「◯◯個の理由」に変更。
+//   旧名は移行処理で自動リネームする (OLD_REASON_TAG_NAME)。画像の tagId は id 参照なので付け直し不要。
+const REASON_TAG_NAME = '◯◯個の理由';
+const OLD_REASON_TAG_NAME = '選ばれる理由';
 const REASON_TAG_COLOR = 'purple';
+
+// v1.11.10: 分類タグ(お気に入り以外)の表示順。ドロップダウン/上部フィルタはこの順に並ぶ。
+const DESIRED_TAG_ORDER = ['疑問？', 'どーん', 'ポイント前', REASON_TAG_NAME, 'セット販売'];
 
 // 起動時に「お気に入り」タグがなければ自動作成
 // 起動時に「お気に入り」タグがなければ自動作成
@@ -602,6 +608,51 @@ async function ensureReasonTag(shopId) {
   } catch (e) {
     console.warn('選ばれる理由タグの保存失敗', e);
     data.tags = data.tags.filter(t => t.id !== newTag.id);
+  }
+}
+
+// v1.11.10: タグの「旧名→新名リネーム」と「指定順への並べ替え」を一度だけ行う移行処理。
+//   ・旧「選ばれる理由」を「◯◯個の理由」へリネーム (id は変えないので画像の紐付けは維持)
+//   ・分類タグを DESIRED_TAG_ORDER の順に並べ替え (お気に入り等は末尾へ、相対順は維持)
+//   ・変更が発生したときだけ一度 GitHub 保存。以降は差分なしで保存も走らない (冪等)
+//   ・空/破損データ時は絶対に保存しない (3重防衛と同じガード)
+async function migrateTagRenameAndOrder(shopId) {
+  const data = dataCache[shopId];
+  if (!data) return;
+  if (data._wasEmpty || data._parseError || data._loadFailed) return;
+  if (!Array.isArray(data.tags)) return;
+
+  let changed = false;
+
+  // 1) 旧名 → 新名リネーム (新名が既に存在する場合は重複を避けてスキップ)
+  const hasNew = data.tags.some(t => t.name === REASON_TAG_NAME);
+  if (!hasNew) {
+    const old = data.tags.find(t => t.name === OLD_REASON_TAG_NAME);
+    if (old) { old.name = REASON_TAG_NAME; changed = true; }
+  }
+
+  // 2) 並べ替え (安定ソート)
+  const orderIndex = (name) => {
+    const i = DESIRED_TAG_ORDER.indexOf(name);
+    return i === -1 ? DESIRED_TAG_ORDER.length + 1 : i;
+  };
+  const before = data.tags.map(t => t.id).join(',');
+  const sorted = data.tags
+    .map((t, i) => ({ t, i }))
+    .sort((a, b) => {
+      const oa = orderIndex(a.t.name), ob = orderIndex(b.t.name);
+      return oa !== ob ? oa - ob : a.i - b.i;
+    })
+    .map(x => x.t);
+  if (sorted.map(t => t.id).join(',') !== before) { data.tags = sorted; changed = true; }
+
+  if (changed) {
+    try {
+      await saveShopData(shopId, 'migrate: rename/reorder tags (v1.11.10)');
+      console.info('[ImageGallery] タグの名称変更・並べ替えを保存しました');
+    } catch (e) {
+      console.warn('[ImageGallery] タグ移行の保存に失敗', e);
+    }
   }
 }
 
@@ -2274,6 +2325,8 @@ async function loadCurrentShopData() {
     return;  // 🚨 早期return: ensureFavoriteTag/ensureReasonTagを呼ばない
   }
   hideLoading();
+  // v1.11.10: タグの旧名リネーム＆並べ替え(冪等)。ensureより先に呼び、リネーム後の名前をensureが認識できるようにする
+  migrateTagRenameAndOrder(currentShopId);
   // v1.9.0: お気に入りタグを自動確保 (ただしensure側でも_wasEmpty/_parseErrorをチェック済み)
   ensureFavoriteTag(currentShopId);
   // v1.9.3: 選ばれる理由タグを自動確保
