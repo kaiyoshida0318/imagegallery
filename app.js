@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.11';
+const APP_VERSION = 'v1.11.13';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -119,11 +119,15 @@ function injectImageTagStyles() {
     .img-tag-select:hover { border-color: #94a3b8; }
     /* v1.11.11: 画像全体/基礎情報の切替UIを廃止 */
     .view-mode-toggle { display: none !important; }
-    /* v1.11.11: 画像全体モードに「商品管理番号」列を追加 (商品番号 / 商品管理番号 / 画像 / ★ / タグ操作) */
+    /* v1.11.12: 素材/盛り上げタブを廃止 */
+    .cat-btn[data-cat="material"], .cat-btn[data-cat="boost"] { display: none !important; }
+    /* v1.11.12: 情報モーダルの「ステータス(現役/微妙)」欄を廃止 */
+    #productEditModal .form-row:has(input[name="productEditStatus"]) { display: none !important; }
+    /* v1.11.12: お気に入り(★)列を廃止。画像全体モードは 商品番号 / 商品管理番号 / 画像 / タグ操作 の4列 */
     .product-table-header.mode-images,
-    .product-row.mode-images { grid-template-columns: 130px 130px minmax(0, 1fr) 60px 180px; }
+    .product-row.mode-images { grid-template-columns: 130px 130px minmax(0, 1fr) 180px; }
     .product-table-header.mode-images.with-export,
-    .product-row.mode-images.with-export { grid-template-columns: 40px 130px 130px minmax(0, 1fr) 60px 180px; }
+    .product-row.mode-images.with-export { grid-template-columns: 40px 130px 130px minmax(0, 1fr) 180px; }
   `;
   document.head.appendChild(st);
 }
@@ -188,7 +192,9 @@ function saveAuth() {
 
 function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
-  currentCategory = localStorage.getItem(LS_CURRENT_CAT) || 'product';
+  // v1.11.12: 素材/盛り上げタブは廃止。保存済みの material/boost は product(現役) に読み替える
+  const _cc = localStorage.getItem(LS_CURRENT_CAT);
+  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all') ? _cc : 'product';
   // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
   const _vm = localStorage.getItem(LS_VIEW_MODE);
   viewMode = (_vm === 'delete') ? 'delete' : 'images';
@@ -1526,36 +1532,32 @@ async function deleteTag(tagId) {
 function renderTagFilterInline() {
   const wrap = document.getElementById('tagFilterInline');
   if (!wrap) return;
-  const tags = getCurrentTags();
-  if (tags.length === 0) {
+  // v1.11.12: お気に入り廃止 → フィルタチップからお気に入りを除外。残りはタグ配列順(=指定の並び順)。
+  const favTagId = getFavoriteTagId();
+  const sortedTags = getCurrentTags().filter(t => t.id !== favTagId);
+  if (sortedTags.length === 0) {
     wrap.innerHTML = '';
     return;
   }
-  // お気に入りを先頭に並び替え
-  const favTagId = getFavoriteTagId();
-  const sortedTags = tags.slice().sort((a, b) => {
-    if (a.id === favTagId) return -1;
-    if (b.id === favTagId) return 1;
-    return 0;
-  });
   const clearBtn = filterTagIds.size > 0
     ? `<button class="tag-filter-inline-clear" id="btnClearTagFilter" title="フィルタ解除">✕</button>`
     : '';
   wrap.innerHTML = sortedTags.map(t => {
     const c = getTagColor(t.color);
     const active = filterTagIds.has(t.id);
-    const isFav = t.id === favTagId;
-    return `<button class="tag-filter-chip ${active ? 'on' : 'off'} ${isFav ? 'is-favorite' : ''}"
+    return `<button class="tag-filter-chip ${active ? 'on' : 'off'}"
       data-filter-tag="${t.id}"
       style="--tag-bg:${c.bg};--tag-fg:${c.fg}"
-      title="${escapeHtml(t.name)}でフィルタ">${isFav ? '★ ' : ''}${escapeHtml(t.name)}</button>`;
+      title="${escapeHtml(t.name)}でフィルタ">${escapeHtml(t.name)}</button>`;
   }).join('') + clearBtn;
 
   wrap.querySelectorAll('[data-filter-tag]').forEach(btn => {
     btn.addEventListener('click', () => {
       const id = btn.dataset.filterTag;
-      if (filterTagIds.has(id)) filterTagIds.delete(id);
-      else filterTagIds.add(id);
+      // v1.11.13: 単一選択。選択中のをクリックで解除、別のをクリックで切り替え(前の選択は消える)
+      const wasActive = filterTagIds.has(id);
+      filterTagIds.clear();
+      if (!wasActive) filterTagIds.add(id);
       renderTagFilterInline();
       render();
     });
@@ -2437,13 +2439,12 @@ function render() {
   const data = dataCache[currentShopId] || { products: [], materials: [], boosts: [] };
 
   if (currentCategory === 'product') {
-    // 現役のみ表示(status未設定 or 'active')
-    const activeProducts = data.products.filter(p => (p.status || 'active') === 'active');
-    renderProductGrid(activeProducts);
+    // v1.11.12: ステータス廃止に伴い「現役」は全商品を表示 (微妙は空になる)
+    //           ※各商品の p.status データ自体は消さずに保持（あとで戻せるように）
+    renderProductGrid(data.products);
   } else if (currentCategory === 'product_unsure') {
-    // 微妙のみ表示
-    const unsureProducts = data.products.filter(p => p.status === 'unsure');
-    renderProductGrid(unsureProducts);
+    // v1.11.12: 微妙は空
+    renderProductGrid([]);
   } else if (currentCategory === 'product_all') {
     // 全商品表示(現役+微妙)
     renderProductGrid(data.products);
@@ -2458,19 +2459,15 @@ function render() {
 
 function updateCategoryMeta(data) {
   const meta = document.getElementById('unregisteredCount');
-  if (currentCategory === 'product' || currentCategory === 'product_unsure') {
-    const targetStatus = currentCategory === 'product' ? 'active' : 'unsure';
-    const target = data.products.filter(p => (p.status || 'active') === targetStatus);
-    const empty = target.filter(p => !p.images || p.images.length === 0).length;
-    const label = currentCategory === 'product' ? '商品(現役)' : '商品(微妙)';
+  // v1.11.12: 現役=全体(全商品)。微妙は0件。
+  if (currentCategory === 'product' || currentCategory === 'product_all') {
+    const label = currentCategory === 'product' ? '商品(現役)' : '商品(全体)';
+    const empty = data.products.filter(p => !p.images || p.images.length === 0).length;
     meta.innerHTML = empty > 0
       ? `<span class="badge-warning">📷 ${label} 未登録: ${empty}件</span>`
       : `<span>${label}: 全商品に画像登録済み 🎉</span>`;
-  } else if (currentCategory === 'product_all') {
-    const empty = data.products.filter(p => !p.images || p.images.length === 0).length;
-    meta.innerHTML = empty > 0
-      ? `<span class="badge-warning">📷 商品(全体) 未登録: ${empty}件</span>`
-      : `<span>商品(全体): 全商品に画像登録済み 🎉</span>`;
+  } else if (currentCategory === 'product_unsure') {
+    meta.innerHTML = '<span>商品(微妙): 0件</span>';
   } else {
     meta.textContent = '';
   }
@@ -2551,7 +2548,6 @@ function renderProductGrid(products) {
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
         <div class="col-images">画像</div>
-        <div class="col-favorite">★</div>
         <div class="col-actions">タグ・操作</div>
       </div>
     `;
@@ -2848,9 +2844,10 @@ function updateCategoryTabCounts() {
     return p.status || 'active';
   };
 
+  // v1.11.12: ステータス廃止 → 現役=全商品、微妙=0
   const counts = {
-    product: data.products.filter(p => effectiveStatus(p) === 'active').length,
-    product_unsure: data.products.filter(p => effectiveStatus(p) === 'unsure').length,
+    product: data.products.length,
+    product_unsure: 0,
     product_all: data.products.length,
     material: (data.materials || []).length,
     boost: (data.boosts || []).length
@@ -3729,7 +3726,6 @@ function productRowHTML(p) {
       <div class="col-number">${numberCell}</div>
       <div class="col-manage">${manageCell}</div>
       ${imagesCellHTML}
-      <div class="col-favorite">${favoriteCellHTML}</div>
       ${actionsForImagesMode}
     </div>`;
   }
