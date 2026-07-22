@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.13';
+const APP_VERSION = 'v1.11.14';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -123,11 +123,11 @@ function injectImageTagStyles() {
     .cat-btn[data-cat="material"], .cat-btn[data-cat="boost"] { display: none !important; }
     /* v1.11.12: 情報モーダルの「ステータス(現役/微妙)」欄を廃止 */
     #productEditModal .form-row:has(input[name="productEditStatus"]) { display: none !important; }
-    /* v1.11.12: お気に入り(★)列を廃止。画像全体モードは 商品番号 / 商品管理番号 / 画像 / タグ操作 の4列 */
+    /* v1.11.14: 商品名列を追加。画像全体モードは 商品番号 / 商品管理番号 / 商品名 / 画像 / タグ操作 */
     .product-table-header.mode-images,
-    .product-row.mode-images { grid-template-columns: 130px 130px minmax(0, 1fr) 180px; }
+    .product-row.mode-images { grid-template-columns: 120px 120px 220px minmax(0, 1fr) 180px; }
     .product-table-header.mode-images.with-export,
-    .product-row.mode-images.with-export { grid-template-columns: 40px 130px 130px minmax(0, 1fr) 180px; }
+    .product-row.mode-images.with-export { grid-template-columns: 40px 120px 120px 220px minmax(0, 1fr) 180px; }
   `;
   document.head.appendChild(st);
 }
@@ -2547,6 +2547,7 @@ function renderProductGrid(products) {
         ${exportHeaderHTML}
         <div class="col-number sortable" data-sort="number">商品番号 ${sortIndicator('number')}</div>
         <div class="col-manage sortable" data-sort="manage">商品管理番号 ${sortIndicator('manage')}</div>
+        <div class="col-name">商品名</div>
         <div class="col-images">画像</div>
         <div class="col-actions">タグ・操作</div>
       </div>
@@ -3725,6 +3726,7 @@ function productRowHTML(p) {
       ${exportCellHTML}
       <div class="col-number">${numberCell}</div>
       <div class="col-manage">${manageCell}</div>
+      <div class="col-name"><div class="product-row-name" title="${escapeHtml(p.itemName)}">${escapeHtml(p.itemName)}</div></div>
       ${imagesCellHTML}
       ${actionsForImagesMode}
     </div>`;
