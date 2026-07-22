@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.7';
+const APP_VERSION = 'v1.11.8';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -92,6 +92,7 @@ async function init() {
     if (sel) exportSelection = new Set(JSON.parse(sel));
   } catch (e) { console.warn('export state load failed', e); }
   bindEvents();
+  injectImageTagStyles();
   renderVersion();
   // 表示モードのボタンを初期化
   document.querySelectorAll('.view-mode-btn').forEach(b =>
@@ -99,6 +100,25 @@ async function init() {
   renderShopTabs();
   await loadCurrentShopData();
   render();
+}
+
+// v1.11.8: 画像単位タグ用の最小CSSを一度だけ注入 (style.css を変更せず app.js だけで完結させる)
+function injectImageTagStyles() {
+  if (document.getElementById('imgTagStyles')) return;
+  const st = document.createElement('style');
+  st.id = 'imgTagStyles';
+  st.textContent = `
+    .product-row-images { align-items: flex-start; }
+    .img-tag-cell { display: inline-flex; flex-direction: column; align-items: stretch; gap: 3px; vertical-align: top; }
+    .img-tag-select {
+      max-width: 96px; font-size: 11px; line-height: 1.3; padding: 2px 4px;
+      border: 1px solid #cbd5e1; border-radius: 5px; background: #fff; color: #334155;
+      cursor: pointer; box-sizing: border-box;
+    }
+    .img-tag-select[data-has="1"] { font-weight: 700; }
+    .img-tag-select:hover { border-color: #94a3b8; }
+  `;
+  document.head.appendChild(st);
 }
 
 // Service Worker登録 (v1.11.6)
@@ -2409,10 +2429,17 @@ function renderProductGrid(products) {
     list = list.filter(p => !p.images || p.images.length === 0);
   }
   // タグフィルタ (OR: 選択タグのいずれかを持っていればOK)
+  // v1.11.8: 分類タグは「画像単位」に移行したため、いずれかの画像がそのタグを持つ商品を表示。
+  //          「お気に入り」だけは従来どおり商品単位 (p.tagIds) で判定する。
   if (filterTagIds.size > 0) {
+    const favId = getFavoriteTagId();
     list = list.filter(p => {
-      const ids = p.tagIds || [];
-      return ids.some(id => filterTagIds.has(id));
+      const productTagIds = p.tagIds || [];
+      const imgs = p.images || [];
+      return [...filterTagIds].some(fid => {
+        if (fid === favId) return productTagIds.includes(fid);
+        return imgs.some(im => im.tagId === fid);
+      });
     });
   }
 
@@ -2564,6 +2591,14 @@ function renderProductGrid(products) {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleProductTag(btn.dataset.pid, btn.dataset.tagToggle, btn);
+    });
+  });
+  // v1.11.8: 画像単位の分類タグ (ドロップダウンで1画像1タグ、変更で即GitHub保存)
+  content.querySelectorAll('[data-img-tag-id]').forEach(sel => {
+    sel.addEventListener('click', (e) => e.stopPropagation());
+    sel.addEventListener('change', (e) => {
+      e.stopPropagation();
+      setImageTag(sel.dataset.imgTagPid, sel.dataset.imgTagId, sel.value, sel);
     });
   });
   // 削除モード: 画像クリックで予約トグル
@@ -2804,6 +2839,50 @@ async function toggleProductTag(productId, tagId, btnEl) {
       btnEl?.classList.remove('on');
       btnEl?.classList.add('off');
     }
+    toast('保存失敗: ' + err.message, 'error');
+  }
+}
+
+// v1.11.8: 画像単位の分類タグを設定 (1画像1タグ。空文字=タグなし)。即GitHub保存 + 失敗時ロールバック
+async function setImageTag(productId, imageId, tagId, selEl) {
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const p = data.products.find(x => x.id === productId);
+  if (!p) return;
+  const img = (p.images || []).find(im => im.id === imageId);
+  if (!img) return;
+
+  const prev = img.tagId || '';
+  const next = tagId || '';
+  if (prev === next) return;
+
+  // 楽観的更新: データとドロップダウンの見た目を即時反映
+  const applyLook = (val) => {
+    if (val) img.tagId = val; else delete img.tagId;
+    if (selEl) {
+      selEl.value = val;
+      selEl.dataset.has = val ? '1' : '0';
+      const t = val ? getCurrentTags().find(x => x.id === val) : null;
+      if (t) {
+        const c = getTagColor(t.color);
+        selEl.style.background = c.bg;
+        selEl.style.color = c.fg;
+        selEl.style.borderColor = c.bg;
+      } else {
+        selEl.style.background = '';
+        selEl.style.color = '';
+        selEl.style.borderColor = '';
+      }
+    }
+  };
+  applyLook(next);
+
+  try {
+    await saveShopData(currentShopId, `image tag: ${p.itemManageNumber || p.id} / ${imageId}`);
+    // フィルタ表示中は絞り込み結果が変わる可能性があるので再描画
+    if (filterTagIds.size > 0) render();
+  } catch (err) {
+    applyLook(prev); // ロールバック
     toast('保存失敗: ' + err.message, 'error');
   }
 }
@@ -3456,6 +3535,10 @@ function productRowHTML(p) {
     : sortedImages.slice(0, 5);
   const remaining = sortedImages.length - displayImages.length;
 
+  // v1.11.8: 画像単位の分類タグ用。ドロップダウンに出す分類タグ（お気に入りは除外）
+  const favTagIdForImg = getFavoriteTagId();
+  const classTagsForImg = getCurrentTags().filter(t => t.id !== favTagIdForImg);
+
   const imgsHTML = displayImages.map((img, idx) => {
     const isMarked = deleteSelection.has(img.id);
     if (viewMode === 'delete') {
@@ -3466,8 +3549,24 @@ function productRowHTML(p) {
         ${isMarked ? '<div class="delete-mark-overlay">✕</div>' : ''}
       </div>`;
     }
-    return `<div class="product-row-thumb" data-lb-pid="${p.id}" data-lb-index="${idx}" title="${escapeHtml(getImageSortKey(img))}">
-      <img data-src="${escapeHtml(img.url)}" alt="" class="lazy-thumb">
+    // v1.11.8: 画像全体モードでは、各画像の下に「分類タグ」ドロップダウン(1画像1タグ)を表示
+    let imgTagSelectHTML = '';
+    if (viewMode === 'images') {
+      const sel = img.tagId || '';
+      const selTag = sel ? classTagsForImg.find(t => t.id === sel) : null;
+      const c = selTag ? getTagColor(selTag.color) : null;
+      const styleAttr = c ? ` style="background:${c.bg};color:${c.fg};border-color:${c.bg}"` : '';
+      const opts = ['<option value="">タグなし</option>']
+        .concat(classTagsForImg.map(t =>
+          `<option value="${t.id}" ${t.id === sel ? 'selected' : ''}>${escapeHtml(t.name)}</option>`))
+        .join('');
+      imgTagSelectHTML = `<select class="img-tag-select" data-img-tag-pid="${p.id}" data-img-tag-id="${img.id}" data-has="${sel ? '1' : '0'}"${styleAttr}>${opts}</select>`;
+    }
+    return `<div class="img-tag-cell">
+      <div class="product-row-thumb" data-lb-pid="${p.id}" data-lb-index="${idx}" title="${escapeHtml(getImageSortKey(img))}">
+        <img data-src="${escapeHtml(img.url)}" alt="" class="lazy-thumb">
+      </div>
+      ${imgTagSelectHTML}
     </div>`;
   }).join('');
 
@@ -3541,7 +3640,6 @@ function productRowHTML(p) {
     // 画像全体モード: 商品番号・画像・お気に入り・タグ操作
     // (現役/微妙は情報編集モーダルで操作)
     const actionsForImagesMode = `<div class="col-actions">
-      ${tagGridHTML}
       <div class="edit-btn-group">
         <button class="btn-edit-mini" data-edit-images="${p.id}" title="画像を編集">🖼️ 画像</button>
         <button class="btn-edit-mini" data-edit-info="${p.id}" title="商品情報を編集">📝 情報</button>
