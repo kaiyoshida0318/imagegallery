@@ -11010,20 +11010,7 @@
       "itemName": "フック型メガネストッパー",
       "itemPrice": 1000,
       "rakutenThumb": "https://thumbnail.image.rakuten.co.jp/@0_mall/yukaiya/cabinet/si/si-22-11a-01.jpg?_ex=128x128",
-      "images": [
-        {
-          "id": "img_1779091006300_nxzcwx",
-          "filename": "1779091004930_d34xut_07_si-22-11a-04.jpg",
-          "originalName": "07_si-22-11a-04.jpg",
-          "path": "data/shop_1778811556685_hv17/images/prod_1778823317155_da6cfe/1779091004930_d34xut_07_si-22-11a-04.jpg",
-          "sha": "4cf977f331e747316caf9c635e4dcf2cf465430e",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_1778823317155_da6cfe/1779091004930_d34xut_07_si-22-11a-04.jpg",
-          "size": 48234,
-          "uploadedAt": "2026-05-18T07:56:46.300Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-05-15T05:35:17.155Z"
     },
     {
