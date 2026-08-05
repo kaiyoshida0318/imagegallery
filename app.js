@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.29';
+const APP_VERSION = 'v1.11.30';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -115,6 +115,7 @@ async function init() {
   injectShareButton();       // v1.11.25: 上部に「共有」ボタン
   injectRefreshButton();     // v1.11.27: 上部に「更新」ボタン
   injectProductDeleteUI();   // v1.11.29: 「削除」→「画像削除」改称 + 「商品削除」追加
+  moveAddButton();           // v1.11.30: 「+追加」を ver と 更新 の間へ移動
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
   syncCategoryActiveTab();   // v1.11.19: 現在カテゴリに合わせて active 同期
@@ -604,6 +605,14 @@ function startAutoRefresh() {
   _autoRefreshTimer = setInterval(() => { refreshCurrentShopData(); }, 15000);
   // タブに戻ってきた時にも即更新
   document.addEventListener('visibilitychange', () => { if (!document.hidden && !auth.pat) refreshCurrentShopData(); });
+}
+
+// v1.11.30: 「+ 追加」ボタンを上部ツールバーの ver と 更新 の間へ移動
+function moveAddButton() {
+  const addBtn = document.getElementById('btnAddEntry');
+  const refreshBtn = document.getElementById('btnRefreshData');
+  if (!addBtn || !refreshBtn || !refreshBtn.parentNode) return;
+  refreshBtn.parentNode.insertBefore(addBtn, refreshBtn); // 更新の直前 = ver と 更新 の間
 }
 
 // 上部ツールバーに「更新」ボタン (誰でも手動で最新化できる)
