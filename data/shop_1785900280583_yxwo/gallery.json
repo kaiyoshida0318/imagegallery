@@ -1,0 +1,19 @@
+{
+  "products": [],
+  "materials": [],
+  "boosts": [],
+  "tags": [
+    {
+      "id": "tag_fav_1785900282995_0u0b",
+      "name": "お気に入り",
+      "color": "pink",
+      "createdAt": "2026-08-05T03:24:42.995Z"
+    },
+    {
+      "id": "tag_reason_1785900282995_ndyw",
+      "name": "◯◯個の理由",
+      "color": "purple",
+      "createdAt": "2026-08-05T03:24:42.995Z"
+    }
+  ]
+}
