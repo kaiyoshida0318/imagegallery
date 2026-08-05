@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.30';
+const APP_VERSION = 'v1.11.31';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -116,6 +116,7 @@ async function init() {
   injectRefreshButton();     // v1.11.27: 上部に「更新」ボタン
   injectProductDeleteUI();   // v1.11.29: 「削除」→「画像削除」改称 + 「商品削除」追加
   moveAddButton();           // v1.11.30: 「+追加」を ver と 更新 の間へ移動
+  setupCsvModalExtras();     // v1.11.31: 商品名称一括更新モーダルに基礎情報DL+D&Dを統合
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
   syncCategoryActiveTab();   // v1.11.19: 現在カテゴリに合わせて active 同期
@@ -204,6 +205,9 @@ function injectImageTagStyles() {
     .tagmgr-del { border: none; background: transparent; cursor: pointer; font-size: 15px; padding: 2px 4px; }
     .tagmgr-add-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 2px solid #e2e8f0; flex-wrap: wrap; }
     .tagmgr-add-row #tagMgrNewName { flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
+    /* v1.11.31: 商品名称一括更新モーダル内のステップ表示 */
+    #csvImportModal .csv-step { margin-bottom: 14px; }
+    #csvImportModal .csv-step-label { font-weight: 700; font-size: 13px; margin: 8px 0 6px; }
     /* v1.11.29: 商品削除モード */
     .product-table-header.mode-productdelete,
     .product-row.mode-productdelete { display: grid; align-items: center; grid-template-columns: 56px 120px 120px 220px minmax(0, 1fr); border-bottom: 1px solid var(--border-light, #eef2f7); }
@@ -605,6 +609,36 @@ function startAutoRefresh() {
   _autoRefreshTimer = setInterval(() => { refreshCurrentShopData(); }, 15000);
   // タブに戻ってきた時にも即更新
   document.addEventListener('visibilitychange', () => { if (!document.hidden && !auth.pat) refreshCurrentShopData(); });
+}
+
+// v1.11.31: 「商品名称一括更新」モーダル内に「基礎情報DL」と「ドラッグ&ドロップ」を①②として用意
+function setupCsvModalExtras() {
+  const modal = document.getElementById('csvImportModal');
+  if (!modal) return;
+  const body = modal.querySelector('.modal-body');
+  const dz = document.getElementById('csvDropzone');
+  if (!body || !dz || document.getElementById('btnExportCsvInModal')) return;
+
+  // ① 基礎情報DL セクション (dropzoneの前に挿入)
+  const dlSec = document.createElement('div');
+  dlSec.className = 'csv-step';
+  dlSec.innerHTML = `
+    <div class="csv-step-label">① 現在の基礎情報をダウンロード（編集用）</div>
+    <button class="btn-secondary" id="btnExportCsvInModal">⬇️ 基礎情報DL（CSV）</button>
+    <div class="csv-dropzone-hint" style="margin-top:6px">商品管理番号 / 商品番号 / 商品名 の入ったCSVが保存されます。編集後、下の②へドラッグ＆ドロップしてください。</div>`;
+  body.insertBefore(dlSec, dz);
+
+  // ② アップロードの見出し (dropzoneの前に挿入)
+  const upLabel = document.createElement('div');
+  upLabel.className = 'csv-step-label';
+  upLabel.textContent = '② 編集したCSVをドラッグ＆ドロップして一括更新';
+  body.insertBefore(upLabel, dz);
+
+  document.getElementById('btnExportCsvInModal').addEventListener('click', exportBasicInfoCsv);
+
+  // 上部の「基礎情報DL」ボタンはモーダルに統合したので非表示
+  const topExport = document.getElementById('btnExportCsv');
+  if (topExport) topExport.style.display = 'none';
 }
 
 // v1.11.30: 「+ 追加」ボタンを上部ツールバーの ver と 更新 の間へ移動
