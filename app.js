@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.31';
+const APP_VERSION = 'v1.11.32';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -205,6 +205,12 @@ function injectImageTagStyles() {
     .tagmgr-del { border: none; background: transparent; cursor: pointer; font-size: 15px; padding: 2px 4px; }
     .tagmgr-add-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 2px solid #e2e8f0; flex-wrap: wrap; }
     .tagmgr-add-row #tagMgrNewName { flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
+    /* v1.11.32: 同期(更新)モーダル */
+    #syncModal .modal { max-width: 460px; width: 92%; }
+    .sync-opt { display: block; width: 100%; text-align: left; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 12px; background: #fff; cursor: pointer; }
+    .sync-opt:hover { border-color: #7c3aed; background: #faf5ff; }
+    .sync-opt-title { font-weight: 700; font-size: 15px; margin-bottom: 4px; }
+    .sync-opt-desc { font-size: 12px; color: #64748b; line-height: 1.5; }
     /* v1.11.31: 商品名称一括更新モーダル内のステップ表示 */
     #csvImportModal .csv-step { margin-bottom: 14px; }
     #csvImportModal .csv-step-label { font-weight: 700; font-size: 13px; margin: 8px 0 6px; }
@@ -657,10 +663,65 @@ function injectRefreshButton() {
   const btn = document.createElement('button');
   btn.id = 'btnRefreshData';
   btn.className = 'btn-icon';
-  btn.title = '最新の内容に更新 (リロード不要)';
+  btn.title = 'ダウンロード/アップロードを選ぶ';
   btn.innerHTML = '<span class="icon">🔄</span><span class="label">更新</span>';
-  btn.addEventListener('click', () => refreshCurrentShopData({ manual: true }));
+  btn.addEventListener('click', openSyncModal);
   ref.parentNode.insertBefore(btn, ref);
+}
+
+// v1.11.32: 「更新」でダウンロード/アップロードを選べるモーダル
+function ensureSyncModal() {
+  if (document.getElementById('syncModal')) return;
+  const m = document.createElement('div');
+  m.className = 'modal-backdrop';
+  m.id = 'syncModal';
+  m.style.display = 'none';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">
+        <h2>🔄 データの同期</h2>
+        <button class="btn-close" data-sync-close aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <button type="button" class="sync-opt" id="syncDownloadBtn">
+          <div class="sync-opt-title">⬇️ ダウンロード（最新を取得）</div>
+          <div class="sync-opt-desc">サーバー(GitHub)の最新の内容を、この画面に反映します。他の人の追加・変更を見たいときはこちら。</div>
+        </button>
+        <button type="button" class="sync-opt" id="syncUploadBtn">
+          <div class="sync-opt-title">⬆️ アップロード（今の内容を保存）</div>
+          <div class="sync-opt-desc">この画面の内容をサーバー(GitHub)に保存します。※通常は自動保存されます。編集権限(PAT)が必要です。</div>
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  m.querySelectorAll('[data-sync-close]').forEach(b => b.addEventListener('click', () => { m.style.display = 'none'; }));
+  m.querySelector('#syncDownloadBtn').addEventListener('click', () => {
+    m.style.display = 'none';
+    refreshCurrentShopData({ manual: true });
+  });
+  m.querySelector('#syncUploadBtn').addEventListener('click', async () => {
+    m.style.display = 'none';
+    if (!auth.pat) { toast('アップロード（保存）には編集権限(PAT)が必要です', 'error'); return; }
+    const data = dataCache[currentShopId];
+    if (!data || data._wasEmpty || data._parseError || data._loadFailed) { toast('保存できる有効なデータがありません', 'error'); return; }
+    showLoading('アップロード中… そのままお待ちください');
+    try {
+      await saveShopData(currentShopId, 'manual upload');
+      toast('アップロードしました（保存完了）', 'success');
+    } catch (e) {
+      toast('保存失敗: ' + e.message, 'error');
+    } finally {
+      hideLoading();
+    }
+  });
+}
+
+function openSyncModal() {
+  ensureSyncModal();
+  // 閲覧者(PATなし)にはアップロードは不可なので薄く表示
+  const up = document.getElementById('syncUploadBtn');
+  if (up) up.style.opacity = auth.pat ? '1' : '0.5';
+  document.getElementById('syncModal').style.display = 'flex';
 }
 
 // v1.11.15: 項目管理(列幅ドラッグ)モードの切替
