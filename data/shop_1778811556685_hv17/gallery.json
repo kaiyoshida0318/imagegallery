@@ -27529,6 +27529,29 @@
       ],
       "status": "active",
       "syncedAt": "2026-08-05T02:37:03.979Z"
+    },
+    {
+      "id": "prod_part_1786692224336_6o96",
+      "isPart": true,
+      "itemManageNumber": "part_1786692224336_mc6",
+      "itemNumber": "青POINT",
+      "itemName": "青POINT",
+      "images": [
+        {
+          "id": "img_1786692225924_u6p5yu",
+          "filename": "1786692224337_pypcah_z-0-removebg-preview.png",
+          "originalName": "z-0-removebg-preview.png",
+          "path": "data/shop_1778811556685_hv17/images/prod_part_1786692224336_6o96/1786692224337_pypcah_z-0-removebg-preview.png",
+          "sha": "4d004e0bc88089ce06db3be18d210c6cbe0f8ab5",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_part_1786692224336_6o96/1786692224337_pypcah_z-0-removebg-preview.png",
+          "size": 134989,
+          "uploadedAt": "2026-08-14T07:23:45.925Z",
+          "note": "",
+          "tags": [],
+          "tagId": "tag_1786692206141_dmys"
+        }
+      ],
+      "syncedAt": "2026-08-14T07:23:44.337Z"
     }
   ],
   "materials": [],
