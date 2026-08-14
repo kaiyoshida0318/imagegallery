@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.32';
+const APP_VERSION = 'v1.11.33';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -116,6 +116,8 @@ async function init() {
   injectRefreshButton();     // v1.11.27: 上部に「更新」ボタン
   injectProductDeleteUI();   // v1.11.29: 「削除」→「画像削除」改称 + 「商品削除」追加
   moveAddButton();           // v1.11.30: 「+追加」を ver と 更新 の間へ移動
+  injectAddPartButton();     // v1.11.33: 「+部品追加」ボタン
+  injectPartsTab();          // v1.11.33: 「部品」タブを 全体 の右に追加
   setupCsvModalExtras();     // v1.11.31: 商品名称一括更新モーダルに基礎情報DL+D&Dを統合
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
@@ -205,6 +207,14 @@ function injectImageTagStyles() {
     .tagmgr-del { border: none; background: transparent; cursor: pointer; font-size: 15px; padding: 2px 4px; }
     .tagmgr-add-row { display: flex; align-items: center; gap: 8px; margin-top: 14px; padding-top: 12px; border-top: 2px solid #e2e8f0; flex-wrap: wrap; }
     .tagmgr-add-row #tagMgrNewName { flex: 1; min-width: 120px; padding: 6px 8px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
+    /* v1.11.33: 部品追加モーダルの画像プレビュー */
+    .part-preview { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+    .part-thumb { position: relative; width: 72px; height: 92px; border: 1px solid #e2e8f0; border-radius: 6px; overflow: hidden; background: #fff; }
+    .part-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .part-thumb-x { position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; border: none; border-radius: 50%; background: rgba(0,0,0,.55); color: #fff; font-size: 12px; line-height: 1; cursor: pointer; padding: 0; }
+    #addPartModal .form-row { margin-bottom: 14px; }
+    #addPartModal .form-row > label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 5px; }
+    #addPartModal #partName, #addPartModal #partTagSelect { width: 100%; box-sizing: border-box; padding: 7px 9px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; }
     /* v1.11.32: 同期(更新)モーダル */
     #syncModal .modal { max-width: 460px; width: 92%; }
     .sync-opt { display: block; width: 100%; text-align: left; border: 1px solid #e2e8f0; border-radius: 10px; padding: 14px; margin-bottom: 12px; background: #fff; cursor: pointer; }
@@ -655,6 +665,168 @@ function moveAddButton() {
   refreshBtn.parentNode.insertBefore(addBtn, refreshBtn); // 更新の直前 = ver と 更新 の間
 }
 
+// ===== v1.11.33: 部品(単体で追加できるアイテム) =====
+let _partFiles = [];
+
+// 「部品」タブを 商品(全体) の右に追加
+function injectPartsTab() {
+  if (document.querySelector('.cat-btn[data-cat="parts"]')) return;
+  const allBtn = document.querySelector('.cat-btn[data-cat="product_all"]');
+  if (!allBtn || !allBtn.parentNode) return;
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn';
+  btn.dataset.cat = 'parts';
+  btn.textContent = '部品';
+  btn.addEventListener('click', () => {
+    currentCategory = 'parts';
+    localStorage.setItem(LS_CURRENT_CAT, 'parts');
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+  allBtn.parentNode.insertBefore(btn, allBtn.nextSibling); // 全体の右
+}
+
+// 「+ 部品追加」ボタンを「+ 追加」の右に
+function injectAddPartButton() {
+  if (document.getElementById('btnAddPart')) return;
+  const addBtn = document.getElementById('btnAddEntry');
+  if (!addBtn || !addBtn.parentNode) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnAddPart';
+  btn.className = 'btn-add';
+  btn.style.background = '#0ea5e9';
+  btn.textContent = '+ 部品追加';
+  btn.addEventListener('click', openAddPartModal);
+  addBtn.parentNode.insertBefore(btn, addBtn.nextSibling); // +追加 の右
+}
+
+function ensureAddPartModal() {
+  if (document.getElementById('addPartModal')) return;
+  const m = document.createElement('div');
+  m.className = 'modal-backdrop';
+  m.id = 'addPartModal';
+  m.style.display = 'none';
+  m.innerHTML = `
+    <div class="modal">
+      <div class="modal-header">
+        <h2>＋ 部品を追加</h2>
+        <button class="btn-close" data-part-close aria-label="閉じる">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-row">
+          <label>部品名（任意）</label>
+          <input type="text" id="partName" placeholder="例: ロゴ、飾り枠 など">
+        </div>
+        <div class="form-row">
+          <label>分類タグ（どこに追加するか）</label>
+          <select id="partTagSelect"></select>
+        </div>
+        <div class="form-row">
+          <label>画像</label>
+          <div class="csv-dropzone" id="partDropzone">
+            <div class="csv-dropzone-icon">🖼️</div>
+            <div class="csv-dropzone-text">画像をドラッグ＆ドロップ<br>または<button type="button" class="link-btn" id="partPickBtn">ファイルを選択</button></div>
+          </div>
+          <input type="file" id="partFileInput" accept="image/*" multiple style="display:none">
+          <div id="partPreview" class="part-preview"></div>
+        </div>
+        <div id="partProgress" class="csv-dropzone-hint"></div>
+        <div class="modal-actions">
+          <button class="btn-secondary" data-part-close>キャンセル</button>
+          <button class="btn-primary" id="partCreateBtn">追加する</button>
+        </div>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  m.querySelectorAll('[data-part-close]').forEach(b => b.addEventListener('click', () => { m.style.display = 'none'; }));
+  const fileInput = m.querySelector('#partFileInput');
+  m.querySelector('#partPickBtn').addEventListener('click', () => fileInput.click());
+  const dz = m.querySelector('#partDropzone');
+  dz.addEventListener('click', (e) => { if (e.target.id !== 'partPickBtn') fileInput.click(); });
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('dragover'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('dragover'));
+  dz.addEventListener('drop', (e) => {
+    e.preventDefault(); dz.classList.remove('dragover');
+    const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+    _partFiles.push(...files); renderPartPreview();
+  });
+  fileInput.addEventListener('change', (e) => {
+    _partFiles.push(...Array.from(e.target.files).filter(f => f.type.startsWith('image/')));
+    e.target.value = ''; renderPartPreview();
+  });
+  m.querySelector('#partCreateBtn').addEventListener('click', createPart);
+}
+
+function renderPartPreview() {
+  const wrap = document.getElementById('partPreview');
+  if (!wrap) return;
+  wrap.innerHTML = _partFiles.map((f, i) =>
+    `<div class="part-thumb"><img src="${URL.createObjectURL(f)}" alt=""><button type="button" class="part-thumb-x" data-part-rm="${i}">×</button></div>`).join('');
+  wrap.querySelectorAll('[data-part-rm]').forEach(b => b.addEventListener('click', () => {
+    _partFiles.splice(+b.dataset.partRm, 1); renderPartPreview();
+  }));
+}
+
+function openAddPartModal() {
+  if (!currentShopId || !dataCache[currentShopId]) { toast('ショップが選択されていません', 'error'); return; }
+  if (!auth.pat) { toast('部品の追加には編集権限(PAT)が必要です', 'error'); return; }
+  ensureAddPartModal();
+  const favId = getFavoriteTagId();
+  const classTags = getCurrentTags().filter(t => t.id !== favId);
+  const sel = document.getElementById('partTagSelect');
+  sel.innerHTML = ['<option value="">タグなし</option>']
+    .concat(classTags.map(t => `<option value="${t.id}">${escapeHtml(t.name)}</option>`)).join('');
+  document.getElementById('partName').value = '';
+  _partFiles = [];
+  renderPartPreview();
+  document.getElementById('partProgress').textContent = '';
+  document.getElementById('addPartModal').style.display = 'flex';
+}
+
+async function createPart() {
+  if (!auth.pat) { toast('部品の追加には編集権限(PAT)が必要です', 'error'); return; }
+  if (_partFiles.length === 0) { toast('画像を1枚以上選択してください', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) return;
+  const name = (document.getElementById('partName').value || '').trim();
+  const tagId = document.getElementById('partTagSelect').value || '';
+  const partId = 'prod_part_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
+  const part = {
+    id: partId,
+    isPart: true,
+    itemManageNumber: 'part_' + Date.now() + '_' + Math.random().toString(36).slice(2, 5),
+    itemNumber: name || '部品',
+    itemName: name || '部品',
+    images: [],
+    syncedAt: new Date().toISOString()
+  };
+  let fail = 0;
+  showLoading(`部品の画像をアップロード中… 0/${_partFiles.length}`);
+  for (let i = 0; i < _partFiles.length; i++) {
+    showLoading(`部品の画像をアップロード中… ${i + 1}/${_partFiles.length}`);
+    try {
+      const meta = await uploadImageToGitHub(currentShopId, partId, _partFiles[i]);
+      if (tagId) meta.tagId = tagId;
+      part.images.push(meta);
+    } catch (e) { fail++; console.error('part image upload failed', e); }
+  }
+  if (part.images.length === 0) { hideLoading(); toast('画像のアップロードに失敗しました', 'error'); return; }
+  data.products.push(part);
+  showLoading('保存中…');
+  try {
+    await saveShopData(currentShopId, `add part: ${part.itemName}`);
+  } catch (e) { hideLoading(); toast('保存失敗: ' + e.message, 'error'); return; }
+  hideLoading();
+  _partFiles = [];
+  document.getElementById('addPartModal').style.display = 'none';
+  // 部品タブへ移動して表示
+  currentCategory = 'parts';
+  localStorage.setItem(LS_CURRENT_CAT, 'parts');
+  syncCategoryActiveTab();
+  render();
+  toast(`部品を追加しました${fail ? ` / 画像失敗${fail}件` : ''}`, fail ? 'error' : 'success');
+}
+
 // 上部ツールバーに「更新」ボタン (誰でも手動で最新化できる)
 function injectRefreshButton() {
   if (document.getElementById('btnRefreshData')) return;
@@ -951,7 +1123,7 @@ function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
   // v1.11.12: 素材/盛り上げタブは廃止。保存済みの material/boost は product(現役) に読み替える
   const _cc = localStorage.getItem(LS_CURRENT_CAT);
-  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged') ? _cc : 'product';
+  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged' || _cc === 'parts') ? _cc : 'product';
   // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
   const _vm = localStorage.getItem(LS_VIEW_MODE);
   viewMode = (_vm === 'delete' || _vm === 'productdelete') ? _vm : 'images';
@@ -2364,15 +2536,16 @@ async function clearAllProducts() {
   if (!shop) { toast('ショップが選択されていません', 'error'); return; }
   const data = dataCache[currentShopId];
   if (!data) return;
-  const count = data.products.length;
+  // v1.11.33: 部品(isPart)はクリア対象外。商品のみカウント。
+  const count = data.products.filter(p => !p.isPart).length;
   if (count === 0) { toast('クリア対象の商品がありません', 'error'); return; }
 
-  if (!confirm(`「${shop.name}」の商品データを全てクリアします。\n\n対象: ${count}件の商品(画像紐づけも含む)\n※ 既にアップロードされた画像ファイル自体はGitHub上に残ります\n\n本当に実行しますか?`)) return;
+  if (!confirm(`「${shop.name}」の商品データを全てクリアします。\n\n対象: ${count}件の商品(画像紐づけも含む)\n※ 部品は削除されません／既にアップロードされた画像ファイル自体はGitHub上に残ります\n\n本当に実行しますか?`)) return;
   if (!confirm(`もう一度確認: ${count}件の商品データを削除します。元に戻せません。続行しますか?`)) return;
 
   showLoading('商品データをクリア中...');
   try {
-    data.products = [];
+    data.products = data.products.filter(p => p.isPart); // 部品は残す
     await saveShopData(currentShopId, `clear all products (${count} items)`);
     hideLoading();
     toast(`${count}件の商品データを削除しました`, 'success');
@@ -3334,16 +3507,20 @@ function render() {
 
   const data = dataCache[currentShopId] || { products: [], materials: [], boosts: [] };
 
-  // v1.11.29: カテゴリごとの商品リストを決めてから、表示方法を選ぶ
+  // v1.11.29/33: カテゴリごとの商品リストを決めてから、表示方法を選ぶ
+  //   商品タブは部品(isPart)を除外。部品タブは部品のみ。
+  const realProducts = (data.products || []).filter(p => !p.isPart);
   let list = null;
   if (currentCategory === 'product') {
-    list = data.products.filter(p => (p.images || []).some(im => im.tagId)); // 選択分
+    list = realProducts.filter(p => (p.images || []).some(im => im.tagId)); // 選択分
   } else if (currentCategory === 'product_untagged') {
-    list = data.products.filter(isUntaggedProduct);                         // 未選択分
+    list = realProducts.filter(isUntaggedProduct);                         // 未選択分
   } else if (currentCategory === 'product_unsure') {
     list = [];
   } else if (currentCategory === 'product_all') {
-    list = data.products;
+    list = realProducts;
+  } else if (currentCategory === 'parts') {
+    list = (data.products || []).filter(p => p.isPart);                    // 部品
   }
 
   if (list !== null) {
@@ -3370,10 +3547,14 @@ function updateCategoryMeta(data) {
     const n = data.products.filter(isUntaggedProduct).length;
     meta.innerHTML = `<span>商品(未選択分): ${n}件</span>`;
   } else if (currentCategory === 'product_all') {
-    const empty = data.products.filter(p => !p.images || p.images.length === 0).length;
+    const real = (data.products || []).filter(p => !p.isPart);
+    const empty = real.filter(p => !p.images || p.images.length === 0).length;
     meta.innerHTML = empty > 0
       ? `<span class="badge-warning">📷 商品(全体) 未登録: ${empty}件</span>`
       : `<span>商品(全体): 全商品に画像登録済み 🎉</span>`;
+  } else if (currentCategory === 'parts') {
+    const n = (data.products || []).filter(p => p.isPart).length;
+    meta.innerHTML = `<span>部品: ${n}件</span>`;
   } else {
     meta.textContent = '';
   }
@@ -3778,12 +3959,14 @@ function updateCategoryTabCounts() {
     return p.status || 'active';
   };
 
-  // v1.11.15/19: 選択分=タグ付き画像がある商品数、未選択分=全画像タグ無しの商品数、全体=全商品数
+  // v1.11.15/19/33: 選択分/未選択分/全体 は部品を除外。部品は別カウント。
+  const realProducts = (data.products || []).filter(p => !p.isPart);
   const counts = {
-    product: data.products.filter(p => (p.images || []).some(im => im.tagId)).length,
-    product_untagged: data.products.filter(isUntaggedProduct).length,
+    product: realProducts.filter(p => (p.images || []).some(im => im.tagId)).length,
+    product_untagged: realProducts.filter(isUntaggedProduct).length,
     product_unsure: 0,
-    product_all: data.products.length,
+    product_all: realProducts.length,
+    parts: (data.products || []).filter(p => p.isPart).length,
     material: (data.materials || []).length,
     boost: (data.boosts || []).length
   };
