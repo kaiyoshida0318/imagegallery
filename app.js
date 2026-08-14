@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.33';
+const APP_VERSION = 'v1.11.34';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -118,6 +118,7 @@ async function init() {
   moveAddButton();           // v1.11.30: 「+追加」を ver と 更新 の間へ移動
   injectAddPartButton();     // v1.11.33: 「+部品追加」ボタン
   injectPartsTab();          // v1.11.33: 「部品」タブを 全体 の右に追加
+  injectNoImageTab();        // v1.11.34: 「商品(未設定)」タブを 全体 と 部品 の間に追加
   setupCsvModalExtras();     // v1.11.31: 商品名称一括更新モーダルに基礎情報DL+D&Dを統合
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
@@ -686,6 +687,31 @@ function injectPartsTab() {
   allBtn.parentNode.insertBefore(btn, allBtn.nextSibling); // 全体の右
 }
 
+// v1.11.34: 「商品(未設定)」タブを 商品(全体) と 部品 の間に追加
+// 画像が一切登録されていない商品だけを表示する
+function injectNoImageTab() {
+  if (document.querySelector('.cat-btn[data-cat="product_noimage"]')) return;
+  const allBtn = document.querySelector('.cat-btn[data-cat="product_all"]');
+  if (!allBtn || !allBtn.parentNode) return;
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn';
+  btn.dataset.cat = 'product_noimage';
+  btn.textContent = '商品(未設定)';
+  btn.addEventListener('click', () => {
+    currentCategory = 'product_noimage';
+    localStorage.setItem(LS_CURRENT_CAT, 'product_noimage');
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+  // 部品タブが既にあればその前に、無ければ全体の右に挿入 → 常に 全体 と 部品 の間
+  const partsBtn = document.querySelector('.cat-btn[data-cat="parts"]');
+  if (partsBtn && partsBtn.parentNode === allBtn.parentNode) {
+    allBtn.parentNode.insertBefore(btn, partsBtn);
+  } else {
+    allBtn.parentNode.insertBefore(btn, allBtn.nextSibling);
+  }
+}
+
 // 「+ 部品追加」ボタンを「+ 追加」の右に
 function injectAddPartButton() {
   if (document.getElementById('btnAddPart')) return;
@@ -1123,7 +1149,7 @@ function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
   // v1.11.12: 素材/盛り上げタブは廃止。保存済みの material/boost は product(現役) に読み替える
   const _cc = localStorage.getItem(LS_CURRENT_CAT);
-  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged' || _cc === 'parts') ? _cc : 'product';
+  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged' || _cc === 'product_noimage' || _cc === 'parts') ? _cc : 'product';
   // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
   const _vm = localStorage.getItem(LS_VIEW_MODE);
   viewMode = (_vm === 'delete' || _vm === 'productdelete') ? _vm : 'images';
@@ -3517,6 +3543,8 @@ function render() {
     list = realProducts.filter(isUntaggedProduct);                         // 未選択分
   } else if (currentCategory === 'product_unsure') {
     list = [];
+  } else if (currentCategory === 'product_noimage') {
+    list = realProducts.filter(p => !p.images || p.images.length === 0); // 未設定(画像が一切無い)
   } else if (currentCategory === 'product_all') {
     list = realProducts;
   } else if (currentCategory === 'parts') {
@@ -3552,6 +3580,10 @@ function updateCategoryMeta(data) {
     meta.innerHTML = empty > 0
       ? `<span class="badge-warning">📷 商品(全体) 未登録: ${empty}件</span>`
       : `<span>商品(全体): 全商品に画像登録済み 🎉</span>`;
+  } else if (currentCategory === 'product_noimage') {
+    const real = (data.products || []).filter(p => !p.isPart);
+    const n = real.filter(p => !p.images || p.images.length === 0).length;
+    meta.innerHTML = `<span>商品(未設定): ${n}件</span>`;
   } else if (currentCategory === 'parts') {
     const n = (data.products || []).filter(p => p.isPart).length;
     meta.innerHTML = `<span>部品: ${n}件</span>`;
@@ -3964,6 +3996,7 @@ function updateCategoryTabCounts() {
   const counts = {
     product: realProducts.filter(p => (p.images || []).some(im => im.tagId)).length,
     product_untagged: realProducts.filter(isUntaggedProduct).length,
+    product_noimage: realProducts.filter(p => !p.images || p.images.length === 0).length,
     product_unsure: 0,
     product_all: realProducts.length,
     parts: (data.products || []).filter(p => p.isPart).length,
@@ -4773,7 +4806,7 @@ function productRowHTML(p) {
     : `<span class="mono mono-placeholder">10000000</span>`;
   const numberCell = number
     ? `<span class="mono">${escapeHtml(number)}</span>`
-    : `<span class="mono mono-placeholder">cab-16-01</span>`;
+    : `<span class="mono mono-placeholder">未設定</span>`;
 
   // タグ表示 (2x2格子 - ただし「お気に入り」は別UIにするため除外)
   const tagIds = p.tagIds || [];
