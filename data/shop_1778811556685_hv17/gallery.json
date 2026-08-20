@@ -27987,7 +27987,20 @@
       "id": "yt_1787214213491_0khcqv",
       "name": "爪切り",
       "createdAt": "2026-08-20T08:23:33.491Z",
-      "generated": [],
+      "generated": [
+        {
+          "id": "img_1787214284323_xvnz90",
+          "filename": "1787214281391_y0mh0x_____.png",
+          "originalName": "生成画像.png",
+          "path": "data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214281391_y0mh0x_____.png",
+          "sha": "7a9633301898f2a25935719d617d2675b1b6085c",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214281391_y0mh0x_____.png",
+          "size": 2028520,
+          "uploadedAt": "2026-08-20T08:24:44.324Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "original": [
         {
           "id": "img_1787214263017_a2uvcp",
