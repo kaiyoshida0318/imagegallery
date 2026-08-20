@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.34';
+const APP_VERSION = 'v1.11.35';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -119,6 +119,7 @@ async function init() {
   injectAddPartButton();     // v1.11.33: 「+部品追加」ボタン
   injectPartsTab();          // v1.11.33: 「部品」タブを 全体 の右に追加
   injectNoImageTab();        // v1.11.34: 「商品(未設定)」タブを 全体 と 部品 の間に追加
+  injectYahooThumbTab();     // v1.11.35: 「Yahoo用サムネ」タブを 部品 の右に追加
   setupCsvModalExtras();     // v1.11.31: 商品名称一括更新モーダルに基礎情報DL+D&Dを統合
   relabelCategoryTabs();     // v1.11.15: 現役→選択分
   injectUntaggedTab();       // v1.11.19: 「未選択分」タブを追加
@@ -239,6 +240,74 @@ function injectImageTagStyles() {
     .share-label { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
     #shareModal textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, monospace; font-size: 12px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; resize: vertical; word-break: break-all; }
     #shareModal .btn-mini { margin-top: 8px; }
+    /* ===== v1.11.35: Yahoo用サムネ (3列ボード) ===== */
+    .yt-board { padding: 12px 16px 40px; }
+    .yt-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
+    .yt-add-row {
+      background: #7c3aed; color: #fff; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 700; padding: 8px 16px; cursor: pointer;
+    }
+    .yt-add-row:hover { background: #6d28d9; }
+    .yt-add-row:disabled { opacity: .45; cursor: not-allowed; }
+    .yt-hint { font-size: 12px; color: #64748b; }
+    .yt-table { border: 1px solid var(--border, #e2e8f0); border-radius: 10px; overflow: hidden; background: #fff; }
+    .yt-head, .yt-row {
+      display: grid;
+      grid-template-columns: 150px 190px 190px minmax(260px, 1fr) 104px;
+      align-items: stretch;
+    }
+    .yt-head { background: #f8fafc; border-bottom: 1px solid var(--border, #e2e8f0); position: sticky; top: 0; z-index: 4; }
+    .yt-th { font-size: 12px; font-weight: 700; color: #475569; padding: 10px 10px; border-left: 1px solid var(--border-light, #eef2f7); }
+    .yt-th:first-child { border-left: none; }
+    .yt-th-dl { text-align: center; }
+    .yt-row { border-bottom: 1px solid var(--border-light, #eef2f7); }
+    .yt-row:last-child { border-bottom: none; }
+    .yt-row:hover { background: #fcfcfd; }
+    .yt-col { padding: 10px; border-left: 1px solid var(--border-light, #eef2f7); min-width: 0; }
+    .yt-col:first-child { border-left: none; }
+    .yt-no { display: flex; flex-direction: column; gap: 6px; justify-content: flex-start; }
+    .yt-no-badge { font-size: 12px; font-weight: 700; color: #7c3aed; }
+    .yt-name-input {
+      width: 100%; box-sizing: border-box; font-size: 12px; padding: 5px 7px;
+      border: 1px solid #cbd5e1; border-radius: 6px; color: #334155; background: #fff;
+    }
+    .yt-name-input:focus { outline: none; border-color: #a78bfa; }
+    .yt-row-del {
+      align-self: flex-start; background: none; border: none; color: #ef4444;
+      font-size: 11px; padding: 2px 0; cursor: pointer; text-decoration: underline;
+    }
+    .yt-cell {
+      min-height: 108px; border: 2px dashed #d8dee9; border-radius: 8px; background: #fbfcfe;
+      padding: 8px; cursor: pointer; transition: border-color .12s, background .12s;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .yt-cell:hover { border-color: #a78bfa; background: #faf7ff; }
+    .yt-cell.yt-dragover { border-color: #7c3aed; background: #f3e8ff; }
+    .yt-thumbs { display: flex; flex-wrap: wrap; gap: 6px; }
+    .yt-cell-multi .yt-thumbs { gap: 6px; }
+    .yt-thumb {
+      position: relative; width: 72px; height: 72px; border-radius: 6px; overflow: hidden;
+      border: 1px solid #e2e8f0; background: #fff; flex: 0 0 auto;
+    }
+    .yt-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; background: #fff; }
+    .yt-thumb-x {
+      position: absolute; top: 2px; right: 2px; width: 18px; height: 18px; line-height: 16px;
+      border-radius: 50%; border: none; background: rgba(15,23,42,.62); color: #fff;
+      font-size: 12px; cursor: pointer; padding: 0; text-align: center;
+    }
+    .yt-thumb-x:hover { background: #ef4444; }
+    .yt-drop-hint { font-size: 11px; color: #94a3b8; text-align: center; margin-top: auto; }
+    .yt-cell.has-img .yt-drop-hint { opacity: .75; }
+    .yt-dl { display: flex; align-items: center; justify-content: center; }
+    .yt-dl-btn {
+      background: #0ea5e9; color: #fff; border: none; border-radius: 8px;
+      font-size: 12px; font-weight: 700; padding: 10px 12px; cursor: pointer; white-space: nowrap;
+    }
+    .yt-dl-btn:hover { background: #0284c7; }
+    .yt-dl-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .yt-empty { padding: 40px 20px; text-align: center; color: var(--text-light, #94a3b8); font-size: 13px; }
+    /* Yahoo用サムネタブでは検索/タグフィルタ行は使わないので隠す */
+    body.yt-mode .search-row, body.yt-mode .filter-chip-row { display: none !important; }
   `;
   document.head.appendChild(st);
 }
@@ -583,7 +652,13 @@ function _dataSig(d) {
   let imgs = 0, tagged = 0;
   (d.products || []).forEach(p => { const a = p.images || []; imgs += a.length; a.forEach(im => { if (im.tagId) tagged++; }); });
   const tagsSig = (d.tags || []).map(t => t.id + t.name + t.color).join(',');
-  return `${(d.products || []).length}|${imgs}|${tagged}|${d.sha || ''}|${tagsSig}`;
+  // v1.11.35: Yahoo用サムネの行数・画像枚数も差分検知に含める
+  let ytRows = 0, ytImgs = 0;
+  (d.yahooThumbs || []).forEach(r => {
+    ytRows++;
+    ytImgs += (r.generated || []).length + (r.original || []).length + (r.materials || []).length;
+  });
+  return `${(d.products || []).length}|${imgs}|${tagged}|${d.sha || ''}|${tagsSig}|${ytRows}|${ytImgs}`;
 }
 
 // 現在のショップデータを再取得し、変化があれば表示を更新 (フィルタ/カテゴリ/スクロールは維持)
@@ -709,6 +784,375 @@ function injectNoImageTab() {
     allBtn.parentNode.insertBefore(btn, partsBtn);
   } else {
     allBtn.parentNode.insertBefore(btn, allBtn.nextSibling);
+  }
+}
+
+// =====================================================
+// v1.11.35: Yahoo用サムネ (3列ボード)
+//   タブ「Yahoo用サムネ」を 部品 の右に追加。
+//   1行 = 生成画像 / もと画像 / 素材画像一覧 の3列。D&Dで画像を登録し、
+//   行末の「一括DL」で3フォルダ入りのZIPを書き出す。
+//   データは data.yahooThumbs[] として gallery.json に保存(全員で共有)。
+// =====================================================
+const YT_COLS = [
+  { key: 'generated', label: '生成画像' },
+  { key: 'original',  label: 'もと画像' },
+  { key: 'materials', label: '素材画像一覧' }
+];
+
+function injectYahooThumbTab() {
+  if (document.querySelector('.cat-btn[data-cat="yahoo_thumb"]')) return;
+  const partsBtn = document.querySelector('.cat-btn[data-cat="parts"]');
+  const allBtn = document.querySelector('.cat-btn[data-cat="product_all"]');
+  const anchor = partsBtn || allBtn;
+  if (!anchor || !anchor.parentNode) return;
+  const btn = document.createElement('button');
+  btn.className = 'cat-btn';
+  btn.dataset.cat = 'yahoo_thumb';
+  btn.textContent = 'Yahoo用サムネ';
+  btn.addEventListener('click', () => {
+    currentCategory = 'yahoo_thumb';
+    localStorage.setItem(LS_CURRENT_CAT, 'yahoo_thumb');
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.toggle('active', b === btn));
+    render();
+  });
+  anchor.parentNode.insertBefore(btn, anchor.nextSibling); // 部品の右
+}
+
+function ytGetRows() {
+  const data = dataCache[currentShopId];
+  if (!data) return [];
+  if (!Array.isArray(data.yahooThumbs)) data.yahooThumbs = [];
+  return data.yahooThumbs;
+}
+
+function ytFindRow(rowId) {
+  return ytGetRows().find(r => r.id === rowId) || null;
+}
+
+function ytRowImages(row, key) {
+  if (!Array.isArray(row[key])) row[key] = [];
+  return row[key];
+}
+
+function ytCellHtml(row, colKey) {
+  const imgs = ytRowImages(row, colKey);
+  const thumbs = imgs.map(im => `
+      <div class="yt-thumb" data-yt-view="${escapeHtml(im.url || '')}">
+        <img src="${escapeHtml(im.url || '')}" alt="" loading="lazy">
+        <button type="button" class="yt-thumb-x" data-yt-del="${row.id}::${colKey}::${im.id}" title="この画像を削除">×</button>
+      </div>`).join('');
+  const hint = colKey === 'materials'
+    ? '＋ ドロップ / クリック（複数可）'
+    : '＋ ドロップ / クリック';
+  return `<div class="yt-cell${imgs.length ? ' has-img' : ''}${colKey === 'materials' ? ' yt-cell-multi' : ''}" data-yt-drop="${row.id}::${colKey}">
+      <div class="yt-thumbs">${thumbs}</div>
+      <div class="yt-drop-hint">${hint}</div>
+    </div>`;
+}
+
+function renderYahooThumbBoard() {
+  const content = document.getElementById('content');
+  if (!content) return;
+  const rows = ytGetRows();
+  const canEdit = !!auth.pat;
+
+  let body = '';
+  if (rows.length === 0) {
+    body = `<div class="yt-empty">まだ行がありません。「＋ 行追加」を押して1行目を作ってください。</div>`;
+  } else {
+    body = rows.map((row, idx) => {
+      const total = YT_COLS.reduce((n, c) => n + ytRowImages(row, c.key).length, 0);
+      return `<div class="yt-row" data-yt-row="${row.id}">
+        <div class="yt-col yt-no">
+          <span class="yt-no-badge">#${idx + 1}</span>
+          <input type="text" class="yt-name-input" data-yt-name="${row.id}" value="${escapeHtml(row.name || '')}" placeholder="行の名前（任意）">
+          <button type="button" class="yt-row-del" data-yt-rowdel="${row.id}">行を削除</button>
+        </div>
+        <div class="yt-col">${ytCellHtml(row, 'generated')}</div>
+        <div class="yt-col">${ytCellHtml(row, 'original')}</div>
+        <div class="yt-col">${ytCellHtml(row, 'materials')}</div>
+        <div class="yt-col yt-dl">
+          <button type="button" class="yt-dl-btn" data-yt-dl="${row.id}" ${total ? '' : 'disabled'} title="この行の画像をZIPでまとめてダウンロード">⬇ 一括DL</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  content.innerHTML = `<div class="yt-board">
+    <div class="yt-toolbar">
+      <button type="button" class="yt-add-row" id="ytAddRow" ${canEdit ? '' : 'disabled'}>＋ 行追加</button>
+      <span class="yt-hint">${canEdit
+        ? '各セルに画像をドラッグ＆ドロップ（またはクリックで選択）。素材画像一覧は複数枚OK。右端の「一括DL」で 生成画像 / もと画像 / 素材画像一覧 の3フォルダ入りZIPを保存します。'
+        : '閲覧のみ（追加・削除には編集権限(PAT)が必要です）。「一括DL」は誰でも使えます。'}</span>
+    </div>
+    <div class="yt-table">
+      <div class="yt-head">
+        <div class="yt-th yt-th-no">行</div>
+        <div class="yt-th">生成画像</div>
+        <div class="yt-th">もと画像</div>
+        <div class="yt-th">素材画像一覧</div>
+        <div class="yt-th yt-th-dl">ダウンロード</div>
+      </div>
+      ${body}
+    </div>
+  </div>`;
+
+  bindYahooThumbEvents(content);
+}
+
+function bindYahooThumbEvents(content) {
+  const addBtn = content.querySelector('#ytAddRow');
+  if (addBtn) addBtn.addEventListener('click', ytAddRow);
+
+  // 行の名前
+  content.querySelectorAll('.yt-name-input').forEach(inp => {
+    inp.addEventListener('change', async () => {
+      const row = ytFindRow(inp.dataset.ytName);
+      if (!row) return;
+      if (!auth.pat) { toast('編集には編集権限(PAT)が必要です', 'error'); inp.value = row.name || ''; return; }
+      row.name = inp.value.trim();
+      try { await saveShopData(currentShopId, 'update yahoo thumb row name'); }
+      catch (e) { toast('保存失敗: ' + e.message, 'error'); }
+    });
+  });
+
+  // 行削除 / 一括DL
+  content.querySelectorAll('[data-yt-rowdel]').forEach(b =>
+    b.addEventListener('click', () => ytDeleteRow(b.dataset.ytRowdel)));
+  content.querySelectorAll('[data-yt-dl]').forEach(b =>
+    b.addEventListener('click', () => ytDownloadRowZip(b.dataset.ytDl)));
+
+  // セル: クリックでファイル選択 / ドラッグ&ドロップ
+  content.querySelectorAll('[data-yt-drop]').forEach(cell => {
+    const [rowId, colKey] = cell.dataset.ytDrop.split('::');
+
+    cell.addEventListener('click', (e) => {
+      if (e.target.closest('.yt-thumb')) return;   // サムネ側の操作はここで処理しない
+      ytPickFiles(rowId, colKey);
+    });
+    ['dragenter', 'dragover'].forEach(ev =>
+      cell.addEventListener(ev, (e) => { e.preventDefault(); e.stopPropagation(); cell.classList.add('yt-dragover'); }));
+    ['dragleave', 'dragend'].forEach(ev =>
+      cell.addEventListener(ev, () => cell.classList.remove('yt-dragover')));
+    cell.addEventListener('drop', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      cell.classList.remove('yt-dragover');
+      const files = e.dataTransfer && e.dataTransfer.files;
+      if (files && files.length) ytUploadFiles(rowId, colKey, files);
+    });
+  });
+
+  // サムネ: 拡大 / 削除
+  content.querySelectorAll('[data-yt-del]').forEach(b =>
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const [rowId, colKey, imgId] = b.dataset.ytDel.split('::');
+      ytDeleteImage(rowId, colKey, imgId);
+    }));
+  content.querySelectorAll('[data-yt-view]').forEach(t =>
+    t.addEventListener('click', (e) => {
+      if (e.target.closest('.yt-thumb-x')) return;
+      e.stopPropagation();
+      const url = t.dataset.ytView;
+      if (url) openLightbox(url);
+    }));
+}
+
+async function ytAddRow() {
+  if (!auth.pat) { toast('行の追加には編集権限(PAT)が必要です', 'error'); return; }
+  const data = dataCache[currentShopId];
+  if (!data) { toast('データが読み込まれていません', 'error'); return; }
+  if (!Array.isArray(data.yahooThumbs)) data.yahooThumbs = [];
+  data.yahooThumbs.push({
+    id: 'yt_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    name: '',
+    createdAt: new Date().toISOString(),
+    generated: [],
+    original: [],
+    materials: []
+  });
+  try {
+    await saveShopData(currentShopId, 'add yahoo thumb row');
+    render();
+  } catch (e) {
+    data.yahooThumbs.pop();
+    toast('保存失敗: ' + e.message, 'error');
+    render();
+  }
+}
+
+function ytPickFiles(rowId, colKey) {
+  if (!auth.pat) { toast('画像の追加には編集権限(PAT)が必要です', 'error'); return; }
+  let inp = document.getElementById('ytFileInput');
+  if (!inp) {
+    inp = document.createElement('input');
+    inp.type = 'file';
+    inp.id = 'ytFileInput';
+    inp.accept = 'image/*';
+    inp.multiple = true;
+    inp.style.display = 'none';
+    document.body.appendChild(inp);
+  }
+  inp.value = '';
+  inp.onchange = () => {
+    if (inp.files && inp.files.length) ytUploadFiles(rowId, colKey, inp.files);
+  };
+  inp.click();
+}
+
+async function ytUploadFiles(rowId, colKey, fileList) {
+  if (!auth.pat) { toast('画像の追加には編集権限(PAT)が必要です', 'error'); return; }
+  const row = ytFindRow(rowId);
+  if (!row) { toast('対象の行が見つかりません', 'error'); return; }
+  const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+  if (files.length === 0) { toast('画像ファイルをドロップしてください', 'error'); return; }
+
+  const added = [];
+  let fail = 0;
+  showLoading(`画像をアップロード中... 0/${files.length}`);
+  for (let i = 0; i < files.length; i++) {
+    showLoading(`画像をアップロード中... ${i + 1}/${files.length}`);
+    try {
+      const meta = await uploadImageToGitHub(currentShopId, 'yahoo_' + rowId, files[i]);
+      added.push(meta);
+    } catch (e) {
+      console.error('yahoo thumb upload failed', e);
+      fail++;
+    }
+  }
+  if (added.length === 0) { hideLoading(); toast('アップロードに失敗しました', 'error'); return; }
+
+  ytRowImages(row, colKey).push(...added);
+  try {
+    await saveShopData(currentShopId, `add yahoo thumb images (${colKey})`);
+    hideLoading();
+    toast(`${added.length}枚を追加しました${fail ? ` / 失敗${fail}件` : ''}`, fail ? 'error' : 'success');
+  } catch (e) {
+    // 保存に失敗したらメモリ上も巻き戻す (表示とGitHubの食い違いを防ぐ)
+    const arr = ytRowImages(row, colKey);
+    added.forEach(m => { const i = arr.indexOf(m); if (i >= 0) arr.splice(i, 1); });
+    hideLoading();
+    toast('保存失敗: ' + e.message, 'error');
+  }
+  render();
+}
+
+async function ytDeleteImage(rowId, colKey, imgId) {
+  if (!auth.pat) { toast('削除には編集権限(PAT)が必要です', 'error'); return; }
+  const row = ytFindRow(rowId);
+  if (!row) return;
+  const arr = ytRowImages(row, colKey);
+  const idx = arr.findIndex(im => im.id === imgId);
+  if (idx < 0) return;
+  if (!confirm('この画像を削除しますか？')) return;
+  const img = arr[idx];
+  showLoading('画像を削除中...');
+  try {
+    await deleteImageFromGitHub(img);
+    arr.splice(idx, 1);
+    await saveShopData(currentShopId, 'delete yahoo thumb image');
+    hideLoading();
+    toast('削除しました', 'success');
+  } catch (e) {
+    hideLoading();
+    toast('削除失敗: ' + e.message, 'error');
+  }
+  render();
+}
+
+async function ytDeleteRow(rowId) {
+  if (!auth.pat) { toast('削除には編集権限(PAT)が必要です', 'error'); return; }
+  const rows = ytGetRows();
+  const idx = rows.findIndex(r => r.id === rowId);
+  if (idx < 0) return;
+  const row = rows[idx];
+  const all = YT_COLS.flatMap(c => ytRowImages(row, c.key));
+  if (!confirm(`この行を削除しますか？${all.length ? `\n画像${all.length}枚も一緒に削除されます。` : ''}`)) return;
+
+  showLoading('行を削除中...');
+  for (const img of all) {
+    try { await deleteImageFromGitHub(img); }
+    catch (e) { console.warn('yahoo thumb image delete failed', e); }
+  }
+  rows.splice(idx, 1);
+  try {
+    await saveShopData(currentShopId, 'delete yahoo thumb row');
+    hideLoading();
+    toast('行を削除しました', 'success');
+  } catch (e) {
+    hideLoading();
+    toast('保存失敗: ' + e.message, 'error');
+  }
+  render();
+}
+
+// 行の3列を 生成画像/もと画像/素材画像一覧 の3フォルダに分けてZIP化
+async function ytDownloadRowZip(rowId) {
+  if (typeof JSZip === 'undefined') { toast('JSZipライブラリが読み込まれていません', 'error'); return; }
+  const rows = ytGetRows();
+  const idx = rows.findIndex(r => r.id === rowId);
+  if (idx < 0) return;
+  const row = rows[idx];
+
+  const total = YT_COLS.reduce((n, c) => n + ytRowImages(row, c.key).length, 0);
+  if (total === 0) { toast('この行には画像がありません', 'error'); return; }
+
+  const zip = new JSZip();
+  let ok = 0, fail = 0, processed = 0;
+  showLoading(`画像を取得中... 0/${total}`);
+
+  for (const col of YT_COLS) {
+    const imgs = ytRowImages(row, col.key);
+    const folder = zip.folder(col.label);
+    const used = {};
+    for (const img of imgs) {
+      processed++;
+      showLoading(`画像を取得中... ${processed}/${total}`);
+      try {
+        const res = await fetch(img.url, { cache: 'no-store' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const blob = await res.blob();
+        // 同名ファイルが重なっても上書きされないように連番を足す
+        const base = img.originalName || img.filename;
+        const seen = used[base] || 0;
+        used[base] = seen + 1;
+        let name = base;
+        if (seen > 0) {
+          const m = base.match(/^(.*?)(\.[^.]+)?$/);
+          name = `${m[1]}_${seen + 1}${m[2] || ''}`;
+        }
+        folder.file(name, blob);
+        ok++;
+      } catch (e) {
+        console.error('yahoo thumb fetch failed', img.url, e);
+        fail++;
+      }
+    }
+  }
+
+  showLoading('ZIPを生成中...');
+  try {
+    const blob = await zip.generateAsync({ type: 'blob', compression: 'DEFLATE', compressionOptions: { level: 6 } });
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const stamp = `${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
+    const safeName = (row.name || `row${idx + 1}`).replace(/[\\/:*?"<>|]/g, '_');
+    const filename = `yahoo_thumb_${safeName}_${stamp}.zip`;
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    hideLoading();
+    toast(`${ok}枚をダウンロードしました${fail ? ` / 失敗${fail}件` : ''}`, fail ? 'error' : 'success');
+  } catch (e) {
+    hideLoading();
+    toast('ZIP生成失敗: ' + e.message, 'error');
   }
 }
 
@@ -1149,7 +1593,7 @@ function loadCurrentSelections() {
   currentShopId = localStorage.getItem(LS_CURRENT_SHOP) || null;
   // v1.11.12: 素材/盛り上げタブは廃止。保存済みの material/boost は product(現役) に読み替える
   const _cc = localStorage.getItem(LS_CURRENT_CAT);
-  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged' || _cc === 'product_noimage' || _cc === 'parts') ? _cc : 'product';
+  currentCategory = (_cc === 'product_unsure' || _cc === 'product_all' || _cc === 'product_untagged' || _cc === 'product_noimage' || _cc === 'parts' || _cc === 'yahoo_thumb') ? _cc : 'product';
   // v1.11.11: 基礎情報モードは廃止。保存済みの 'basic' は 'images' に読み替える。
   const _vm = localStorage.getItem(LS_VIEW_MODE);
   viewMode = (_vm === 'delete' || _vm === 'productdelete') ? _vm : 'images';
@@ -1886,7 +2330,7 @@ async function loadShopData(shopId) {
   try {
     const res = await ghFetch(`contents/${path}?ref=${auth.branch}`);
     if (res.status === 404) {
-      return { products: [], materials: [], boosts: [], tags: [], sha: null };
+      return { products: [], materials: [], boosts: [], tags: [], yahooThumbs: [], sha: null };
     }
     const data = await res.json();
 
@@ -2000,6 +2444,8 @@ function _buildShopDataFromJson(json, sha, shopId) {
     materials: Array.isArray(json.materials) ? json.materials : [],
     boosts: Array.isArray(json.boosts) ? json.boosts : [],
     tags: Array.isArray(json.tags) ? json.tags : [],
+    // v1.11.35: Yahoo用サムネ (3列ボード) の行データ
+    yahooThumbs: Array.isArray(json.yahooThumbs) ? json.yahooThumbs : [],
     sha,
     _mergedCount: mergedCount
   };
@@ -2051,7 +2497,9 @@ async function _saveShopDataOnce(shopId, message, retryCount = 0) {
     products: data.products,
     materials: data.materials,
     boosts: data.boosts,
-    tags: data.tags || []
+    tags: data.tags || [],
+    // v1.11.35: Yahoo用サムネ
+    yahooThumbs: Array.isArray(data.yahooThumbs) ? data.yahooThumbs : []
   }, null, 2);
 
   const body = {
@@ -3533,6 +3981,15 @@ function render() {
 
   const data = dataCache[currentShopId] || { products: [], materials: [], boosts: [] };
 
+  // v1.11.35: Yahoo用サムネは専用ボードを描画して終了 (商品リストとは無関係)
+  //   検索/タグフィルタ行はこのタブでは使わないので body クラスで隠す
+  document.body.classList.toggle('yt-mode', currentCategory === 'yahoo_thumb');
+  if (currentCategory === 'yahoo_thumb') {
+    renderYahooThumbBoard();
+    updateCategoryMeta(data);
+    return;
+  }
+
   // v1.11.29/33: カテゴリごとの商品リストを決めてから、表示方法を選ぶ
   //   商品タブは部品(isPart)を除外。部品タブは部品のみ。
   const realProducts = (data.products || []).filter(p => !p.isPart);
@@ -3587,6 +4044,11 @@ function updateCategoryMeta(data) {
   } else if (currentCategory === 'parts') {
     const n = (data.products || []).filter(p => p.isPart).length;
     meta.innerHTML = `<span>部品: ${n}件</span>`;
+  } else if (currentCategory === 'yahoo_thumb') {
+    const rows = (data.yahooThumbs || []);
+    let imgs = 0;
+    rows.forEach(r => { imgs += (r.generated || []).length + (r.original || []).length + (r.materials || []).length; });
+    meta.innerHTML = `<span>Yahoo用サムネ: ${rows.length}行 / 画像${imgs}枚</span>`;
   } else {
     meta.textContent = '';
   }
@@ -4000,6 +4462,7 @@ function updateCategoryTabCounts() {
     product_unsure: 0,
     product_all: realProducts.length,
     parts: (data.products || []).filter(p => p.isPart).length,
+    yahoo_thumb: (data.yahooThumbs || []).length,
     material: (data.materials || []).length,
     boost: (data.boosts || []).length
   };
