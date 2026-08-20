@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.35';
+const APP_VERSION = 'v1.11.36';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -809,7 +809,7 @@ function injectYahooThumbTab() {
   const btn = document.createElement('button');
   btn.className = 'cat-btn';
   btn.dataset.cat = 'yahoo_thumb';
-  btn.textContent = 'Yahoo用サムネ';
+   btn.textContent = 'Yahooサムネ';
   btn.addEventListener('click', () => {
     currentCategory = 'yahoo_thumb';
     localStorage.setItem(LS_CURRENT_CAT, 'yahoo_thumb');
@@ -4048,7 +4048,7 @@ function updateCategoryMeta(data) {
     const rows = (data.yahooThumbs || []);
     let imgs = 0;
     rows.forEach(r => { imgs += (r.generated || []).length + (r.original || []).length + (r.materials || []).length; });
-    meta.innerHTML = `<span>Yahoo用サムネ: ${rows.length}行 / 画像${imgs}枚</span>`;
+    meta.innerHTML = `<span>Yahooサムネ: ${rows.length}行 / 画像${imgs}枚</span>`;
   } else {
     meta.textContent = '';
   }
