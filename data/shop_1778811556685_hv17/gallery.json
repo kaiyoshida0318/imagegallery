@@ -28001,7 +28001,20 @@
           "tags": []
         }
       ],
-      "original": [],
+      "original": [
+        {
+          "id": "img_1787214263017_a2uvcp",
+          "filename": "1787214261308_spljcz_it1785308763473-yahoo-main.jpg",
+          "originalName": "it1785308763473-yahoo-main.jpg",
+          "path": "data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214261308_spljcz_it1785308763473-yahoo-main.jpg",
+          "sha": "7290427b8cb55fb4ee4c0b6f469dc86e7262f45b",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214261308_spljcz_it1785308763473-yahoo-main.jpg",
+          "size": 84680,
+          "uploadedAt": "2026-08-20T08:24:23.017Z",
+          "note": "",
+          "tags": []
+        }
+      ],
       "materials": []
     }
   ]
