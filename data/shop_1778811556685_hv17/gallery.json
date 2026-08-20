@@ -27862,20 +27862,7 @@
       "itemManageNumber": "part_1787212449108_iwy",
       "itemNumber": "部品",
       "itemName": "部品",
-      "images": [
-        {
-          "id": "img_1787212450892_8cahwu",
-          "filename": "1787212449110_pqucqm_no1-____3_.gif",
-          "originalName": "no1-白枠 (3).gif",
-          "path": "data/shop_1778811556685_hv17/images/prod_part_1787212449108_dhto/1787212449110_pqucqm_no1-____3_.gif",
-          "sha": "da8f6f7f3312b408f8458faa8bf36d68645c9ae6",
-          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/prod_part_1787212449108_dhto/1787212449110_pqucqm_no1-____3_.gif",
-          "size": 17790,
-          "uploadedAt": "2026-08-20T07:54:10.892Z",
-          "note": "",
-          "tags": []
-        }
-      ],
+      "images": [],
       "syncedAt": "2026-08-20T07:54:09.108Z"
     }
   ],
@@ -27994,5 +27981,6 @@
       "color": "pink",
       "createdAt": "2026-06-05T06:08:17.432Z"
     }
-  ]
+  ],
+  "yahooThumbs": []
 }
