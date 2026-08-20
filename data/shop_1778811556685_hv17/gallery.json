@@ -28015,7 +28015,32 @@
           "tags": []
         }
       ],
-      "materials": []
+      "materials": [
+        {
+          "id": "img_1787214292760_u1v91e",
+          "filename": "1787214291461_2wxw72_akros_home-024.jpg",
+          "originalName": "akros_home-024.jpg",
+          "path": "data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214291461_2wxw72_akros_home-024.jpg",
+          "sha": "bdf5ada2f0dedc5d79832e69cf1edfbb6ac195c7",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214291461_2wxw72_akros_home-024.jpg",
+          "size": 22293,
+          "uploadedAt": "2026-08-20T08:24:52.761Z",
+          "note": "",
+          "tags": []
+        },
+        {
+          "id": "img_1787214293927_8zvs6x",
+          "filename": "1787214292761_r68ogk_at-kit_protair-110.jpg",
+          "originalName": "at-kit_protair-110.jpg",
+          "path": "data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214292761_r68ogk_at-kit_protair-110.jpg",
+          "sha": "27f862a91f4f9cebf0f049d43c106ee2fa5537fe",
+          "url": "https://raw.githubusercontent.com/kaiyoshida0318/imagegallery/main/data/shop_1778811556685_hv17/images/yahoo_yt_1787214213491_0khcqv/1787214292761_r68ogk_at-kit_protair-110.jpg",
+          "size": 18815,
+          "uploadedAt": "2026-08-20T08:24:53.927Z",
+          "note": "",
+          "tags": []
+        }
+      ]
     }
   ]
 }
