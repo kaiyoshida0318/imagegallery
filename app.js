@@ -100,7 +100,14 @@ let newTagSelectedColor = 'amber';
 // =====================================================
 // 起動
 // =====================================================
-window.addEventListener('DOMContentLoaded', init);
+// v1.11.37: index.html 側がキャッシュ対策で app.js を動的に読み込む場合、
+//   読み込み完了時には既に DOMContentLoaded が終わっていることがある。
+//   その場合はイベントを待たずに即 init() する (待つと永久に起動しない)。
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 
 async function init() {
   // Service Worker登録 (v1.11.6): 画像を長期キャッシュして表示高速化
@@ -127,6 +134,7 @@ async function init() {
   //   ⚠️ moveAddButton() は「更新」の直前に +追加 を差し込むので、必ずその後に呼ぶこと。
   //      先に呼ぶと +追加/+部品追加 まで右端へ連れて行かれる。
   moveRefreshButtonToEnd();
+  moveStorageButtonIntoSettings();  // v1.11.37: 「📊」→「容量確認」にして設定モーダルへ
   injectPartsTab();          // v1.11.33: 「部品」タブを 全体 の右に追加
   injectNoImageTab();        // v1.11.34: 「商品(未設定)」タブを 全体 と 部品 の間に追加
   injectYahooThumbTab();     // v1.11.35: 「Yahoo用サムネ」タブを 部品 の右に追加
@@ -250,17 +258,17 @@ function injectImageTagStyles() {
     .share-label { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
     #shareModal textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, monospace; font-size: 12px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; resize: vertical; word-break: break-all; }
     #shareModal .btn-mini { margin-top: 8px; }
-    /* ===== v1.11.37: 更新モーダルの状態パネル / 取得履歴 ===== */
-    .sync-status {
-      border: 1px solid var(--border, #e2e8f0); border-radius: 10px; background: #f8fafc;
-      padding: 10px 12px; margin-bottom: 14px; font-size: 12.5px; line-height: 1.6;
+    /* ===== v1.11.37: 更新モーダル「ダウンロード」内の最終取得表示 ===== */
+    .sync-opt-meta {
+      font-size: 12px; line-height: 1.6; color: #334155;
+      margin: 4px 0 6px; padding: 6px 9px;
+      background: #f1f5f9; border-radius: 7px;
     }
-    .sync-status-row { display: flex; gap: 10px; align-items: flex-start; padding: 3px 0; }
-    .sync-status-row + .sync-status-row { border-top: 1px dashed #e2e8f0; }
-    .sync-status-k { flex: 0 0 76px; color: #64748b; font-weight: 700; }
-    .sync-status-v { flex: 1 1 auto; color: #334155; min-width: 0; word-break: break-word; }
+    .sync-opt-meta strong { font-variant-numeric: tabular-nums; }
+    .sync-changed { color: #15803d; font-weight: 700; }
     .sync-muted { color: #94a3b8; }
-    .sync-warn { color: #b45309; margin-top: 3px; }
+    .sync-note { color: #64748b; font-size: 11px; margin-top: 3px; }
+    .sync-warn { color: #b45309; font-size: 11.5px; margin-top: 4px; }
     .sync-pill {
       display: inline-block; font-size: 10.5px; font-weight: 700; line-height: 1.5;
       padding: 1px 7px; border-radius: 999px; vertical-align: 1px;
@@ -268,20 +276,6 @@ function injectImageTagStyles() {
     .sync-pill-auto    { background: #dbeafe; color: #1e40af; }
     .sync-pill-manual  { background: #e9d5ff; color: #6b21a8; }
     .sync-pill-initial { background: #e2e8f0; color: #475569; }
-    .sync-history { margin-top: 14px; }
-    .sync-hist-title { font-size: 11.5px; font-weight: 700; color: #64748b; margin-bottom: 5px; }
-    .sync-hist-row {
-      display: flex; gap: 8px; align-items: center; font-size: 12px;
-      padding: 4px 8px; border-radius: 6px; border-left: 3px solid transparent;
-    }
-    .sync-hist-row:nth-child(even) { background: #f8fafc; }
-    .sync-hist-row.changed { border-left-color: #22c55e; }
-    .sync-hist-row.same    { border-left-color: #e2e8f0; }
-    .sync-hist-row.fail    { border-left-color: #ef4444; background: #fef2f2; }
-    .sync-hist-time { flex: 0 0 110px; color: #64748b; font-variant-numeric: tabular-nums; }
-    .sync-hist-diff { flex: 1 1 auto; color: #334155; min-width: 0; }
-    .sync-hist-row.same .sync-hist-diff { color: #94a3b8; }
-    .sync-hist-row.fail .sync-hist-diff { color: #b91c1c; }
     /* ===== v1.11.35: Yahoo用サムネ (3列ボード) ===== */
     .yt-board { padding: 12px 16px 40px; }
     .yt-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -1460,6 +1454,37 @@ function moveRefreshButtonToEnd() {
   if (actions && btn) actions.appendChild(btn);   // 最後の子 = 一番右
 }
 
+// v1.11.37: 「📊」を ⚙️設定 の中へ移し、名称も「容量確認」にする
+//   appendChild はノードの「移動」なので、bindEvents で付けたクリックハンドラは維持される。
+function moveStorageButtonIntoSettings() {
+  if (document.getElementById('storageSettingSection')) return;
+  const btn = document.getElementById('btnStorage');
+  const body = document.querySelector('#settingsModal .modal-body');
+  if (!btn || !body) return;
+
+  const sec = document.createElement('section');
+  sec.className = 'setting-section';
+  sec.id = 'storageSettingSection';
+  sec.innerHTML = `
+    <h3>📊 容量確認</h3>
+    <p class="form-hint">リポジトリの使用容量と、画像の枚数・サイズの内訳を確認できます</p>`;
+
+  btn.className = 'btn-secondary';
+  btn.title = '容量確認';
+  btn.textContent = '容量確認';
+  sec.appendChild(btn);
+
+  // 「🗑️ 画像キャッシュ」セクションの前に差し込む
+  const cacheBtn = document.getElementById('btnClearImageCache');
+  const cacheSec = cacheBtn ? cacheBtn.closest('.setting-section') : null;
+  if (cacheSec) {
+    body.insertBefore(sec, cacheSec);
+  } else {
+    const actions = body.querySelector('.modal-actions');
+    if (actions) body.insertBefore(sec, actions); else body.appendChild(sec);
+  }
+}
+
 // v1.11.32: 「更新」でダウンロード/アップロードを選べるモーダル
 function ensureSyncModal() {
   if (document.getElementById('syncModal')) return;
@@ -1474,16 +1499,15 @@ function ensureSyncModal() {
         <button class="btn-close" data-sync-close aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
-        <div class="sync-status" id="syncStatusPanel"></div>
         <button type="button" class="sync-opt" id="syncDownloadBtn">
           <div class="sync-opt-title">⬇️ ダウンロード（最新を取得）</div>
+          <div class="sync-opt-meta" id="syncLastFetch"></div>
           <div class="sync-opt-desc">サーバー(GitHub)の最新の内容を、この画面に反映します。他の人の追加・変更を見たいときはこちら。</div>
         </button>
         <button type="button" class="sync-opt" id="syncUploadBtn">
           <div class="sync-opt-title">⬆️ アップロード（今の内容を保存）</div>
           <div class="sync-opt-desc">この画面の内容をサーバー(GitHub)に保存します。※通常は自動保存されます。編集権限(PAT)が必要です。</div>
         </button>
-        <div class="sync-history" id="syncHistoryPanel"></div>
       </div>
     </div>`;
   document.body.appendChild(m);
@@ -1514,71 +1538,41 @@ function openSyncModal() {
   // 閲覧者(PATなし)にはアップロードは不可なので薄く表示
   const up = document.getElementById('syncUploadBtn');
   if (up) up.style.opacity = auth.pat ? '1' : '0.5';
-  renderSyncStatus();   // v1.11.37: 最終取得・自動更新の状態・取得履歴を描画
+  renderSyncLastFetch();   // v1.11.37: ダウンロードボタン内の「最終取得」行を更新
   document.getElementById('syncModal').style.display = 'flex';
 }
 
-// v1.11.37: 「🔄 更新」モーダル上部の状態パネルと、下部の取得履歴
-function renderSyncStatus() {
-  const panel = document.getElementById('syncStatusPanel');
-  const hist = document.getElementById('syncHistoryPanel');
-  if (!panel || !hist) return;
+// v1.11.37: 「⬇️ ダウンロード」ボタンの中に「最終取得はいつ・手動か自動か・何が増減したか」を1行で出す
+function renderSyncLastFetch() {
+  const el = document.getElementById('syncLastFetch');
+  if (!el) return;
 
   const mine = syncLog.filter(e => !e.shopId || e.shopId === currentShopId);
   const lastOk = mine.find(e => !e.failed);
   const lastAny = mine[0] || null;
-  const data = dataCache[currentShopId];
-  const snap = _syncSnapshot(data);
 
-  // 最終取得
-  let lastHtml;
-  if (!lastAny) {
-    lastHtml = '<span class="sync-muted">まだ取得していません</span>';
+  let html;
+  if (!lastOk) {
+    html = '<span class="sync-muted">最終取得: まだ取得していません</span>';
   } else {
-    const warn = lastAny.failed
-      ? `<div class="sync-warn">⚠️ 最後の試行は失敗: ${escapeHtml(lastAny.note || '')}（表示は前回取得分のままです）</div>`
-      : '';
-    const base = lastOk
-      ? `${_fmtClock(lastOk.at)} <span class="sync-muted">(${_fmtAgo(lastOk.at)})</span> <span class="sync-pill sync-pill-${lastOk.mode}">${SYNC_MODE_LABEL[lastOk.mode] || lastOk.mode}</span>`
-      : '<span class="sync-muted">成功した取得がありません</span>';
-    lastHtml = base + warn;
+    const when = `${_fmtClock(lastOk.at).slice(5)}（${_fmtAgo(lastOk.at)}）`;
+    const pill = `<span class="sync-pill sync-pill-${lastOk.mode}">${SYNC_MODE_LABEL[lastOk.mode] || lastOk.mode}</span>`;
+    const diff = lastOk.changed
+      ? `<span class="sync-changed">${escapeHtml(_fmtDiff(lastOk))}</span>`
+      : '<span class="sync-muted">変更なし</span>';
+    html = `最終取得: <strong>${when}</strong> ${pill} ／ ${diff}`;
   }
 
-  // 自動更新の状態 (PATありの編集者はポーリングしない仕様)
-  const autoHtml = auth.pat
-    ? '<span class="sync-muted">停止中</span> — 編集権限(PAT)ありのため自動取得しません。最新を見るには下の「ダウンロード」を押してください。'
-    : '<strong>15秒ごとに自動取得中</strong> <span class="sync-muted">（閲覧モード。タブが裏にある間は停止します）</span>';
+  // 自動取得の状態 (PATありの編集者はポーリングしない仕様)
+  html += auth.pat
+    ? '<div class="sync-note">※ページを開いたときに自動で取得します。その後の自動取得はしません（編集権限あり）。</div>'
+    : '<div class="sync-note">※ページを開いたときと、その後15秒ごとに自動で取得します。</div>';
 
-  // 直近の変更内容
-  const lastChanged = mine.find(e => !e.failed && e.changed);
-  const changeHtml = lastChanged
-    ? `<strong>${escapeHtml(_fmtDiff(lastChanged))}</strong> <span class="sync-muted">(${_fmtClock(lastChanged.at)} / ${SYNC_MODE_LABEL[lastChanged.mode] || lastChanged.mode})</span>`
-    : '<span class="sync-muted">記録のある範囲では変更は入っていません</span>';
-
-  const totalHtml = snap
-    ? `商品 ${snap.products}件 / 画像 ${snap.images}枚 / タグ ${snap.tags}個 / Yahooサムネ ${snap.ytRows}行`
-    : '<span class="sync-muted">データ未読み込み</span>';
-
-  panel.innerHTML = `
-    <div class="sync-status-row"><span class="sync-status-k">最終取得</span><span class="sync-status-v">${lastHtml}</span></div>
-    <div class="sync-status-row"><span class="sync-status-k">自動更新</span><span class="sync-status-v">${autoHtml}</span></div>
-    <div class="sync-status-row"><span class="sync-status-k">直近の変更</span><span class="sync-status-v">${changeHtml}</span></div>
-    <div class="sync-status-row"><span class="sync-status-k">現在の内容</span><span class="sync-status-v">${totalHtml}</span></div>`;
-
-  // 取得履歴
-  if (mine.length === 0) {
-    hist.innerHTML = '';
-    return;
+  // 直近の試行が失敗していたら、古い内容を見ている可能性を明示する
+  if (lastAny && lastAny.failed) {
+    html += `<div class="sync-warn">⚠️ ${_fmtClock(lastAny.at).slice(5)} の取得に失敗しました（${escapeHtml(lastAny.note || '')}）。表示は前回取得分のままです。</div>`;
   }
-  const rows = mine.slice(0, 10).map(e => {
-    const cls = e.failed ? 'fail' : (e.changed ? 'changed' : 'same');
-    return `<div class="sync-hist-row ${cls}">
-      <span class="sync-hist-time">${_fmtClock(e.at).slice(5)}</span>
-      <span class="sync-pill sync-pill-${e.mode}">${SYNC_MODE_LABEL[e.mode] || e.mode}</span>
-      <span class="sync-hist-diff">${escapeHtml(_fmtDiff(e))}</span>
-    </div>`;
-  }).join('');
-  hist.innerHTML = `<div class="sync-hist-title">取得履歴（新しい順・最大10件）</div>${rows}`;
+  el.innerHTML = html;
 }
 
 // v1.11.15: 項目管理(列幅ドラッグ)モードの切替
