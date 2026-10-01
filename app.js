@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.38';
+const APP_VERSION = 'v1.11.39';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1491,6 +1491,13 @@ function moveRefreshButtonToEnd() {
   }
   const btn = document.getElementById('btnRefreshData');
   if (actions && btn) actions.appendChild(btn);   // 最後の子 = 一番右
+
+  // v1.11.39: Application ID欄のサンプル表示が実在のUUIDだったため、本物と区別できず
+  //   切り分けの妨げになっていた。明らかにダミーと分かる表記に差し替える。
+  const appIdInput = document.getElementById('shopFormAppId');
+  if (appIdInput) appIdInput.placeholder = '例: xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+  const akInput = document.getElementById('shopFormAccessKey');
+  if (akInput) akInput.placeholder = '例: pk_xxxxxxxxxxxxxxxxxxxx';
 }
 
 // v1.11.37: 「📊」を ⚙️設定 の中へ移し、名称も「容量確認」にする
@@ -2893,8 +2900,16 @@ function extractCode(itemUrl, shopCode) {
 // =====================================================
 // 楽天 RMS 商品API (商品一覧取得)
 // =====================================================
+// v1.11.39: APIバージョンを定数化。
+//   楽天はパスにバージョンを含める方式で、古いバージョンはゲートウェイから消される。
+//   消えたバージョンを叩くと 400 {"error":"wrong_parameter",
+//   "error_description":"API Configuration not found"} が返る。
+//   ＝「アプリ設定が見つからない」ではなく「そのAPIの設定が見つからない」という意味。
+//   公式ドキュメントで現行版を確認してここだけ差し替えること。
+const RAKUTEN_API_VERSION = '20260701';   // 2026-07-01版 (旧 20220601 は廃止)
+
 async function fetchRakutenProducts(shop) {
-  // 楽天ウェブサービス 新API (2026年2月移行版)
+  // 楽天ウェブサービス 新API (2026年2月のドメイン移行版)
   // エンドポイント: openapi.rakuten.co.jp
   // applicationId(UUID) + accessKey の両方が必須
   if (!shop.appId) throw new Error('Application ID(UUID)が未設定です');
@@ -2902,9 +2917,10 @@ async function fetchRakutenProducts(shop) {
   if (!shop.shopCode) throw new Error('shopCodeが未設定です');
 
   const all = [];
+  let skipped = 0;   // v1.11.39: 管理番号を取り出せずスキップした件数
   const hitsPerPage = 30;
   for (let page = 1; page <= 34; page++) {  // max 34 pages = 1020 items
-    const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20220601?applicationId=${encodeURIComponent(shop.appId)}&accessKey=${encodeURIComponent(shop.accessKey)}&shopCode=${encodeURIComponent(shop.shopCode)}&hits=${hitsPerPage}&page=${page}&format=json`;
+    const url = `https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/${RAKUTEN_API_VERSION}?applicationId=${encodeURIComponent(shop.appId)}&accessKey=${encodeURIComponent(shop.accessKey)}&shopCode=${encodeURIComponent(shop.shopCode)}&hits=${hitsPerPage}&page=${page}&format=json`;
 
     let retries = 0;
     while (retries < 3) {
@@ -2916,29 +2932,37 @@ async function fetchRakutenProducts(shop) {
           continue;
         }
         const data = await res.json();
-        if (data.error) throw new Error(data.error_description || data.error);
-        const items = data.Items || [];
+        if (data.error) throw new Error(`${data.error_description || data.error} (HTTP ${res.status})`);
+        if (!res.ok) throw new Error(`楽天APIがHTTP ${res.status}を返しました`);
+        // v1.11.39: レスポンス形式の揺れを吸収する
+        //   ・配列キーが Items / items のどちらでも拾う
+        //   ・各要素が {Item:{…}} / {item:{…}} / フラット のどれでも拾う
+        //   ・mediumImageUrls の要素が 文字列 / {imageUrl} のどちらでも拾う
+        const items = data.Items || data.items || [];
         items.forEach(it => {
-          const item = it.Item;
-          if (!item) return;
+          const item = it.Item || it.item || it;
+          if (!item || !item.itemUrl) return;
           // ⚠️ itemCodeの":"以降を使うのは禁止。itemUrlから正しい管理番号を取り出す
           const manageNum = extractCode(item.itemUrl, shop.shopCode);
           if (!manageNum) {
             console.warn('[ImageGallery] 管理番号抽出失敗:', item.itemUrl);
+            skipped++;
             return;  // スキップ(フォールバック禁止)
           }
           // クリーンなURL (アフィリエイト中継を剥がす)
           const cleanUrl = `https://item.rakuten.co.jp/${shop.shopCode.toLowerCase()}/${manageNum}/`;
+          const img0 = (item.mediumImageUrls || [])[0];
           all.push({
             itemCode: item.itemCode,         // 参考保持のみ。管理番号判定には使わない
             itemUrl: cleanUrl,
             itemName: item.itemName,
             itemManageNumber: manageNum,
             itemPrice: item.itemPrice,
-            mediumImageUrl: item.mediumImageUrls?.[0]?.imageUrl || null
+            mediumImageUrl: (typeof img0 === 'string' ? img0 : (img0 && img0.imageUrl)) || null
           });
         });
         if (items.length < hitsPerPage) {
+          all._skipped = skipped;
           return all;  // 最後のページ
         }
         break;  // 次のページへ
@@ -2951,6 +2975,7 @@ async function fetchRakutenProducts(shop) {
     // ページ間にもウェイト
     await new Promise(r => setTimeout(r, 200));
   }
+  all._skipped = skipped;
   return all;
 }
 
@@ -3286,6 +3311,17 @@ async function syncProducts() {
   showLoading('商品一覧を取得中...');
   try {
     const items = await fetchRakutenProducts(shop);
+    // v1.11.39: 0件や全スキップを「成功」に見せず、理由を出す
+    const skippedCount = items._skipped || 0;
+    if (items.length === 0) {
+      hideLoading();
+      if (skippedCount > 0) {
+        toast(`楽天から${skippedCount}件返りましたが、商品管理番号を取り出せず全て取り込めませんでした（コンソールを確認）`, 'error');
+      } else {
+        toast(`楽天APIから商品が0件でした。ショップコード「${shop.shopCode}」を確認してください`, 'error');
+      }
+      return;
+    }
     showLoading(`${items.length}件の商品を取得しました。保存中...`);
 
     const data = dataCache[shop.id];
@@ -3327,7 +3363,7 @@ async function syncProducts() {
 
     await saveShopData(shop.id, `sync products: +${added} new`);
     hideLoading();
-    toast(`商品同期完了: 新規${added}件、合計${data.products.length}件`, 'success');
+    toast(`商品同期完了: 新規${added}件、合計${data.products.length}件${skippedCount ? ` / 取り込めず${skippedCount}件` : ''}`, skippedCount ? 'error' : 'success');
     render();
   } catch (e) {
     hideLoading();
