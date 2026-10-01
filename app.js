@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.41';
+const APP_VERSION = 'v1.11.42';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -3927,28 +3927,56 @@ async function handleBulkZip(file) {
     const zip = await JSZip.loadAsync(file);
     const shopCode = String(shop.shopCode).toLowerCase();
 
-    // ファイルを管理番号別にグループ化
-    // パス例: rakuten-images/yukaiya_10000176/1_xxx.jpg
-    // → 管理番号 "10000176" にマッチ
-    const folderRegex = new RegExp(`(?:^|/)${escapeRegExp(shopCode)}_([^/]+)/([^/]+\\.(jpg|jpeg|png|webp|gif))$`, 'i');
-    const groups = new Map();  // manageNumber -> [{path, file}, ...]
-
-    zip.forEach((relativePath, entry) => {
-      if (entry.dir) return;
-      const lower = relativePath.toLowerCase();
-      const m = lower.match(folderRegex);
-      if (!m) return;
-      const manageNumber = m[1];
-      // 元のパスから実際のファイル名を取得
-      const filename = relativePath.split('/').pop();
-      if (!groups.has(manageNumber)) groups.set(manageNumber, []);
-      groups.get(manageNumber).push({ path: relativePath, filename, entry });
-    });
-
-    // 商品とマッチング
+    // 商品とマッチングするための索引 (先に作る。フォルダ名の解釈に使うため)
     const productsByManage = new Map();
     data.products.forEach(p => {
       if (p.itemManageNumber) productsByManage.set(String(p.itemManageNumber).trim(), p);
+    });
+
+    // v1.11.42: フォルダ名から管理番号を取り出す。付け方の揺れを吸収する。
+    //   対応: kai-ry_10000020 / rakuten_kai-ry_10000020 / 任意の接頭辞_10000020 / 10000020
+    //   以前は「^ か / の直後が shopCode_」という前提だったため、
+    //   rakuten_kai-ry_10000020 のように前に何か付いていると1件もマッチしなかった。
+    const manageCandidates = (folderName) => {
+      const raw = String(folderName || '').trim();
+      if (!raw) return [];
+      const out = [];
+      const key = shopCode + '_';
+      const i = raw.toLowerCase().lastIndexOf(key);
+      if (i >= 0) out.push(raw.slice(i + key.length));   // shopCode_ より後ろ
+      out.push(raw);                                      // フォルダ名そのもの
+      const parts = raw.split('_');
+      if (parts.length > 1) out.push(parts[parts.length - 1]);  // 末尾トークン
+      return [...new Set(out.filter(Boolean))];
+    };
+
+    const IMG_EXT_RE = /\.(jpe?g|png|webp|gif|bmp|avif)$/i;
+    const groups = new Map();  // manageNumber -> [{path, filename, entry}, ...]
+
+    zip.forEach((relativePath, entry) => {
+      if (entry.dir) return;
+      if (!IMG_EXT_RE.test(relativePath)) return;
+      if (/(^|\/)__MACOSX\//.test(relativePath)) return;   // Macで作ったZIPのゴミ
+      const segs = relativePath.split('/').filter(Boolean);
+      const filename = segs.pop();
+      if (filename.startsWith('.')) return;                // .DS_Store など
+      if (segs.length === 0) return;                       // 直下のファイルは対象外
+
+      // 内側のフォルダから順に、実在する商品に当たる管理番号を探す
+      let manageNumber = null;
+      for (let i = segs.length - 1; i >= 0 && !manageNumber; i--) {
+        const hit = manageCandidates(segs[i]).find(c => productsByManage.has(String(c).trim()));
+        if (hit) manageNumber = String(hit).trim();
+      }
+      // どの商品にも当たらない場合は、一番内側のフォルダ名を未マッチとして記録する
+      if (!manageNumber) {
+        const cands = manageCandidates(segs[segs.length - 1]);
+        manageNumber = cands[0] || segs[segs.length - 1];
+      }
+      if (!manageNumber) return;
+
+      if (!groups.has(manageNumber)) groups.set(manageNumber, []);
+      groups.get(manageNumber).push({ path: relativePath, filename, entry });
     });
 
     const matched = [];      // {product, files: [{path, filename, entry, existingImg?}]}
