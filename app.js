@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.36';
+const APP_VERSION = 'v1.11.37';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -67,6 +67,11 @@ let colWidths = { ...DEFAULT_COL_WIDTHS };
 let colResizeMode = false;
 let _colDrag = null;
 
+// v1.11.37: 同期(取得)の履歴。「🔄 更新」モーダルで「いつ・手動か自動か・何が増減したか」を見せる。
+const LS_SYNC_LOG = 'imagegallery_sync_log_v1';
+const SYNC_LOG_MAX = 20;
+let syncLog = [];   // [{at, shopId, mode, failed, changed, diff, total, note}]
+
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 let productDeleteSelection = new Set();  // v1.11.29: 削除予約された商品ID (p.id)
 let pendingStatusChanges = new Map();  // 保存待ちのステータス変更: productId -> 'active'|'unsure'
@@ -101,6 +106,7 @@ async function init() {
   // Service Worker登録 (v1.11.6): 画像を長期キャッシュして表示高速化
   registerServiceWorker();
   loadAuth();
+  loadSyncLog();            // v1.11.37: 取得履歴を復元
   loadCurrentSelections();
   // エクスポートモード状態をsessionStorageから復元
   try {
@@ -117,6 +123,10 @@ async function init() {
   injectProductDeleteUI();   // v1.11.29: 「削除」→「画像削除」改称 + 「商品削除」追加
   moveAddButton();           // v1.11.30: 「+追加」を ver と 更新 の間へ移動
   injectAddPartButton();     // v1.11.33: 「+部品追加」ボタン
+  // v1.11.37: 「更新」を最右端へ / ⚙️に「設定」ラベル
+  //   ⚠️ moveAddButton() は「更新」の直前に +追加 を差し込むので、必ずその後に呼ぶこと。
+  //      先に呼ぶと +追加/+部品追加 まで右端へ連れて行かれる。
+  moveRefreshButtonToEnd();
   injectPartsTab();          // v1.11.33: 「部品」タブを 全体 の右に追加
   injectNoImageTab();        // v1.11.34: 「商品(未設定)」タブを 全体 と 部品 の間に追加
   injectYahooThumbTab();     // v1.11.35: 「Yahoo用サムネ」タブを 部品 の右に追加
@@ -240,6 +250,38 @@ function injectImageTagStyles() {
     .share-label { font-weight: 700; font-size: 13px; margin-bottom: 6px; }
     #shareModal textarea { width: 100%; box-sizing: border-box; font-family: ui-monospace, monospace; font-size: 12px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 8px; resize: vertical; word-break: break-all; }
     #shareModal .btn-mini { margin-top: 8px; }
+    /* ===== v1.11.37: 更新モーダルの状態パネル / 取得履歴 ===== */
+    .sync-status {
+      border: 1px solid var(--border, #e2e8f0); border-radius: 10px; background: #f8fafc;
+      padding: 10px 12px; margin-bottom: 14px; font-size: 12.5px; line-height: 1.6;
+    }
+    .sync-status-row { display: flex; gap: 10px; align-items: flex-start; padding: 3px 0; }
+    .sync-status-row + .sync-status-row { border-top: 1px dashed #e2e8f0; }
+    .sync-status-k { flex: 0 0 76px; color: #64748b; font-weight: 700; }
+    .sync-status-v { flex: 1 1 auto; color: #334155; min-width: 0; word-break: break-word; }
+    .sync-muted { color: #94a3b8; }
+    .sync-warn { color: #b45309; margin-top: 3px; }
+    .sync-pill {
+      display: inline-block; font-size: 10.5px; font-weight: 700; line-height: 1.5;
+      padding: 1px 7px; border-radius: 999px; vertical-align: 1px;
+    }
+    .sync-pill-auto    { background: #dbeafe; color: #1e40af; }
+    .sync-pill-manual  { background: #e9d5ff; color: #6b21a8; }
+    .sync-pill-initial { background: #e2e8f0; color: #475569; }
+    .sync-history { margin-top: 14px; }
+    .sync-hist-title { font-size: 11.5px; font-weight: 700; color: #64748b; margin-bottom: 5px; }
+    .sync-hist-row {
+      display: flex; gap: 8px; align-items: center; font-size: 12px;
+      padding: 4px 8px; border-radius: 6px; border-left: 3px solid transparent;
+    }
+    .sync-hist-row:nth-child(even) { background: #f8fafc; }
+    .sync-hist-row.changed { border-left-color: #22c55e; }
+    .sync-hist-row.same    { border-left-color: #e2e8f0; }
+    .sync-hist-row.fail    { border-left-color: #ef4444; background: #fef2f2; }
+    .sync-hist-time { flex: 0 0 110px; color: #64748b; font-variant-numeric: tabular-nums; }
+    .sync-hist-diff { flex: 1 1 auto; color: #334155; min-width: 0; }
+    .sync-hist-row.same .sync-hist-diff { color: #94a3b8; }
+    .sync-hist-row.fail .sync-hist-diff { color: #b91c1c; }
     /* ===== v1.11.35: Yahoo用サムネ (3列ボード) ===== */
     .yt-board { padding: 12px 16px 40px; }
     .yt-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -647,6 +689,89 @@ function importShareCode() {
 
 // ===== v1.11.27: 最新データの自動反映 (リロード不要) =====
 // データの軽量シグネチャ (商品数/画像数/タグ付き数/sha/タグ構成) で変化を検知
+// v1.11.37: データの内訳スナップショット (同期履歴の差分計算用)
+function _syncSnapshot(d) {
+  if (!d) return null;
+  const products = d.products || [];
+  let images = 0;
+  products.forEach(p => { images += (p.images || []).length; });
+  let ytRows = 0, ytImgs = 0;
+  (d.yahooThumbs || []).forEach(r => {
+    ytRows++;
+    ytImgs += (r.generated || []).length + (r.original || []).length + (r.materials || []).length;
+  });
+  return { products: products.length, images, tags: (d.tags || []).length, ytRows, ytImgs };
+}
+
+const SYNC_DIFF_LABELS = {
+  products: ['商品', '件'],
+  images:   ['画像', '枚'],
+  tags:     ['タグ', '個'],
+  ytRows:   ['Yahooサムネ', '行'],
+  ytImgs:   ['Yahooサムネ画像', '枚']
+};
+
+function _syncDiff(a, b) {
+  const out = {};
+  if (!a || !b) return out;
+  Object.keys(SYNC_DIFF_LABELS).forEach(k => {
+    const v = (b[k] || 0) - (a[k] || 0);
+    if (v !== 0) out[k] = v;
+  });
+  return out;
+}
+
+function loadSyncLog() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_SYNC_LOG) || '[]');
+    if (Array.isArray(raw)) syncLog = raw;
+  } catch (e) { syncLog = []; }
+}
+
+// mode: 'initial'(起動時) | 'manual'(更新ボタン) | 'auto'(自動更新)
+function recordSync(mode, prevSnap, nextSnap, opts = {}) {
+  const diff = _syncDiff(prevSnap, nextSnap);
+  syncLog.unshift({
+    at: Date.now(),
+    shopId: currentShopId,
+    mode,
+    failed: !!opts.failed,
+    note: opts.note || '',
+    changed: Object.keys(diff).length > 0,
+    diff,
+    total: nextSnap || null
+  });
+  if (syncLog.length > SYNC_LOG_MAX) syncLog.length = SYNC_LOG_MAX;
+  try { localStorage.setItem(LS_SYNC_LOG, JSON.stringify(syncLog)); } catch (e) { /* 容量超過などは無視 */ }
+}
+
+function _fmtClock(ts) {
+  const d = new Date(ts);
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+
+function _fmtAgo(ts) {
+  const s = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+  if (s < 60) return `${s}秒前`;
+  if (s < 3600) return `${Math.floor(s / 60)}分前`;
+  if (s < 86400) return `${Math.floor(s / 3600)}時間前`;
+  return `${Math.floor(s / 86400)}日前`;
+}
+
+function _fmtDiff(entry) {
+  if (entry.failed) return entry.note || '取得失敗';
+  const keys = Object.keys(entry.diff || {});
+  if (keys.length === 0) return '変更なし';
+  return keys.map(k => {
+    const [label, unit] = SYNC_DIFF_LABELS[k];
+    const v = entry.diff[k];
+    return `${label} ${v > 0 ? '+' : ''}${v}${unit}`;
+  }).join(' / ');
+}
+
+const SYNC_MODE_LABEL = { initial: '起動時', manual: '手動', auto: '自動' };
+
 function _dataSig(d) {
   if (!d) return '';
   let imgs = 0, tagged = 0;
@@ -672,21 +797,32 @@ async function refreshCurrentShopData(opts = {}) {
     if (document.querySelector('.modal-backdrop[style*="flex"]')) return; // モーダル操作中はスキップ
   }
   // v1.11.28: 公開ファイル(raw)を直読み。GitHub Contents APIを使わないのでレート制限に当たらない。
+  const mode = manual ? 'manual' : 'auto';   // v1.11.37: 同期履歴の種別
   const fresh = await loadShopDataRaw(currentShopId);
 
   // 🚨 失敗/空/破損のときは絶対に置き換えない (既存の表示を維持) → 「更新の度に消える」を防止
   if (!fresh || fresh._wasEmpty || fresh._parseError || fresh._loadFailed) {
+    recordSync(mode, null, null, { failed: true, note: '取得失敗（通信エラー／データが空・破損）' });
     if (manual) toast('更新できませんでした（通信状況を確認してください）', 'error');
     return;
   }
   const prev = dataCache[currentShopId];
   // 安全策: 既存が非空なのに取得0件なら異常とみなして置き換えない
   if (prev && (prev.products || []).length > 0 && (fresh.products || []).length === 0) {
+    recordSync(mode, null, null, { failed: true, note: '取得0件のため中止（既存データを保護）' });
     if (manual) toast('更新できませんでした（データが取得できませんでした）', 'error');
     return;
   }
-  if (!manual && prev && _dataSig(fresh) === _dataSig(prev)) return; // 変化なし → 何もしない
 
+  const prevSnap = _syncSnapshot(prev);
+  const freshSnap = _syncSnapshot(fresh);
+
+  if (!manual && prev && _dataSig(fresh) === _dataSig(prev)) {
+    recordSync(mode, prevSnap, freshSnap);   // 変更なしも「取得できた」記録として残す
+    return;                                   // 変化なし → 画面は触らない
+  }
+
+  recordSync(mode, prevSnap, freshSnap);
   const sy = window.scrollY;
   dataCache[currentShopId] = fresh;
   render();                       // filterTagIds等はメモリ保持なので選択は維持される
@@ -1311,6 +1447,19 @@ function injectRefreshButton() {
   ref.parentNode.insertBefore(btn, ref);
 }
 
+// v1.11.37: 「🔄 更新」をヘッダーの最右端(⚙️設定のさらに右)へ移動し、⚙️にも「設定」ラベルを付ける
+function moveRefreshButtonToEnd() {
+  const actions = document.querySelector('.header-actions');
+  const st = document.getElementById('btnSettings');
+  if (st && !st.dataset.labeled) {
+    // クリックハンドラはボタン自身に付いているので、中身を差し替えても外れない
+    st.innerHTML = '<span class="icon">⚙️</span><span class="label">設定</span>';
+    st.dataset.labeled = '1';
+  }
+  const btn = document.getElementById('btnRefreshData');
+  if (actions && btn) actions.appendChild(btn);   // 最後の子 = 一番右
+}
+
 // v1.11.32: 「更新」でダウンロード/アップロードを選べるモーダル
 function ensureSyncModal() {
   if (document.getElementById('syncModal')) return;
@@ -1325,6 +1474,7 @@ function ensureSyncModal() {
         <button class="btn-close" data-sync-close aria-label="閉じる">×</button>
       </div>
       <div class="modal-body">
+        <div class="sync-status" id="syncStatusPanel"></div>
         <button type="button" class="sync-opt" id="syncDownloadBtn">
           <div class="sync-opt-title">⬇️ ダウンロード（最新を取得）</div>
           <div class="sync-opt-desc">サーバー(GitHub)の最新の内容を、この画面に反映します。他の人の追加・変更を見たいときはこちら。</div>
@@ -1333,6 +1483,7 @@ function ensureSyncModal() {
           <div class="sync-opt-title">⬆️ アップロード（今の内容を保存）</div>
           <div class="sync-opt-desc">この画面の内容をサーバー(GitHub)に保存します。※通常は自動保存されます。編集権限(PAT)が必要です。</div>
         </button>
+        <div class="sync-history" id="syncHistoryPanel"></div>
       </div>
     </div>`;
   document.body.appendChild(m);
@@ -1363,7 +1514,71 @@ function openSyncModal() {
   // 閲覧者(PATなし)にはアップロードは不可なので薄く表示
   const up = document.getElementById('syncUploadBtn');
   if (up) up.style.opacity = auth.pat ? '1' : '0.5';
+  renderSyncStatus();   // v1.11.37: 最終取得・自動更新の状態・取得履歴を描画
   document.getElementById('syncModal').style.display = 'flex';
+}
+
+// v1.11.37: 「🔄 更新」モーダル上部の状態パネルと、下部の取得履歴
+function renderSyncStatus() {
+  const panel = document.getElementById('syncStatusPanel');
+  const hist = document.getElementById('syncHistoryPanel');
+  if (!panel || !hist) return;
+
+  const mine = syncLog.filter(e => !e.shopId || e.shopId === currentShopId);
+  const lastOk = mine.find(e => !e.failed);
+  const lastAny = mine[0] || null;
+  const data = dataCache[currentShopId];
+  const snap = _syncSnapshot(data);
+
+  // 最終取得
+  let lastHtml;
+  if (!lastAny) {
+    lastHtml = '<span class="sync-muted">まだ取得していません</span>';
+  } else {
+    const warn = lastAny.failed
+      ? `<div class="sync-warn">⚠️ 最後の試行は失敗: ${escapeHtml(lastAny.note || '')}（表示は前回取得分のままです）</div>`
+      : '';
+    const base = lastOk
+      ? `${_fmtClock(lastOk.at)} <span class="sync-muted">(${_fmtAgo(lastOk.at)})</span> <span class="sync-pill sync-pill-${lastOk.mode}">${SYNC_MODE_LABEL[lastOk.mode] || lastOk.mode}</span>`
+      : '<span class="sync-muted">成功した取得がありません</span>';
+    lastHtml = base + warn;
+  }
+
+  // 自動更新の状態 (PATありの編集者はポーリングしない仕様)
+  const autoHtml = auth.pat
+    ? '<span class="sync-muted">停止中</span> — 編集権限(PAT)ありのため自動取得しません。最新を見るには下の「ダウンロード」を押してください。'
+    : '<strong>15秒ごとに自動取得中</strong> <span class="sync-muted">（閲覧モード。タブが裏にある間は停止します）</span>';
+
+  // 直近の変更内容
+  const lastChanged = mine.find(e => !e.failed && e.changed);
+  const changeHtml = lastChanged
+    ? `<strong>${escapeHtml(_fmtDiff(lastChanged))}</strong> <span class="sync-muted">(${_fmtClock(lastChanged.at)} / ${SYNC_MODE_LABEL[lastChanged.mode] || lastChanged.mode})</span>`
+    : '<span class="sync-muted">記録のある範囲では変更は入っていません</span>';
+
+  const totalHtml = snap
+    ? `商品 ${snap.products}件 / 画像 ${snap.images}枚 / タグ ${snap.tags}個 / Yahooサムネ ${snap.ytRows}行`
+    : '<span class="sync-muted">データ未読み込み</span>';
+
+  panel.innerHTML = `
+    <div class="sync-status-row"><span class="sync-status-k">最終取得</span><span class="sync-status-v">${lastHtml}</span></div>
+    <div class="sync-status-row"><span class="sync-status-k">自動更新</span><span class="sync-status-v">${autoHtml}</span></div>
+    <div class="sync-status-row"><span class="sync-status-k">直近の変更</span><span class="sync-status-v">${changeHtml}</span></div>
+    <div class="sync-status-row"><span class="sync-status-k">現在の内容</span><span class="sync-status-v">${totalHtml}</span></div>`;
+
+  // 取得履歴
+  if (mine.length === 0) {
+    hist.innerHTML = '';
+    return;
+  }
+  const rows = mine.slice(0, 10).map(e => {
+    const cls = e.failed ? 'fail' : (e.changed ? 'changed' : 'same');
+    return `<div class="sync-hist-row ${cls}">
+      <span class="sync-hist-time">${_fmtClock(e.at).slice(5)}</span>
+      <span class="sync-pill sync-pill-${e.mode}">${SYNC_MODE_LABEL[e.mode] || e.mode}</span>
+      <span class="sync-hist-diff">${escapeHtml(_fmtDiff(e))}</span>
+    </div>`;
+  }).join('');
+  hist.innerHTML = `<div class="sync-hist-title">取得履歴（新しい順・最大10件）</div>${rows}`;
 }
 
 // v1.11.15: 項目管理(列幅ドラッグ)モードの切替
@@ -3733,6 +3948,10 @@ async function loadCurrentShopData() {
   try {
     dataCache[currentShopId] = await loadShopData(currentShopId);
     const cache = dataCache[currentShopId];
+    // v1.11.37: 起動時の取得も同期履歴に残す
+    if (!cache._wasEmpty && !cache._parseError && !cache._loadFailed) {
+      recordSync('initial', null, _syncSnapshot(cache));
+    }
 
     // 空/破損検出時の警告 (上書き保存はしない)
     if (cache._wasEmpty || cache._parseError) {
@@ -3756,6 +3975,7 @@ async function loadCurrentShopData() {
     }
   } catch (e) {
     toast('読み込み失敗: ' + e.message, 'error');
+    recordSync('initial', null, null, { failed: true, note: '読み込み失敗: ' + e.message });
     // 🚨 (v1.11.2) 読み込み失敗時は「破損」フラグを立てて、以降の保存を絶対に走らせない
     dataCache[currentShopId] = {
       products: [], materials: [], boosts: [], tags: [], sha: null,
