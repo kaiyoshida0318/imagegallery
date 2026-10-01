@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.37';
+const APP_VERSION = 'v1.11.38';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -102,11 +102,16 @@ let newTagSelectedColor = 'amber';
 // =====================================================
 // v1.11.37: index.html 側がキャッシュ対策で app.js を動的に読み込む場合、
 //   読み込み完了時には既に DOMContentLoaded が終わっていることがある。
-//   その場合はイベントを待たずに即 init() する (待つと永久に起動しない)。
+//   その場合はイベントを待たずに起動する (待つと永久に起動しない)。
+// v1.11.38: ただし「その場で init() を呼ぶ」のは厳禁。
+//   init() は最初の await までを同期実行するため、スクリプト評価の途中で走ってしまい、
+//   ファイル後半で const/let 宣言している定数がまだ初期化されておらず
+//   「Cannot access '…' before initialization」で静かに壊れる。
+//   setTimeout(…, 0) にして、スクリプト全体の評価が終わってから起動させる。
 if (document.readyState === 'loading') {
   window.addEventListener('DOMContentLoaded', init);
 } else {
-  init();
+  setTimeout(init, 0);
 }
 
 async function init() {
@@ -115,6 +120,7 @@ async function init() {
   loadAuth();
   loadSyncLog();            // v1.11.37: 取得履歴を復元
   loadCurrentSelections();
+  applyShopFromUrl();       // v1.11.38: URLの ?shop= を localStorage より優先
   // エクスポートモード状態をsessionStorageから復元
   try {
     exportMode = sessionStorage.getItem(SS_EXPORT_MODE) === '1';
@@ -152,6 +158,16 @@ async function init() {
   await loadCurrentShopData();
   render();
   startAutoRefresh();        // v1.11.27: 閲覧者向けに一定間隔で自動更新
+
+  // v1.11.38: 戻る/進むでショップを切り替えられるようにする
+  window.addEventListener('popstate', () => {
+    const s = findShopBySlug(readShopFromUrl());
+    if (s && s.id !== currentShopId) switchShop(s.id, { fromUrl: true });
+  });
+  // URLに知らないショップが指定されていた場合は黙って無視せず知らせる
+  if (_unknownShopSlug) {
+    toast(`URLのショップ「${_unknownShopSlug}」は、このブラウザに登録されていません。⚙️設定から追加するか、🔗共有コードを読み込んでください`, 'error');
+  }
 }
 
 // v1.11.8: 画像単位タグ用の最小CSSを一度だけ注入 (style.css を変更せず app.js だけで完結させる)
@@ -276,6 +292,29 @@ function injectImageTagStyles() {
     .sync-pill-auto    { background: #dbeafe; color: #1e40af; }
     .sync-pill-manual  { background: #e9d5ff; color: #6b21a8; }
     .sync-pill-initial { background: #e2e8f0; color: #475569; }
+    /* ===== v1.11.38: ショップ切替ドロップダウン ===== */
+    .shop-select {
+      padding: 7px 28px 7px 12px; border-radius: var(--radius-sm, 8px);
+      border: 1px solid var(--border, #e2e8f0); background: #fff; color: var(--text, #1e293b);
+      font-size: 13px; font-weight: 700; font-family: inherit; cursor: pointer;
+      max-width: 220px; appearance: none;
+      background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath fill='%2364748b' d='M0 0h10L5 6z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .shop-select:hover { border-color: #a78bfa; }
+    .shop-select:focus { outline: none; border-color: #7c3aed; }
+    .shop-slug {
+      font-size: 11px; color: #94a3b8; font-family: ui-monospace, monospace;
+      white-space: nowrap; align-self: center; margin-left: 2px;
+    }
+    /* 設定 → ショップ管理 に、ショップごとの専用URLを出す */
+    .shop-row-url { font-size: 11px; color: #64748b; margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .shop-row-url code { font-family: ui-monospace, monospace; background: #f1f5f9; padding: 1px 6px; border-radius: 5px; color: #475569; }
+    .shop-url-copy {
+      font-size: 10.5px; padding: 2px 8px; border-radius: 5px; cursor: pointer;
+      border: 1px solid #cbd5e1; background: #fff; color: #475569; font-family: inherit;
+    }
+    .shop-url-copy:hover { border-color: #a78bfa; color: #6d28d9; }
     /* ===== v1.11.35: Yahoo用サムネ (3列ボード) ===== */
     .yt-board { padding: 12px 16px 40px; }
     .yt-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -3909,24 +3948,97 @@ function getCurrentShop() {
 
 function renderShopTabs() {
   const wrap = document.getElementById('shopTabs');
+  if (!wrap) return;
   wrap.innerHTML = '';
-  shops.forEach(s => {
-    const btn = document.createElement('button');
-    btn.className = 'shop-tab' + (s.id === currentShopId ? ' active' : '');
-    btn.textContent = s.name;
-    btn.addEventListener('click', () => switchShop(s.id));
-    wrap.appendChild(btn);
-  });
+
+  // v1.11.38: タブ → ドロップダウン。切り替えると URL (?shop=…) も変わるので、
+  //   ショップごとにブックマーク(スピードダイアル)へ登録できる。
+  if (shops.length > 0) {
+    const sel = document.createElement('select');
+    sel.className = 'shop-select';
+    sel.id = 'shopSelect';
+    shops.forEach(s => {
+      const o = document.createElement('option');
+      o.value = s.id;
+      o.textContent = s.name || '(名称未設定)';
+      if (s.id === currentShopId) o.selected = true;
+      sel.appendChild(o);
+    });
+    sel.addEventListener('change', () => switchShop(sel.value));
+    wrap.appendChild(sel);
+
+    const cur = shops.find(s => s.id === currentShopId);
+    if (cur) sel.title = `このショップのURL: ?shop=${shopSlug(cur)}`;
+  }
+
   const addBtn = document.createElement('button');
   addBtn.className = 'shop-tab-add';
-  addBtn.textContent = '+ ショップ';
+  addBtn.textContent = '＋ ショップ';
   addBtn.addEventListener('click', () => openShopForm());
   wrap.appendChild(addBtn);
+
+  // 名前やショップコードを変えた直後もURLを合わせておく
+  updateShopUrl(currentShopId, false);
 }
 
-async function switchShop(shopId) {
+// ===== v1.11.38: ショップとURL (?shop=…) の対応 =====
+const URL_SHOP_PARAM = 'shop';
+let _unknownShopSlug = null;   // URLで指定されたが未登録だったスラッグ
+
+function _slugify(v) {
+  return String(v || '').trim().toLowerCase().replace(/[^a-z0-9_-]+/g, '-').replace(/^-+|-+$/g, '');
+}
+
+// URLに出す短い名前。ショップコード → 店名 → 内部ID の順で採用する。
+//   同じスラッグになるショップが複数あるときは、登録順に -2, -3 … を付けて必ず一意にする。
+function shopSlug(shop) {
+  if (!shop) return '';
+  const baseOf = (s) => _slugify(s.shopCode) || _slugify(s.name) || s.id;
+  const base = baseOf(shop);
+  const same = shops.filter(s => baseOf(s) === base);
+  if (same.length <= 1) return base;
+  const i = same.findIndex(s => s.id === shop.id);
+  return i <= 0 ? base : `${base}-${i + 1}`;
+}
+
+function findShopBySlug(slug) {
+  if (!slug) return null;
+  const q = String(slug).trim().toLowerCase();
+  return shops.find(s => shopSlug(s).toLowerCase() === q)
+      || shops.find(s => s.id === String(slug).trim())   // 内部IDを直接書いたURLも受け付ける
+      || null;
+}
+
+function readShopFromUrl() {
+  try { return new URLSearchParams(location.search).get(URL_SHOP_PARAM); }
+  catch (e) { return null; }
+}
+
+function updateShopUrl(shopId, push) {
+  const s = shops.find(x => x.id === shopId);
+  if (!s) return;
+  try {
+    const u = new URL(location.href);
+    u.searchParams.set(URL_SHOP_PARAM, shopSlug(s));
+    if (u.toString() === location.href) return;         // 変化なしなら履歴を汚さない
+    history[push ? 'pushState' : 'replaceState']({ shopId }, '', u.toString());
+  } catch (e) { console.warn('URL更新に失敗', e); }
+}
+
+// 起動時: URLの ?shop= を localStorage より優先する
+function applyShopFromUrl() {
+  const slug = readShopFromUrl();
+  if (!slug) return;
+  const s = findShopBySlug(slug);
+  if (!s) { _unknownShopSlug = slug; return; }
+  currentShopId = s.id;
+  localStorage.setItem(LS_CURRENT_SHOP, s.id);
+}
+
+async function switchShop(shopId, opts = {}) {
   currentShopId = shopId;
   localStorage.setItem(LS_CURRENT_SHOP, shopId);
+  if (!opts.fromUrl) updateShopUrl(shopId, true);   // 戻るボタンで前のショップに戻れるように積む
   renderShopTabs();
   await loadCurrentShopData();
   render();
@@ -6056,6 +6168,7 @@ function renderShopsList() {
       <div class="shop-row-info">
         <div class="shop-row-name">${escapeHtml(s.name)}</div>
         <div class="shop-row-meta">${escapeHtml(s.mall)} / ${escapeHtml(s.shopCode || '—')}</div>
+        <div class="shop-row-url" title="このショップ専用のURL。ブラウザで開いてスピードダイアルに登録できます">🔗 <code>?shop=${escapeHtml(shopSlug(s))}</code><button type="button" class="shop-url-copy" data-copyurl="${s.id}">URLをコピー</button></div>
       </div>
       <div class="shop-row-actions">
         <button class="btn-icon-mini" data-edit="${s.id}">編集</button>
@@ -6065,6 +6178,25 @@ function renderShopsList() {
   `).join('');
   wrap.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', () => openShopForm(b.dataset.edit)));
   wrap.querySelectorAll('[data-del]').forEach(b => b.addEventListener('click', () => deleteShop(b.dataset.del)));
+  // v1.11.38: ショップ専用URLをクリップボードへ
+  wrap.querySelectorAll('[data-copyurl]').forEach(b => b.addEventListener('click', () => {
+    const s = shops.find(x => x.id === b.dataset.copyurl);
+    if (!s) return;
+    let url;
+    try {
+      const u = new URL(location.href);
+      u.search = '';
+      u.hash = '';
+      u.searchParams.set(URL_SHOP_PARAM, shopSlug(s));
+      url = u.toString();
+    } catch (e) { url = `?shop=${shopSlug(s)}`; }
+    const done = () => toast('URLをコピーしました: ' + url, 'success');
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(done).catch(() => prompt('コピーしてください', url));
+    } else {
+      prompt('コピーしてください', url);
+    }
+  }));
 }
 
 function saveSettings() {
