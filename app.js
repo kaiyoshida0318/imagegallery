@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.40';
+const APP_VERSION = 'v1.11.41';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -1603,12 +1603,16 @@ function injectRefreshButton() {
   btn.id = 'btnRefreshData';
   btn.className = 'btn-icon';
   btn.title = 'ダウンロード/アップロードを選ぶ';
-  btn.innerHTML = '<span class="icon">🔄</span><span class="label">更新</span>';
+  btn.innerHTML = '<span class="icon">🔄</span><span class="label">GitHub同期</span>';
   btn.addEventListener('click', openSyncModal);
   ref.parentNode.insertBefore(btn, ref);
 }
 
-// v1.11.37: 「🔄 更新」をヘッダーの最右端(⚙️設定のさらに右)へ移動し、⚙️にも「設定」ラベルを付ける
+// v1.11.37: ヘッダー右端の並び替えとラベル付け
+// v1.11.41: 右端を「🔄 GitHub同期 → ＋部品追加 → ＋商品追加」の順に固定し、
+//           「更新」→「GitHub同期」「+ 追加」→「＋ 商品追加」に改称する。
+//   ⚠️ appendChild はノードの移動なので、bindEvents で付けたクリックハンドラは維持される。
+//   ⚠️ moveAddButton() が「更新の直前」に +追加 を差し込むので、必ずその後に呼ぶこと。
 function moveRefreshButtonToEnd() {
   const actions = document.querySelector('.header-actions');
   const st = document.getElementById('btnSettings');
@@ -1617,8 +1621,22 @@ function moveRefreshButtonToEnd() {
     st.innerHTML = '<span class="icon">⚙️</span><span class="label">設定</span>';
     st.dataset.labeled = '1';
   }
-  const btn = document.getElementById('btnRefreshData');
-  if (actions && btn) actions.appendChild(btn);   // 最後の子 = 一番右
+
+  const refresh = document.getElementById('btnRefreshData');
+  if (refresh) {
+    refresh.title = 'GitHubとの同期（ダウンロード/アップロード）と診断ログ';
+    const lb = refresh.querySelector('.label');
+    if (lb) lb.textContent = 'GitHub同期';
+  }
+  const addEntry = document.getElementById('btnAddEntry');
+  if (addEntry) {
+    addEntry.textContent = '＋ 商品追加';
+    addEntry.title = '商品同期・画像の一括追加';
+  }
+  const addPart = document.getElementById('btnAddPart');
+
+  // 左から 更新 → 部品追加 → 商品追加 の順に並べ直す (最後の子 = 一番右)
+  [refresh, addPart, addEntry].forEach(b => { if (actions && b) actions.appendChild(b); });
 
   // v1.11.39: Application ID欄のサンプル表示が実在のUUIDだったため、本物と区別できず
   //   切り分けの妨げになっていた。明らかにダミーと分かる表記に差し替える。
