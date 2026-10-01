@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.39';
+const APP_VERSION = 'v1.11.40';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -72,6 +72,13 @@ const LS_SYNC_LOG = 'imagegallery_sync_log_v1';
 const SYNC_LOG_MAX = 20;
 let syncLog = [];   // [{at, shopId, mode, failed, changed, diff, total, note}]
 
+// v1.11.40: 診断ログ。エラー・警告・失敗した通信を溜めて、更新モーダルから丸ごとコピーできるようにする。
+const LS_DIAG_LOG = 'imagegallery_diag_log_v1';
+const DIAG_LOG_MAX = 120;
+const DIAG_MSG_MAX = 500;        // 1行が長すぎるとlocalStorageを圧迫するので切る
+let diagLog = [];                // [{at, level, msg}]
+let _diagHooksInstalled = false;
+
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 let productDeleteSelection = new Set();  // v1.11.29: 削除予約された商品ID (p.id)
 let pendingStatusChanges = new Map();  // 保存待ちのステータス変更: productId -> 'active'|'unsure'
@@ -119,6 +126,8 @@ async function init() {
   registerServiceWorker();
   loadAuth();
   loadSyncLog();            // v1.11.37: 取得履歴を復元
+  loadDiagLog();            // v1.11.40: 診断ログを復元
+  installDiagHooks();       // v1.11.40: エラー/警告/通信失敗を拾い始める
   loadCurrentSelections();
   applyShopFromUrl();       // v1.11.38: URLの ?shop= を localStorage より優先
   // エクスポートモード状態をsessionStorageから復元
@@ -315,6 +324,38 @@ function injectImageTagStyles() {
       border: 1px solid #cbd5e1; background: #fff; color: #475569; font-family: inherit;
     }
     .shop-url-copy:hover { border-color: #a78bfa; color: #6d28d9; }
+    /* ===== v1.11.40: 更新モーダル内の診断ログ ===== */
+    .diag-box { margin-top: 16px; border: 1px solid var(--border, #e2e8f0); border-radius: 10px; overflow: hidden; }
+    .diag-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap;
+      padding: 8px 10px; background: #f8fafc; border-bottom: 1px solid var(--border, #e2e8f0);
+    }
+    .diag-title { font-size: 12.5px; font-weight: 700; color: #475569; }
+    .diag-count { font-size: 11px; color: #94a3b8; font-weight: 400; }
+    .diag-actions { display: flex; gap: 6px; }
+    .diag-btn {
+      font-size: 11.5px; padding: 5px 10px; border-radius: 6px; cursor: pointer;
+      border: 1px solid #cbd5e1; background: #fff; color: #475569; font-family: inherit; white-space: nowrap;
+    }
+    .diag-btn:hover { border-color: #94a3b8; }
+    .diag-btn.primary { background: #7c3aed; border-color: #7c3aed; color: #fff; font-weight: 700; }
+    .diag-btn.primary:hover { background: #6d28d9; }
+    .diag-list { max-height: 190px; overflow-y: auto; background: #fff; }
+    .diag-row {
+      display: flex; gap: 8px; align-items: flex-start; font-size: 11.5px;
+      padding: 5px 10px; border-bottom: 1px solid #f1f5f9; border-left: 3px solid transparent;
+    }
+    .diag-row.err  { border-left-color: #ef4444; background: #fef2f2; }
+    .diag-row.warn { border-left-color: #f59e0b; background: #fffbeb; }
+    .diag-time { flex: 0 0 96px; color: #64748b; font-variant-numeric: tabular-nums; }
+    .diag-msg { flex: 1 1 auto; min-width: 0; color: #334155; word-break: break-word; white-space: pre-wrap; font-family: ui-monospace, monospace; }
+    .diag-empty { padding: 16px 10px; text-align: center; color: #94a3b8; font-size: 12px; }
+    .diag-note { padding: 7px 10px; font-size: 10.5px; color: #64748b; background: #f8fafc; border-top: 1px solid var(--border, #e2e8f0); }
+    .diag-fallback {
+      display: none; width: 100%; box-sizing: border-box; height: 140px; margin-top: 8px;
+      font-family: ui-monospace, monospace; font-size: 11px; padding: 8px;
+      border: 1px solid #cbd5e1; border-radius: 8px; resize: vertical;
+    }
     /* ===== v1.11.35: Yahoo用サムネ (3列ボード) ===== */
     .yt-board { padding: 12px 16px 40px; }
     .yt-toolbar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 10px; }
@@ -759,6 +800,93 @@ function loadSyncLog() {
     const raw = JSON.parse(localStorage.getItem(LS_SYNC_LOG) || '[]');
     if (Array.isArray(raw)) syncLog = raw;
   } catch (e) { syncLog = []; }
+}
+
+// ===== v1.11.40: 診断ログ =====
+// 認証情報は絶対に残さない。PAT / accessKey / Authorizationトークンは伏せ字にする。
+function maskSecrets(text) {
+  let s = String(text == null ? '' : text);
+  try {
+    s = s
+      .replace(/(accessKey=)[^&\s"']+/gi, '$1***')
+      .replace(/(applicationId=)([^&\s"']{0,8})[^&\s"']*/gi, '$1$2***')
+      .replace(/\bpk_[A-Za-z0-9_-]+/g, 'pk_***')
+      .replace(/\bgh[pousr]_[A-Za-z0-9_-]+/g, 'ghp_***')
+      .replace(/\bgithub_pat_[A-Za-z0-9_-]+/g, 'github_pat_***')
+      .replace(/(token\s+)[A-Za-z0-9_-]+/gi, '$1***')
+      .replace(/("?(?:pat|accessKey|token)"?\s*[:=]\s*")[^"]+(")/gi, '$1***$2');
+    // 念のため、設定中の実値そのものが混じっていたら消す
+    if (auth && auth.pat && auth.pat.length > 6) s = s.split(auth.pat).join('***');
+    (shops || []).forEach(sh => {
+      if (sh && sh.accessKey && sh.accessKey.length > 6) s = s.split(sh.accessKey).join('***');
+    });
+  } catch (e) { /* マスク中の例外でログ自体を落とさない */ }
+  return s;
+}
+
+function logEvent(level, msg) {
+  const text = maskSecrets(msg).slice(0, DIAG_MSG_MAX);
+  diagLog.push({ at: Date.now(), level, msg: text });
+  if (diagLog.length > DIAG_LOG_MAX) diagLog.splice(0, diagLog.length - DIAG_LOG_MAX);
+  try { localStorage.setItem(LS_DIAG_LOG, JSON.stringify(diagLog)); } catch (e) { /* 容量超過は無視 */ }
+  const badge = document.getElementById('diagCount');
+  if (badge) renderDiagLog();
+}
+
+function loadDiagLog() {
+  try {
+    const raw = JSON.parse(localStorage.getItem(LS_DIAG_LOG) || '[]');
+    if (Array.isArray(raw)) diagLog = raw;
+  } catch (e) { diagLog = []; }
+}
+
+function clearDiagLog() {
+  diagLog = [];
+  try { localStorage.removeItem(LS_DIAG_LOG); } catch (e) {}
+  renderDiagLog();
+  toast('ログを消去しました', 'success');
+}
+
+const _argToText = (a) => {
+  if (a instanceof Error) return `${a.message}\n${a.stack || ''}`;
+  if (typeof a === 'string') return a;
+  try { return JSON.stringify(a); } catch (e) { return String(a); }
+};
+
+// console / 未捕捉エラー / 失敗した通信 を拾う
+function installDiagHooks() {
+  if (_diagHooksInstalled) return;
+  _diagHooksInstalled = true;
+
+  ['error', 'warn'].forEach(level => {
+    const orig = console[level].bind(console);
+    console[level] = (...args) => {
+      try { logEvent(level, args.map(_argToText).join(' ')); } catch (e) {}
+      orig(...args);
+    };
+  });
+
+  window.addEventListener('error', (e) => {
+    logEvent('error', `未捕捉エラー: ${e.message} @ ${e.filename}:${e.lineno}`);
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    logEvent('error', `未処理のPromise拒否: ${_argToText(e.reason)}`);
+  });
+
+  // 失敗した通信だけ記録する (成功は量が多いので残さない)
+  const _origFetch = window.fetch.bind(window);
+  window.fetch = async function (...args) {
+    const target = args[0];
+    const url = (typeof target === 'string') ? target : (target && target.url) || '';
+    try {
+      const res = await _origFetch(...args);
+      if (!res.ok) logEvent('warn', `HTTP ${res.status} ${url}`);
+      return res;
+    } catch (err) {
+      logEvent('error', `通信失敗 ${url}: ${err && err.message}`);
+      throw err;
+    }
+  };
 }
 
 // mode: 'initial'(起動時) | 'manual'(更新ボタン) | 'auto'(自動更新)
@@ -1554,6 +1682,17 @@ function ensureSyncModal() {
           <div class="sync-opt-title">⬆️ アップロード（今の内容を保存）</div>
           <div class="sync-opt-desc">この画面の内容をサーバー(GitHub)に保存します。※通常は自動保存されます。編集権限(PAT)が必要です。</div>
         </button>
+        <div class="diag-box">
+          <div class="diag-head">
+            <span class="diag-title">🩺 診断ログ <span id="diagCount" class="diag-count"></span></span>
+            <span class="diag-actions">
+              <button type="button" class="diag-btn primary" id="diagCopyBtn">📋 コピー（AIに貼る用）</button>
+              <button type="button" class="diag-btn" id="diagClearBtn">消去</button>
+            </span>
+          </div>
+          <div class="diag-list" id="diagList"></div>
+          <div class="diag-note">エラー・警告・失敗した通信を記録します。コピーするとバージョンや件数などの状況も一緒に入ります。<strong>PATとアクセスキーは自動で伏せ字</strong>になります。</div>
+        </div>
       </div>
     </div>`;
   document.body.appendChild(m);
@@ -1585,7 +1724,105 @@ function openSyncModal() {
   const up = document.getElementById('syncUploadBtn');
   if (up) up.style.opacity = auth.pat ? '1' : '0.5';
   renderSyncLastFetch();   // v1.11.37: ダウンロードボタン内の「最終取得」行を更新
-  document.getElementById('syncModal').style.display = 'flex';
+  renderDiagLog();         // v1.11.40: 診断ログ
+  const m = document.getElementById('syncModal');
+  if (!m.dataset.diagBound) {
+    m.dataset.diagBound = '1';
+    m.querySelector('#diagCopyBtn').addEventListener('click', copyDiagnostics);
+    m.querySelector('#diagClearBtn').addEventListener('click', clearDiagLog);
+  }
+  m.style.display = 'flex';
+}
+
+// v1.11.40: 診断ログの一覧を描画
+function renderDiagLog() {
+  const list = document.getElementById('diagList');
+  const cnt = document.getElementById('diagCount');
+  if (!list) return;
+  if (cnt) cnt.textContent = diagLog.length ? `(${diagLog.length})` : '(0)';
+  if (diagLog.length === 0) {
+    list.innerHTML = '<div class="diag-empty">記録はありません（エラーが起きていない状態です）</div>';
+    return;
+  }
+  list.innerHTML = diagLog.slice(-40).reverse().map(e => `
+    <div class="diag-row ${e.level === 'error' ? 'err' : 'warn'}">
+      <span class="diag-time">${_fmtClock(e.at).slice(5)}</span>
+      <span class="diag-msg">${escapeHtml(e.msg)}</span>
+    </div>`).join('');
+}
+
+// v1.11.40: 状況＋ログをまとめたテキストを作る (そのままAIに貼れる形)
+function buildDiagnosticReport() {
+  const shop = getCurrentShop();
+  const data = dataCache[currentShopId];
+  const snap = _syncSnapshot(data);
+  const L = [];
+  L.push('# ImageGallery 診断ログ');
+  L.push('');
+  L.push(`- 日時: ${_fmtClock(Date.now())}`);
+  L.push(`- バージョン: ${APP_VERSION}`);
+  L.push(`- URL: ${location.href}`);
+  L.push(`- 楽天APIバージョン: ${typeof RAKUTEN_API_VERSION !== 'undefined' ? RAKUTEN_API_VERSION : '不明'}`);
+  L.push(`- ブラウザ: ${navigator.userAgent}`);
+  L.push('');
+  L.push('## ショップ');
+  if (shop) {
+    L.push(`- 名前: ${shop.name || '(未設定)'}`);
+    L.push(`- ショップコード: ${shop.shopCode || '(未設定)'}`);
+    L.push(`- URL名: ?shop=${shopSlug(shop)}`);
+    L.push(`- shopId: ${shop.id}`);
+    L.push(`- Application ID: ${shop.appId ? shop.appId.slice(0, 8) + '…（設定あり）' : '未設定'}`);
+    L.push(`- Access Key: ${shop.accessKey ? '設定あり（伏せ字）' : '未設定'}`);
+  } else {
+    L.push('- 選択中のショップがありません');
+  }
+  L.push(`- GitHub: ${auth.owner || '?'}/${auth.repo || '?'} (${auth.branch || 'main'})`);
+  L.push(`- PAT(編集権限): ${auth.pat ? 'あり' : 'なし（閲覧のみ）'}`);
+  L.push(`- 登録ショップ数: ${(shops || []).length}`);
+  L.push('');
+  L.push('## データ');
+  L.push(snap
+    ? `- 商品 ${snap.products}件 / 画像 ${snap.images}枚 / タグ ${snap.tags}個 / Yahooサムネ ${snap.ytRows}行`
+    : '- 未読み込み');
+  if (data && (data._wasEmpty || data._parseError || data._loadFailed)) {
+    L.push(`- ⚠️ 異常フラグ: wasEmpty=${!!data._wasEmpty} parseError=${!!data._parseError} loadFailed=${!!data._loadFailed}`);
+  }
+  L.push('');
+  L.push('## 取得履歴（新しい順）');
+  const mine = syncLog.filter(e => !e.shopId || e.shopId === currentShopId).slice(0, 10);
+  if (mine.length === 0) L.push('- なし');
+  mine.forEach(e => L.push(`- ${_fmtClock(e.at).slice(5)} [${SYNC_MODE_LABEL[e.mode] || e.mode}] ${_fmtDiff(e)}`));
+  L.push('');
+  L.push('## ログ（新しい順・最大40件）');
+  if (diagLog.length === 0) L.push('- なし');
+  diagLog.slice(-40).reverse().forEach(e =>
+    L.push(`- ${_fmtClock(e.at).slice(5)} [${e.level}] ${e.msg}`));
+  return maskSecrets(L.join('\n'));
+}
+
+async function copyDiagnostics() {
+  const text = buildDiagnosticReport();
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(text);
+      toast('診断ログをコピーしました。そのままAIに貼り付けてください', 'success');
+      return;
+    }
+    throw new Error('clipboard unavailable');
+  } catch (e) {
+    // クリップボードが使えない環境では、選択済みのテキストエリアを出して手動コピーしてもらう
+    let ta = document.getElementById('diagFallback');
+    if (!ta) {
+      ta = document.createElement('textarea');
+      ta.id = 'diagFallback';
+      ta.className = 'diag-fallback';
+      document.getElementById('diagList').parentNode.appendChild(ta);
+    }
+    ta.value = text;
+    ta.style.display = 'block';
+    ta.select();
+    toast('自動コピーできませんでした。下の枠の内容を Ctrl+C でコピーしてください', 'error');
+  }
 }
 
 // v1.11.37: 「⬇️ ダウンロード」ボタンの中に「最終取得はいつ・手動か自動か・何が増減したか」を1行で出す
