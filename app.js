@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.43';
+const APP_VERSION = 'v1.11.44';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -6849,6 +6849,12 @@ function toast(msg, type) {
 }
 
 function showLoading(text) {
+  // v1.11.44: 一括編集中で、実際には保存しない（＝積むだけの）操作では
+  //   「保存中…」の全画面オーバーレイを出さない。
+  //   以前はタグを変えるたびにこれが一瞬出て、保存していないのに
+  //   「毎回保存が走っている」ように見えていた。
+  //   画像ファイルを触った直後 (_batch.fileOp) は本当に保存するので、そのときは従来どおり出す。
+  if (_batch.on && !_batch.fileOp && /保存中/.test(String(text || ''))) return;
   document.getElementById('loadingText').textContent = text || '処理中...';
   document.getElementById('loadingOverlay').style.display = 'flex';
 }
