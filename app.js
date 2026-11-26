@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.44';
+const APP_VERSION = 'v1.11.45';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -85,6 +85,19 @@ let _diagHooksInstalled = false;
 //   画像ファイルのアップロード/削除はその場で GitHub に反映されるので、
 //   そのときだけは積んだ分ごと即保存する（データとファイルのずれ防止）。
 let _batch = { on: false, shopId: null, pending: [], fileOp: false };
+// v1.11.45: 一括編集を「既定の動作」にする。'0' を入れたときだけ従来どおり毎回保存。
+const LS_BATCH_PREF = 'imagegallery_batch_default_v1';
+const batchPrefOn = () => { try { return localStorage.getItem(LS_BATCH_PREF) !== '0'; } catch (e) { return true; } };
+const setBatchPref = (on) => { try { localStorage.setItem(LS_BATCH_PREF, on ? '1' : '0'); } catch (e) {} };
+
+// 条件が揃っていれば一括編集を開始する (起動時・ショップ切替時に黙って呼ぶ)
+function autoEnterBatch() {
+  if (_batch.on || !batchPrefOn() || !auth.pat || !currentShopId) return;
+  const d = dataCache[currentShopId];
+  if (!d || d._wasEmpty || d._parseError || d._loadFailed) return;
+  _batch = { on: true, shopId: currentShopId, pending: [], fileOp: false };
+  updateBatchBar();
+}
 
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 let productDeleteSelection = new Set();  // v1.11.29: 削除予約された商品ID (p.id)
@@ -173,6 +186,7 @@ async function init() {
     b.classList.toggle('active', b.dataset.mode === viewMode));
   renderShopTabs();
   await loadCurrentShopData();
+  autoEnterBatch();          // v1.11.45: まとめ保存を既定で開始する
   render();
   startAutoRefresh();        // v1.11.27: 閲覧者向けに一定間隔で自動更新
 
@@ -344,10 +358,10 @@ function injectImageTagStyles() {
       padding: 10px 20px; background: #fffbeb; border-top: 2px solid #f59e0b; box-shadow: 0 -4px 16px rgba(0,0,0,.08);
       font-size: 13px; color: #78350f;
     }
-    body.batch-on .batch-bar { display: flex; }
-    body.batch-on #content { padding-bottom: 72px; }
-    body.batch-on .delete-action-bar { bottom: 76px !important; }
-    body.batch-on .toast { bottom: 80px; }
+    body.batch-pending .batch-bar { display: flex; }
+    body.batch-pending #content { padding-bottom: 72px; }
+    body.batch-pending .delete-action-bar { bottom: 76px !important; }
+    body.batch-pending .toast { bottom: 80px; }
     .batch-bar .batch-msg { flex: 1; }
     .batch-bar .batch-msg strong { font-size: 16px; color: #b45309; }
     .batch-bar button { font-family: inherit; font-size: 13px; border-radius: 8px; padding: 8px 14px; cursor: pointer; white-space: nowrap; }
@@ -1668,10 +1682,15 @@ function injectBatchEditUI() {
 
 function updateBatchBar() {
   document.body.classList.toggle('batch-on', _batch.on);
+  // v1.11.45: 既定ONにしたので、帯は未保存があるときだけ出す (0件のとき出しっぱなしだと邪魔)
+  document.body.classList.toggle('batch-pending', _batch.on && _batch.pending.length > 0);
   const btn = document.getElementById('btnBatchEdit');
   if (btn) {
     btn.classList.toggle('active', _batch.on);
-    btn.textContent = _batch.on ? '✏️ 一括編集中' : '✏️ 一括編集';
+    btn.textContent = _batch.on ? '✏️ まとめ保存 ON' : '✏️ まとめ保存 OFF';
+    btn.title = _batch.on
+      ? '変更を溜めて、下の帯の「まとめてアップ」で一度に保存します（押すと従来の毎回保存に戻ります）'
+      : '変更するたびに毎回保存します（押すと「まとめ保存」に切り替わります）';
   }
   const cnt = document.getElementById('batchCount');
   if (cnt) cnt.textContent = _batch.pending.length;
@@ -1685,16 +1704,17 @@ function updateBatchBar() {
 
 async function toggleBatchMode() {
   if (!_batch.on) {
-    if (!auth.pat) { toast('一括編集には編集権限(PAT)が必要です', 'error'); return; }
+    if (!auth.pat) { toast('まとめ保存には編集権限(PAT)が必要です', 'error'); return; }
     const d = dataCache[currentShopId];
     if (!d || d._wasEmpty || d._parseError || d._loadFailed) {
       toast('データを正しく読み込めていないため、一括編集を始められません', 'error');
       return;
     }
     _batch = { on: true, shopId: currentShopId, pending: [], fileOp: false };
+    setBatchPref(true);                     // v1.11.45: 次回以降もこの設定を使う
     updateBatchBar();
     render();
-    toast('一括編集を開始しました。変更は「⬆️ まとめてアップ」を押すまでアップされません', 'success');
+    toast('まとめ保存をONにしました。変更は「⬆️ まとめてアップ」を押すまでアップされません', 'success');
     return;
   }
   if (_batch.pending.length) {
@@ -1702,9 +1722,10 @@ async function toggleBatchMode() {
     if (!(await flushBatch())) return;
   }
   _batch = { on: false, shopId: null, pending: [], fileOp: false };
+  setBatchPref(false);                      // v1.11.45: 明示的にOFFにしたら覚える
   updateBatchBar();
   render();
-  toast('一括編集を終了しました', 'success');
+  toast('まとめ保存をOFFにしました（変更のたびに保存されます）', 'success');
 }
 
 // 積んである変更をまとめてアップ。成功したら true
@@ -4548,6 +4569,7 @@ async function switchShop(shopId, opts = {}) {
   if (!opts.fromUrl) updateShopUrl(shopId, true);   // 戻るボタンで前のショップに戻れるように積む
   renderShopTabs();
   await loadCurrentShopData();
+  autoEnterBatch();          // v1.11.45: 切替先のショップでも、まとめ保存を続ける
   render();
   startAutoRefresh();        // v1.11.27: ショップ切替後も自動更新を再開
 }
