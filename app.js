@@ -2,7 +2,7 @@
 // ImageGallery
 // 楽天・Yahoo の自社画像を商品ごとに保管するLP制作支援ツール
 // =====================================================
-const APP_VERSION = 'v1.11.42';
+const APP_VERSION = 'v1.11.43';
 
 // グローバルエラーハンドラ - エラーを画面に表示
 window.addEventListener('error', (e) => {
@@ -79,6 +79,13 @@ const DIAG_MSG_MAX = 500;        // 1行が長すぎるとlocalStorageを圧迫�
 let diagLog = [];                // [{at, level, msg}]
 let _diagHooksInstalled = false;
 
+// v1.11.43: 一括編集モード。
+//   ON の間は gallery.json の保存を実行せず「未保存の変更」として積み、
+//   「まとめてアップ」で1回の commit にまとめる。
+//   画像ファイルのアップロード/削除はその場で GitHub に反映されるので、
+//   そのときだけは積んだ分ごと即保存する（データとファイルのずれ防止）。
+let _batch = { on: false, shopId: null, pending: [], fileOp: false };
+
 let deleteSelection = new Set();  // 削除予約された画像ID (img.id)
 let productDeleteSelection = new Set();  // v1.11.29: 削除予約された商品ID (p.id)
 let pendingStatusChanges = new Map();  // 保存待ちのステータス変更: productId -> 'active'|'unsure'
@@ -150,6 +157,7 @@ async function init() {
   //      先に呼ぶと +追加/+部品追加 まで右端へ連れて行かれる。
   moveRefreshButtonToEnd();
   moveStorageButtonIntoSettings();  // v1.11.37: 「📊」→「容量確認」にして設定モーダルへ
+  injectBatchEditUI();              // v1.11.43: 一括編集（貯めて1回でアップ）
   injectPartsTab();          // v1.11.33: 「部品」タブを 全体 の右に追加
   injectNoImageTab();        // v1.11.34: 「商品(未設定)」タブを 全体 と 部品 の間に追加
   injectYahooThumbTab();     // v1.11.35: 「Yahoo用サムネ」タブを 部品 の右に追加
@@ -324,6 +332,29 @@ function injectImageTagStyles() {
       border: 1px solid #cbd5e1; background: #fff; color: #475569; font-family: inherit;
     }
     .shop-url-copy:hover { border-color: #a78bfa; color: #6d28d9; }
+    /* ===== v1.11.43: 一括編集モード ===== */
+    .batch-mode-btn {
+      padding: 8px 14px; border-radius: var(--radius-sm, 8px); border: 1px solid var(--border, #e5e7eb); background: var(--surface, #fff);
+      font-family: inherit; font-size: 13px; color: var(--text-muted, #64748b); cursor: pointer; white-space: nowrap;
+    }
+    .batch-mode-btn:hover { background: var(--bg, #f8fafc); }
+    .batch-mode-btn.active { background: #f59e0b; border-color: #f59e0b; color: #fff; font-weight: 700; }
+    .batch-bar {
+      position: fixed; left: 0; right: 0; bottom: 0; z-index: 1500; display: none; align-items: center; gap: 12px;
+      padding: 10px 20px; background: #fffbeb; border-top: 2px solid #f59e0b; box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+      font-size: 13px; color: #78350f;
+    }
+    body.batch-on .batch-bar { display: flex; }
+    body.batch-on #content { padding-bottom: 72px; }
+    body.batch-on .delete-action-bar { bottom: 76px !important; }
+    body.batch-on .toast { bottom: 80px; }
+    .batch-bar .batch-msg { flex: 1; }
+    .batch-bar .batch-msg strong { font-size: 16px; color: #b45309; }
+    .batch-bar button { font-family: inherit; font-size: 13px; border-radius: 8px; padding: 8px 14px; cursor: pointer; white-space: nowrap; }
+    .batch-bar .btn-batch-save { background: #f59e0b; color: #fff; border: 0; font-weight: 700; }
+    .batch-bar .btn-batch-save:disabled { opacity: .45; cursor: not-allowed; }
+    .batch-bar .btn-batch-sub { background: #fff; color: #78350f; border: 1px solid #fcd34d; }
+    .toast { max-width: min(560px, 92vw); white-space: pre-wrap; word-break: break-word; line-height: 1.6; cursor: pointer; }
     /* ===== v1.11.40: 更新モーダル内の診断ログ ===== */
     .diag-box { margin-top: 16px; border: 1px solid var(--border, #e2e8f0); border-radius: 10px; overflow: hidden; }
     .diag-head {
@@ -951,6 +982,12 @@ function _dataSig(d) {
 async function refreshCurrentShopData(opts = {}) {
   const manual = !!opts.manual;
   if (!currentShopId || !auth.owner || !auth.repo) return;
+  // v1.11.43: 一括編集に未保存があるときは画面を上書きしない
+  if (_batch.on && _batch.pending.length) {
+    if (!manual) return;   // 自動更新は黙ってスキップ
+    if (!confirm(`未保存の変更が ${_batch.pending.length}件あります。\n先にアップしてから最新を取得しますか?`)) return;
+    if (!(await flushBatch())) return;
+  }
   if (!manual) {
     if (document.hidden) return;
     const lb = document.getElementById('lightbox');
@@ -1592,6 +1629,127 @@ async function createPart() {
   syncCategoryActiveTab();
   render();
   toast(`部品を追加しました${fail ? ` / 画像失敗${fail}件` : ''}`, fail ? 'error' : 'success');
+}
+
+
+// ===== v1.11.43: 一括編集モード =====
+function injectBatchEditUI() {
+  if (document.getElementById('btnBatchEdit')) return;
+  const filterEl = document.getElementById('filterUnregistered');
+  const filterLabel = filterEl && filterEl.closest('label');
+  if (!filterLabel || !filterLabel.parentNode) return;
+  const btn = document.createElement('button');
+  btn.id = 'btnBatchEdit';
+  btn.type = 'button';
+  btn.className = 'batch-mode-btn';
+  btn.textContent = '✏️ 一括編集';
+  btn.title = 'タグなどをまとめて変更して、最後に1回だけアップします';
+  btn.addEventListener('click', toggleBatchMode);
+  filterLabel.parentNode.insertBefore(btn, filterLabel);
+
+  const bar = document.createElement('div');
+  bar.className = 'batch-bar';
+  bar.id = 'batchBar';
+  bar.innerHTML = `
+    <span>✏️</span>
+    <span class="batch-msg">一括編集中：未保存の変更 <strong id="batchCount">0</strong> 件 <span id="batchHint"></span></span>
+    <button class="btn-batch-save" id="btnBatchSave">⬆️ まとめてアップ</button>
+    <button class="btn-batch-sub" id="btnBatchDiscard">破棄</button>
+    <button class="btn-batch-sub" id="btnBatchExit">終了</button>`;
+  document.body.appendChild(bar);
+  bar.querySelector('#btnBatchSave').addEventListener('click', () => flushBatch());
+  bar.querySelector('#btnBatchDiscard').addEventListener('click', discardBatch);
+  bar.querySelector('#btnBatchExit').addEventListener('click', toggleBatchMode);
+  // 未保存のままタブを閉じようとしたら警告する
+  window.addEventListener('beforeunload', (e) => {
+    if (_batch.on && _batch.pending.length) { e.preventDefault(); e.returnValue = ''; }
+  });
+}
+
+function updateBatchBar() {
+  document.body.classList.toggle('batch-on', _batch.on);
+  const btn = document.getElementById('btnBatchEdit');
+  if (btn) {
+    btn.classList.toggle('active', _batch.on);
+    btn.textContent = _batch.on ? '✏️ 一括編集中' : '✏️ 一括編集';
+  }
+  const cnt = document.getElementById('batchCount');
+  if (cnt) cnt.textContent = _batch.pending.length;
+  const hint = document.getElementById('batchHint');
+  if (hint) hint.textContent = _batch.pending.length
+    ? '（まだGitHubにアップされていません）'
+    : '（タグなどを変えても、ここで「まとめてアップ」するまでアップされません）';
+  const save = document.getElementById('btnBatchSave');
+  if (save) save.disabled = _batch.pending.length === 0;
+}
+
+async function toggleBatchMode() {
+  if (!_batch.on) {
+    if (!auth.pat) { toast('一括編集には編集権限(PAT)が必要です', 'error'); return; }
+    const d = dataCache[currentShopId];
+    if (!d || d._wasEmpty || d._parseError || d._loadFailed) {
+      toast('データを正しく読み込めていないため、一括編集を始められません', 'error');
+      return;
+    }
+    _batch = { on: true, shopId: currentShopId, pending: [], fileOp: false };
+    updateBatchBar();
+    render();
+    toast('一括編集を開始しました。変更は「⬆️ まとめてアップ」を押すまでアップされません', 'success');
+    return;
+  }
+  if (_batch.pending.length) {
+    if (!confirm(`未保存の変更が ${_batch.pending.length}件あります。\nアップしてから一括編集を終了しますか?\n（アップしない場合は「キャンセル」→「破棄」を押してください）`)) return;
+    if (!(await flushBatch())) return;
+  }
+  _batch = { on: false, shopId: null, pending: [], fileOp: false };
+  updateBatchBar();
+  render();
+  toast('一括編集を終了しました', 'success');
+}
+
+// 積んである変更をまとめてアップ。成功したら true
+async function flushBatch() {
+  if (!_batch.on || _batch.pending.length === 0) return true;
+  const shopId = _batch.shopId;
+  const msgs = _batch.pending.slice();
+  const n = msgs.length;
+  showLoading(`まとめてアップ中…（${n}件の変更）`);
+  try {
+    // 一括編集の判定を通さず、そのまま保存する
+    await _saveShopDataQueued(shopId, `batch edit: ${n} changes\n\n` + msgs.slice(0, 30).map(m => `- ${m}`).join('\n'));
+    _batch.pending = [];
+    _batch.fileOp = false;
+    hideLoading();
+    updateBatchBar();
+    toast(`${n}件の変更をまとめてアップしました`, 'success');
+    return true;
+  } catch (e) {
+    hideLoading();
+    console.error('[一括編集] まとめてアップに失敗', e);
+    toast('まとめてアップに失敗しました: ' + e.message + '（変更は画面に残っています）', 'error');
+    return false;
+  }
+}
+
+// 未保存の変更を捨てて、最後にアップした状態 (GitHub の最新) に戻す
+async function discardBatch() {
+  if (!_batch.on) return;
+  if (_batch.pending.length === 0) { toast('未保存の変更はありません', 'success'); return; }
+  if (!confirm(`未保存の変更 ${_batch.pending.length}件を破棄して、最後にアップした状態に戻します。よろしいですか?`)) return;
+  const shopId = _batch.shopId;
+  showLoading('最後にアップした状態を読み込み中…');
+  const fresh = await loadShopData(shopId);
+  hideLoading();
+  if (fresh._wasEmpty || fresh._parseError || fresh._loadFailed) {
+    toast('GitHubから読み込めなかったため、破棄を中止しました（変更は画面に残っています）', 'error');
+    return;
+  }
+  dataCache[shopId] = fresh;
+  _batch.pending = [];
+  _batch.fileOp = false;
+  updateBatchBar();
+  render();
+  toast('変更を破棄しました', 'success');
 }
 
 // 上部ツールバーに「更新」ボタン (誰でも手動で最新化できる)
@@ -2447,6 +2605,8 @@ async function ghFetch(path, opts = {}) {
   };
   if (auth.pat) headers['Authorization'] = `token ${auth.pat}`;
   if (opts.body) headers['Content-Type'] = 'application/json';
+  // v1.11.43: 一括編集中に画像ファイルを直接いじった (gallery.json 以外の PUT/DELETE) ことを覚えておく
+  if (_batch.on && method !== 'GET' && path.startsWith('contents/') && !/\/gallery\.json(\?|$)/.test(path)) _batch.fileOp = true;
   const res = await fetch(url, { ...opts, headers });
   return res;
 }
@@ -2978,6 +3138,26 @@ async function loadShopDataRaw(shopId) {
 }
 
 async function saveShopData(shopId, message) {
+  // v1.11.43: 一括編集モード中は保存せず「未保存の変更」として積むだけにする。
+  //   ただし直前に画像ファイルのアップロード/削除をした場合は、データとファイルがずれないよう
+  //   積んである変更ごと今すぐ保存する。
+  //   ⚠️ この前段のおかげで、タグ変更などの各機能側の保存処理は1行も変えずに済んでいる。
+  if (_batch.on && shopId === _batch.shopId) {
+    if (!_batch.fileOp) {
+      _batch.pending.push(message || 'update');
+      updateBatchBar();
+      return;
+    }
+    const n = _batch.pending.length;
+    if (n) message = `${message || 'update'} (+ batch edit ${n} changes)`;
+  }
+  return _saveShopDataQueued(shopId, message).then((r) => {
+    if (_batch.on && shopId === _batch.shopId) { _batch.pending = []; _batch.fileOp = false; updateBatchBar(); }
+    return r;
+  });
+}
+
+async function _saveShopDataQueued(shopId, message) {
   // 直列化: 同じショップの保存は順番に実行 + 409エラー時はSHAを取り直してリトライ
   if (!saveShopData._queues) saveShopData._queues = {};
   const prev = saveShopData._queues[shopId] || Promise.resolve();
@@ -3559,6 +3739,8 @@ async function clearAllProducts() {
 }
 
 async function syncProducts() {
+  // v1.11.43: 同期は最新データに商品を足すので、未保存分を先にアップしておく
+  if (_batch.on && _batch.pending.length && !(await flushBatch())) return;
   const shop = getCurrentShop();
   if (!shop) { toast('ショップが選択されていません', 'error'); return; }
   if (!shop.appId) { toast('Application IDを設定してください', 'error'); return; }
@@ -4355,6 +4537,12 @@ function applyShopFromUrl() {
 }
 
 async function switchShop(shopId, opts = {}) {
+  // v1.11.43: 未保存の変更を黙って捨てない
+  if (_batch.on && _batch.pending.length) {
+    if (!confirm(`未保存の変更が ${_batch.pending.length}件あります。\nアップしてからショップを切り替えますか?`)) return;
+    if (!(await flushBatch())) return;
+  }
+  if (_batch.on) { _batch = { on: false, shopId: null, pending: [], fileOp: false }; updateBatchBar(); }
   currentShopId = shopId;
   localStorage.setItem(LS_CURRENT_SHOP, shopId);
   if (!opts.fromUrl) updateShopUrl(shopId, true);   // 戻るボタンで前のショップに戻れるように積む
@@ -6642,10 +6830,22 @@ function formatDate(iso) {
 }
 
 function toast(msg, type) {
+  // v1.11.43: 一括編集中は「保存しました」ではなく「まだ保存していない」ことを伝える
+  if (_batch.on && _batch.pending.length && type !== 'error' && /保存しました/.test(String(msg))) {
+    msg = String(msg).replace('保存しました', '変更しました（未保存・「まとめてアップ」で反映）');
+  }
   const el = document.getElementById('toast');
   el.textContent = msg;
   el.className = 'toast show' + (type ? ' ' + type : '');
-  setTimeout(() => { el.className = 'toast' + (type ? ' ' + type : ''); }, 2800);
+  if (!el.dataset.clickBound) {
+    el.dataset.clickBound = '1';
+    el.addEventListener('click', () => { el.className = el.className.replace(/\bshow\b/, '').trim(); });
+  }
+  // 長い文は読む時間が要る。前のタイマーを消してから張り直す。
+  const len = String(msg || '').length;
+  const ms = Math.min(15000, Math.max(type === 'error' ? 8000 : 2800, len * 90));
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(() => { el.className = 'toast' + (type ? ' ' + type : ''); }, ms);
 }
 
 function showLoading(text) {
